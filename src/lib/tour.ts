@@ -136,6 +136,11 @@ export interface TourHousehold {
   /** 世帯合計の家賃上限(万円/月) */
   budget: number
   members: TourMember[]
+  /**
+   * 引越し理由に紐づくハゲタのアドバイス。topicId の論点イベントから組み立てる
+   * (content.ts が解決して渡す。データを二重に持たない)
+   */
+  advice?: { title: string; text: string }
 }
 
 /** content/gen1/characters/*.json の1人を内見メンバーに変換する */
@@ -557,6 +562,12 @@ export function briefingLines(h: TourHousehold): string[] {
     `${h.label}「あの…この村に越してきたくて。物件を見せてもらえませんか?」`,
     `ハゲタ「${h.label}(${KIND_LABEL[h.kind]}・${h.members.length}人)か。新人、案内してやれ」`,
     `${h.label}「${h.moveReason}んです」`,
+    ...(h.advice
+      ? [
+          `ハゲタ「${h.advice.title}か。新人、こういう客が来たときの勘所を教えてやる」`,
+          `ハゲタ「${h.advice.text}」`,
+        ]
+      : []),
     ...h.members.map((m) => `${m.name}(${m.age}歳)「${m.demands}」`),
     `ハゲタ「予算は世帯で月${h.budget}万円までだ。全員の希望に折り合いをつけろよ」`,
     `ハゲタ「${h.label}を連れて村を回れ。建物を向いてスペースで物件の話ができる」`,
@@ -648,7 +659,13 @@ export function tourReducer(s: TourState, a: TourAction): TourState {
       // 引越し理由に紐づくメモを獲得して、マップへ出る
       return {
         ...s,
-        memos: [...s.memos, { topicId: s.household.topicId, title: `${s.household.label}の引越し理由` }],
+        memos: [
+          ...s.memos,
+          {
+            topicId: s.household.topicId,
+            title: s.household.advice?.title ?? `${s.household.label}の引越し理由`,
+          },
+        ],
         phase: { kind: 'map' },
       }
     }

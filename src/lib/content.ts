@@ -53,10 +53,18 @@ export function characterById(id: string): Character | undefined {
   return characters.find((c) => c.id === id)
 }
 
+/** 引越し理由の論点を解説するイベントを探し、ハゲタのアドバイスに仕立てる */
+function adviceForTopic(topicId: string): { title: string; text: string } | undefined {
+  const e = events.find((x) => x.topicId === topicId)
+  if (!e) return undefined
+  return { title: e.title ?? topicId, text: e.explanation }
+}
+
 function householdsOfGeneration(): TourHousehold[] {
   return ofGeneration(householdModules)
     .map((h) => ({
       ...h,
+      advice: adviceForTopic(h.topicId),
       members: h.memberIds
         .map(characterById)
         .filter((c) => c !== undefined)
