@@ -82,6 +82,10 @@
   font-size: 0.9rem;
 }
 
+.advice-heading {
+  color: #b07d10;
+}
+
 .result-correct {
   color: #1a7f37;
 }

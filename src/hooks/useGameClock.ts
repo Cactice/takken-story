@@ -1,12 +1,13 @@
 import { useEffect } from 'react'
 
-/** リアル5分 ≒ ゲーム内1ヶ月 (リアル1時間 ≒ 1年) */
-export const MS_PER_MONTH = 5 * 60 * 1000
+/** 1ヶ月=リアル50秒(1年=10分)。30日換算で1日≒1.67秒 */
+export const MS_PER_MONTH = 50 * 1000
+export const MS_PER_DAY = Math.round(MS_PER_MONTH / 30)
 
-export function useGameClock(running: boolean, onMonth: () => void): void {
+export function useGameClock(running: boolean, onDay: () => void): void {
   useEffect(() => {
     if (!running) return
-    const id = setInterval(onMonth, MS_PER_MONTH)
+    const id = setInterval(onDay, MS_PER_DAY)
     return () => clearInterval(id)
-  }, [running, onMonth])
+  }, [running, onDay])
 }

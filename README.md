@@ -1,32 +1,34 @@
-# React + TypeScript + Vite
+# 🏠 宅建study
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+**遊んでたら宅建に受かっちゃう、ドット絵の人生ゲーム。**
 
-Currently, two official plugins are available:
+ポケモン風の小さな町で、あなたは「ひばり不動産」に雇われた社員2人目の宅建士見習い(15歳)。
+町のみんなの悩みを聞いて、ハゲタ社長に教わって、年に1度の試験に挑もう。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+🎮 **プレイはこちら → https://www.cactice.com/takken-study/**
 
-## React Compiler
+## どんなゲーム?
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 🚶 矢印キーで町を歩いて、住民に話しかける(ポケモン式)
+- 💬 住民の悩みはぜんぶ日常のこと。「敷金って返ってくるの?」「畑を駐車場にしたい!」
+- 👨‍🦲 ハゲタ社長がその場で分解して教えてくれる(1年目は試験の申し込みも勝手にしてくれてる)
+- 📝 毎年10月15日は宅建試験! 出るのは**その年に聞いた相談だけ**。サボった分は初見問題に…(7割で合格)
+- 📜 合格したら宅建士の独占業務「重要事項説明」が解禁。稼ぎ頭になる
+- 💍 恋愛して、結婚して、子どもが15歳になったら世代交代。今度はあなたが教える番
+- 💰 家族何代にもわたって、会社の資産 **1億円** を目指せ!(10億で…?)
 
-## Expanding the Oxlint configuration
+宅建試験の全54論点をカバー。**このゲームだけで宅建の勉強が完結**するのが目標です。
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## 開発
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev    # http://localhost:5173/takken-study/
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+- スタック: Vite + React + TypeScript
+- シナリオ・問題: [content/](content/)(JSONを置くだけで自動読み込み)
+- ゲームデザイン仕様: [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md)
+- ドット絵素材: [Kenney](https://kenney.nl)(CC0)
+
+`main` にpushすると GitHub Actions が自動でビルド&デプロイします。

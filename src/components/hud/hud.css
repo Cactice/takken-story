@@ -1,0 +1,40 @@
+.date-meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.date-meter-track {
+  display: flex;
+  gap: 2px;
+}
+
+.date-meter-seg {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 0.25);
+}
+
+.date-meter-seg.is-past {
+  background: rgb(255 255 255 / 0.7);
+}
+
+.date-meter-seg.is-current {
+  background: #ffd75e;
+  outline: 2px solid #fff;
+}
+
+.date-meter-seg.is-exam {
+  background: #e74c3c;
+}
+
+.date-meter-seg.is-exam.is-current {
+  outline-color: #e74c3c;
+  background: #e74c3c;
+}
+
+.date-meter-label {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

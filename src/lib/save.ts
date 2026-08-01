@@ -1,6 +1,6 @@
 import type { GameState } from '../types'
 
-const KEY = 'takken-study:save:v1'
+const KEY = 'takken-study:save:v2'
 
 export function loadState(): GameState | null {
   try {
@@ -10,9 +10,15 @@ export function loadState(): GameState | null {
     // 最低限の検証: 外部データを信用しない
     if (
       (s.gender !== 'male' && s.gender !== 'female') ||
-      typeof s.monthsElapsed !== 'number' ||
+      typeof s.daysElapsed !== 'number' ||
       typeof s.money !== 'number' ||
-      !Array.isArray(s.answeredEventIds)
+      typeof s.scheduleYear !== 'number' ||
+      typeof s.appliedExamYear !== 'number' ||
+      typeof s.lastExamYear !== 'number' ||
+      !Array.isArray(s.experiencedEvents) ||
+      !Array.isArray(s.yearSchedule) ||
+      !Array.isArray(s.retryEventIds) ||
+      !Array.isArray(s.examResults)
     ) {
       return null
     }

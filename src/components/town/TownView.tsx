@@ -6,6 +6,8 @@ import './town.css'
 interface Props {
   characters: Character[]
   gender: Gender
+  /** 相談が控えている住民のID(頭に「!」を表示) */
+  alertIds: ReadonlySet<string>
   /** 会話中は移動・決定キーを無効化 */
   inputLocked: boolean
   onTapCharacter: (c: Character) => void
@@ -130,7 +132,7 @@ const KEY_DIR: Record<string, [number, number]> = {
   d: [1, 0],
 }
 
-export function TownView({ characters, gender, inputLocked, onTapCharacter }: Props) {
+export function TownView({ characters, gender, alertIds, inputLocked, onTapCharacter }: Props) {
   const [player, setPlayer] = useState<[number, number]>([5, 4])
 
   const residents = characters.map((c, i) => ({
@@ -205,6 +207,9 @@ export function TownView({ characters, gender, inputLocked, onTapCharacter }: Pr
             onClick={() => onTapCharacter(c)}
             aria-label={`${c.name}と話す`}
           >
+            {alertIds.has(c.id) && (
+              <span className="resident-alert" aria-label="相談あり">!</span>
+            )}
             <span className="char-sprite" style={characterSpriteStyle(c.id)} />
             <span className="resident-name">{c.name}</span>
           </button>
