@@ -82,6 +82,15 @@
   font-size: 0.9rem;
 }
 
+.dialogue-hint {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.25rem;
+  font-size: 0.6rem;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .advice-heading {
   color: #b07d10;
 }

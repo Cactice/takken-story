@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { GameEvent } from '../../types'
 import { EXAM_PASS_RATIO, REWARD_EXAM_FAIL, REWARD_EXAM_PASS } from '../../types'
 import './exam.css'
@@ -27,15 +27,21 @@ export function passLine(total: number): number {
   return Math.ceil(total * EXAM_PASS_RATIO)
 }
 
+const DECIDE = new Set([' ', 'Enter'])
+const PREV = new Set(['ArrowUp', 'ArrowLeft'])
+const NEXT = new Set(['ArrowDown', 'ArrowRight'])
+
 export function ExamScreen({ year, firstYear, questions, experiencedIds, onFinish, onDecline }: Props) {
   const [phase, setPhase] = useState<Phase>('intro')
   const [index, setIndex] = useState(0)
+  const [sel, setSel] = useState(0)
   const [answers, setAnswers] = useState<ExamAnswer[]>([])
 
   const pick = (i: number) => {
     const event = questions[index]
     const next = [...answers, { event, picked: i, correct: i === event.correctChoice }]
     setAnswers(next)
+    setSel(0)
     if (index + 1 < questions.length) {
       setIndex(index + 1)
     } else {
@@ -46,6 +52,37 @@ export function ExamScreen({ year, firstYear, questions, experiencedIds, onFinis
   const correctCount = answers.filter((a) => a.correct).length
   const passed = correctCount >= passLine(questions.length)
   const perfect = correctCount === questions.length && questions.length > 0
+
+  // キーボードだけで完結: 矢印で選択、スペースで決定
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const optionCount =
+        phase === 'intro' ? (firstYear ? 1 : 2) : phase === 'quiz' ? questions[index].choices.length : 1
+      if (PREV.has(e.key) || NEXT.has(e.key)) {
+        e.preventDefault()
+        setSel((s) => (s + (PREV.has(e.key) ? optionCount - 1 : 1)) % optionCount)
+        return
+      }
+      if (!DECIDE.has(e.key)) return
+      e.preventDefault()
+      if (phase === 'intro') {
+        if (sel === 0) {
+          setPhase('quiz')
+          setSel(0)
+        } else {
+          onDecline()
+        }
+      } else if (phase === 'quiz') {
+        pick(sel)
+      } else {
+        onFinish(answers)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
+  const keyClass = (i: number) => (i === sel ? 'is-key-selected' : '')
 
   return (
     <div className="exam-overlay" role="dialog" aria-label="宅建試験">
@@ -67,11 +104,19 @@ export function ExamScreen({ year, firstYear, questions, experiencedIds, onFinis
               </p>
             )}
             <div className="exam-actions">
-              <button type="button" className="pixel-btn" onClick={() => setPhase('quiz')}>
+              <button
+                type="button"
+                className={`pixel-btn ${keyClass(0)}`}
+                onClick={() => setPhase('quiz')}
+              >
                 試験を受ける
               </button>
               {!firstYear && (
-                <button type="button" className="pixel-btn pixel-btn-secondary" onClick={onDecline}>
+                <button
+                  type="button"
+                  className={`pixel-btn pixel-btn-secondary ${keyClass(1)}`}
+                  onClick={onDecline}
+                >
                   今年は見送る
                 </button>
               )}
@@ -94,7 +139,12 @@ export function ExamScreen({ year, firstYear, questions, experiencedIds, onFinis
             </div>
             <div className="exam-choices">
               {questions[index].choices.map((c, i) => (
-                <button key={i} type="button" className="pixel-btn choice-btn" onClick={() => pick(i)}>
+                <button
+                  key={i}
+                  type="button"
+                  className={`pixel-btn choice-btn ${keyClass(i)}`}
+                  onClick={() => pick(i)}
+                >
                   {c}
                 </button>
               ))}
@@ -124,11 +174,13 @@ export function ExamScreen({ year, firstYear, questions, experiencedIds, onFinis
                 </li>
               ))}
             </ol>
-            <button type="button" className="pixel-btn" onClick={() => onFinish(answers)}>
+            <button type="button" className="pixel-btn is-key-selected" onClick={() => onFinish(answers)}>
               町にもどる
             </button>
           </div>
         )}
+
+        <p className="exam-hint">矢印で選択 / スペースで決定</p>
       </div>
     </div>
   )

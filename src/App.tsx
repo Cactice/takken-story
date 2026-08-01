@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { TitleScreen } from './components/title/TitleScreen'
 import { TownView } from './components/town/TownView'
 import { DialogueBox } from './components/dialogue/DialogueBox'
@@ -24,9 +24,58 @@ import {
 import type { Character, GameState, Gender } from './types'
 import './App.css'
 
+interface PromptOption {
+  label: string
+  onPick: () => void
+}
+
+/** 矢印+スペースだけで操作できる確認ダイアログ(exam.css のスタイルを流用) */
+function PromptOverlay({ title, body, options }: { title: string; body: string; options: PromptOption[] }) {
+  const [sel, setSel] = useState(0)
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault()
+        const delta = e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? options.length - 1 : 1
+        setSel((s) => (s + delta) % options.length)
+      } else if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault()
+        options[sel].onPick()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
+  return (
+    <div className="exam-overlay" role="dialog" aria-label={title}>
+      <div className="exam-panel">
+        <h2 className="exam-title">{title}</h2>
+        <p style={{ whiteSpace: 'pre-line' }}>{body}</p>
+        <div className="exam-actions">
+          {options.map((o, i) => (
+            <button
+              key={o.label}
+              type="button"
+              className={`pixel-btn ${i > 0 ? 'pixel-btn-secondary' : ''} ${i === sel ? 'is-key-selected' : ''}`}
+              onClick={o.onPick}
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+        <p className="exam-hint">矢印で選択 / スペースで決定</p>
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
   const [state, setState] = useState<GameState | null>(null)
   const [talkingTo, setTalkingTo] = useState<Character | null>(null)
+  /** 応募ダイアログを「今年は受けない」で閉じた年(未セーブ。リロードで再表示されるだけ) */
+  const [applyDismissedYear, setApplyDismissedYear] = useState(0)
 
   const update = useCallback((fn: (s: GameState) => GameState) => {
     setState((prev) => {
@@ -108,10 +157,15 @@ export default function App() {
       ? null
       : (events.find((e) => e.characterId === talkingTo.id && available.includes(e.id)) ?? null)
 
-  // 1年目はハゲタ社長が自動申込。2年目以降は6月末までの応募が必要
+  // 1年目はハゲタ社長が自動申込。2年目以降は6月の確認ダイアログで応募
   const applied = year === START_YEAR || state.appliedExamYear === year
-  const canApply =
-    year > START_YEAR && month <= APPLY_DEADLINE_MONTH && state.appliedExamYear !== year
+  const applyPromptOpen =
+    !examDue &&
+    talkingTo === null &&
+    year > START_YEAR &&
+    month === APPLY_DEADLINE_MONTH &&
+    !applied &&
+    applyDismissedYear !== year
   const examQuestions = state.yearSchedule
     .map((s) => events.find((e) => e.id === s.eventId))
     .filter((e) => e !== undefined)
@@ -137,15 +191,6 @@ export default function App() {
         </span>
         <span className="hud-item">📅 {year}年目</span>
         <span className="hud-item hud-money">💰 {state.money.toLocaleString()}円</span>
-        {canApply && (
-          <button
-            type="button"
-            className="pixel-btn hud-apply"
-            onClick={() => update((s) => ({ ...s, appliedExamYear: year }))}
-          >
-            📮 宅建試験に応募する(6月末締切)
-          </button>
-        )}
         {year > START_YEAR && applied && <span className="hud-item">✅ 応募済み</span>}
         <span className="hud-item hud-date">
           <DateMeter month={month} day={day} />
@@ -156,7 +201,7 @@ export default function App() {
         characters={characters}
         gender={state.gender}
         alertIds={alertIds}
-        inputLocked={talkingTo !== null || examDue}
+        inputLocked={talkingTo !== null || examDue || applyPromptOpen}
         onTapCharacter={setTalkingTo}
       />
 
@@ -180,6 +225,17 @@ export default function App() {
         />
       )}
 
+      {applyPromptOpen && (
+        <PromptOverlay
+          title="📮 宅建試験の応募(6月末締切)"
+          body={'ハゲタ「おい、今年の試験の応募はどうする?\n締切は今月末だぞ」'}
+          options={[
+            { label: '応募する', onPick: () => update((s) => ({ ...s, appliedExamYear: year })) },
+            { label: '今年は受けない', onPick: () => setApplyDismissedYear(year) },
+          ]}
+        />
+      )}
+
       {examDue && applied && (
         <ExamScreen
           year={year}
@@ -192,25 +248,13 @@ export default function App() {
       )}
 
       {examDue && !applied && (
-        <div className="exam-overlay" role="dialog" aria-label="試験のお知らせ">
-          <div className="exam-panel">
-            <h2 className="exam-title">📝 宅建試験(10月15日)</h2>
-            <p>
-              今日は試験日だが…応募していないので今年は受けられない。
-              <br />
-              来年は6月末までに応募しよう。
-            </p>
-            <div className="exam-actions">
-              <button
-                type="button"
-                className="pixel-btn"
-                onClick={() => update((s) => ({ ...s, lastExamYear: year }))}
-              >
-                わかった…
-              </button>
-            </div>
-          </div>
-        </div>
+        <PromptOverlay
+          title="📝 宅建試験(10月15日)"
+          body={'今日は試験日だが…応募していないので今年は受けられない。\n来年は6月末までに応募しよう。'}
+          options={[
+            { label: 'わかった…', onPick: () => update((s) => ({ ...s, lastExamYear: year })) },
+          ]}
+        />
       )}
     </div>
   )

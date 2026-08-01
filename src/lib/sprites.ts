@@ -66,8 +66,16 @@ export function characterSpriteStyle(characterId: string): CSSProperties {
   return { ...sheetStyle(CHAR_SHEET, sprite.tile), filter: sprite.filter }
 }
 
-const PLAYER_TILE: Record<Gender, number> = { male: 85, female: 98 }
+// 主人公: Antifarea 16x18 4方向チャーセット (CC-BY 3.0) — 3列(歩行フレーム)×4行(向き)
+export type Facing = 'up' | 'down' | 'left' | 'right'
 
-export function playerSpriteStyle(gender: Gender): CSSProperties {
-  return sheetStyle(CHAR_SHEET, PLAYER_TILE[gender])
+const FACING_ROW: Record<Facing, number> = { up: 0, left: 1, down: 2, right: 3 }
+
+export function playerSpriteStyle(gender: Gender, facing: Facing = 'down'): CSSProperties {
+  return {
+    backgroundImage: `url(${import.meta.env.BASE_URL}assets/player/${gender}.png)`,
+    backgroundSize: '300% 400%',
+    // 中央列 = 立ちポーズ
+    backgroundPosition: `50% ${(FACING_ROW[facing] / 3) * 100}%`,
+  }
 }

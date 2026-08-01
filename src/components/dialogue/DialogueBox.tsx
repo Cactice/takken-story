@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Character, GameEvent } from '../../types'
 import { characterSpriteStyle } from '../../lib/sprites'
 import './dialogue.css'
@@ -35,6 +35,21 @@ export function DialogueBox({ character, event, onComplete, onClose }: Props) {
     onClose()
   }
 
+  // キーボードだけで完結: スペース/Enterで進む、Escで閉じる
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault()
+        if (phase === 'advice') finish()
+        else advance()
+      } else if (e.key === 'Escape') {
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
   return (
     <div className="dialogue-overlay" role="dialog" aria-label={`${character.name}との会話`}>
       <div className="dialogue-box">
@@ -64,6 +79,7 @@ export function DialogueBox({ character, event, onComplete, onClose }: Props) {
         <button type="button" className="dialogue-close" onClick={onClose} aria-label="閉じる">
           ✕
         </button>
+        <span className="dialogue-hint">スペースで進む</span>
       </div>
     </div>
   )

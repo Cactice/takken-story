@@ -99,3 +99,15 @@
   line-height: 1.6;
   opacity: 0.85;
 }
+
+.exam-panel .is-key-selected {
+  outline: 3px solid var(--color-accent, #e67e22);
+  outline-offset: 2px;
+}
+
+.exam-hint {
+  margin-top: 0.75rem;
+  font-size: 0.7rem;
+  opacity: 0.55;
+  text-align: right;
+}
