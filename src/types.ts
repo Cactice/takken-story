@@ -59,9 +59,13 @@ export const START_YEAR = 1
 export const DAYS_PER_MONTH = 30
 export const DAYS_PER_YEAR = 12 * DAYS_PER_MONTH
 
-export const REWARD_CONSULT = 10000
-export const REWARD_EXAM_PASS = 1000000
-export const REWARD_EXAM_FAIL = 50000
+/** 金額はすべて「万円」単位で保持する */
+export const REWARD_CONSULT = 1
+export const REWARD_EXAM_PASS = 100
+export const REWARD_EXAM_FAIL = 5
+/** 自宅の家賃(毎月) */
+export const RENT_MONTHLY = 5
+export const MONEY_START = 10
 export const EXAM_PASS_RATIO = 0.7
 export const EXAM_MONTH = 10
 export const EXAM_DAY = 15

@@ -1,11 +1,11 @@
-# 🏠 宅建study
+# 🏠 宅建story
 
 **遊んでたら宅建に受かっちゃう、ドット絵の人生ゲーム。**
 
 ポケモン風の小さな町で、あなたは「ひばり不動産」に雇われた社員2人目の宅建士見習い(15歳)。
 町のみんなの悩みを聞いて、ハゲタ社長に教わって、年に1度の試験に挑もう。
 
-🎮 **プレイはこちら → https://www.cactice.com/takken-study/**
+🎮 **プレイはこちら → https://www.cactice.com/takken-story/**
 
 ## どんなゲーム?
 
@@ -23,7 +23,7 @@
 
 ```bash
 npm install
-npm run dev    # http://localhost:5173/takken-study/
+npm run dev    # http://localhost:5173/takken-story/
 ```
 
 - スタック: Vite + React + TypeScript

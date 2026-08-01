@@ -15,6 +15,7 @@ import {
   EXAM_DAY,
   EXAM_MONTH,
   REWARD_CONSULT,
+  MONEY_START,
   REWARD_EXAM_FAIL,
   REWARD_EXAM_PASS,
   START_YEAR,
@@ -126,7 +127,7 @@ export default function App() {
           const fresh: GameState = {
             gender,
             daysElapsed: 0,
-            money: 100000,
+            money: MONEY_START,
             experiencedEvents: [],
             scheduleYear: START_YEAR,
             yearSchedule: buildYearSchedule(events, new Set(), []),
@@ -190,7 +191,7 @@ export default function App() {
           <span className="hud-avatar" style={playerSpriteStyle(state.gender)} /> {ageOf(state)}歳
         </span>
         <span className="hud-item">📅 {year}年目</span>
-        <span className="hud-item hud-money">💰 {state.money.toLocaleString()}円</span>
+        <span className="hud-item hud-money">💰 {state.money.toLocaleString()}万円</span>
         {year > START_YEAR && applied && <span className="hud-item">✅ 応募済み</span>}
         <span className="hud-item hud-date">
           <DateMeter month={month} day={day} />
