@@ -1,83 +1,524 @@
-/* ドット絵に馴染む図解: 太線・少ない色・等幅フォント */
-.dg {
+@import './tokens.css';
+
+/*
+ * 7種類の図のレイアウトだけを書く。
+ * 色・線幅・フォント・間隔は tokens.css の変数からしか取らない。
+ */
+
+.dg-page {
+  margin: 0;
+}
+
+/* ================================ 網掛け(ディザ)
+ * 割合の区画は「どれも同じ持分」なので色を変えず、市松で見分ける。
+ * ドット絵の減色表現そのままの手法。
+ */
+.dg-dither-1 {
+  background-image: repeating-conic-gradient(
+    var(--dg-edge) 0 25%,
+    transparent 0 50%
+  );
+  background-size: 8px 8px;
+}
+
+.dg-dither-2 {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--dg-edge) 0 3px,
+    transparent 3px 8px
+  );
+}
+
+.dg-dither-3 {
+  background-image: repeating-conic-gradient(
+    var(--dg-edge) 0 25%,
+    transparent 0 50%
+  );
+  background-size: 4px 4px;
+}
+
+/* ================================ parties */
+.dg-parties {
+  display: flex;
+  align-items: center;
+  gap: var(--dg-gap);
+  min-width: min-content;
+}
+
+.dg-parties-head,
+.dg-parties-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  min-width: 72px;
+}
+
+.dg-parties-rows {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--dg-gap);
+  flex: 1;
+}
+
+.dg-parties-row {
+  display: flex;
+  align-items: center;
+  gap: var(--dg-gap);
+}
+
+.dg-parties-row .dg-flow {
+  flex: 0 1 72px;
+  min-width: 24px;
+}
+
+/* 起点の人物から幹線まで、横に一本渡す */
+.dg-parties-fan::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--dg-gap) * -1);
+  top: 50%;
+  width: var(--dg-gap);
+  height: var(--dg-line);
+  translate: 0 -50%;
+  background: var(--dg-right-edge);
+}
+
+/* 相手が複数のときは幹線(縦のインク線)から枝分かれさせる = 家系図の読み方 */
+.dg-parties-fan::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 24px;
+  bottom: 24px;
+  width: var(--dg-line);
+  background: var(--dg-right-edge);
+}
+
+/* ================================ ratio */
+.dg-ratio-bar {
+  display: flex;
+  gap: var(--dg-line);
+  height: 44px;
+  margin: 6px var(--dg-line) 0;
+}
+
+.dg-ratio-seg {
+  display: grid;
+  place-items: center;
+  padding: 0 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.dg-ratio-scale {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px var(--dg-line) 0;
+  font-family: var(--dg-font-dot);
+  font-size: var(--dg-fs-note);
+  color: var(--dg-ink-2);
+  /* 目盛の刻み */
+  border-top: 2px solid var(--dg-ink-2);
+  padding-top: 3px;
+}
+
+/* ================================ area */
+.dg-area {
+  display: flex;
+  gap: var(--dg-gap-lg);
+  align-items: flex-end;
+  justify-content: center;
+  min-width: min-content;
+}
+
+.dg-area-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 0;
+  min-width: 108px;
+  max-width: 176px;
+  text-align: center;
+}
+
+.dg-area-title {
+  font-weight: bold;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.dg-area-lot {
+  position: relative;
   width: 100%;
-  max-width: 22rem;
-  height: auto;
-  display: block;
-  margin: 0 auto 0.5rem;
-  image-rendering: pixelated;
+  aspect-ratio: 1;
+  box-shadow: 0 0 0 var(--dg-line) var(--dg-ink);
+  --dg-fill: var(--dg-land);
+  --dg-edge: var(--dg-land-edge);
 }
 
-.dg-bg {
-  fill: #fffdf5;
-  stroke: var(--color-ink, #2b2b2b);
-  stroke-width: 4;
+/* 建てられる部分は敷地の左下に寄せる(=残りが空地だと一目で分かる) */
+.dg-area-foot {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  overflow: hidden;
 }
 
-.dg-line {
-  fill: none;
-  stroke: var(--color-ink, #2b2b2b);
-  stroke-width: 3;
+/* 側面図。地面から積み上げる */
+.dg-area-side {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
-.dg-line-thick {
-  stroke: var(--color-ink, #2b2b2b);
-  stroke-width: 5;
+.dg-storeys {
+  margin-bottom: -1px;
 }
 
-.dg-border {
-  stroke: #c0392b;
-  stroke-width: 4;
-  stroke-dasharray: 6 4;
+/* ================================ timeline */
+.dg-time-track {
+  position: relative;
+  height: 116px;
+  margin: 4px 12px;
+  min-width: 176px;
 }
 
-.dg-dash {
-  stroke: var(--color-ink, #2b2b2b);
-  stroke-width: 2;
-  stroke-dasharray: 5 4;
+/* 期間そのものを太い帯で見せる。これが「いつまでに」の量 */
+.dg-time-axis {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 12px;
+  translate: 0 -50%;
+  background: var(--dg-paper);
+  box-shadow: 0 0 0 var(--dg-line) var(--dg-ink);
 }
 
-.dg-arrow {
-  fill: var(--color-ink, #2b2b2b);
+/* 1日ごとの目盛。帯より手前に描かないと期間の塗りに隠れる */
+.dg-time-axis::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--dg-ink) 0 1px,
+    transparent 1px var(--dg-tick, 100%)
+  );
+  opacity: 0.45;
 }
 
-.dg-fill-a {
-  fill: #f2c14e;
-  stroke: var(--color-ink, #2b2b2b);
-  stroke-width: 3;
+/* 起点から最後の期限までを塗る */
+.dg-time-span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: var(--dg-time);
+  box-shadow: inset 0 -3px 0 0 var(--dg-time-edge);
 }
 
-.dg-fill-b {
-  fill: #8ec7f0;
-  stroke: var(--color-ink, #2b2b2b);
-  stroke-width: 3;
+.dg-time-point {
+  position: absolute;
+  top: 0;
+  height: 50%;
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  white-space: nowrap;
 }
 
-.dg-fill-c {
-  fill: #a8dba0;
-  stroke: var(--color-ink, #2b2b2b);
-  stroke-width: 3;
+.dg-time-point .dg-tag {
+  gap: 6px;
 }
 
-.dg-road {
-  fill: #d9d4c5;
-  stroke: var(--color-ink, #2b2b2b);
-  stroke-width: 3;
+.dg-time-point .dg-num {
+  color: var(--dg-time-edge);
 }
 
-.dg-coin {
-  fill: #ffd75e;
-  stroke: var(--color-ink, #2b2b2b);
-  stroke-width: 3;
+/* 端の札は枠からはみ出すので内側へ寄せる */
+.dg-time-point-start {
+  align-items: flex-start;
+  translate: -10px 0;
 }
 
-.dg-t {
-  fill: var(--color-ink, #2b2b2b);
-  font-family: monospace;
-  font-size: 13px;
+.dg-time-point-end {
+  align-items: flex-end;
+  translate: calc(-100% + 10px) 0;
+}
+
+.dg-time-stem {
+  width: 2px;
+  flex: 1;
+  min-height: 10px;
+  background: var(--dg-ink);
+}
+
+.dg-time-pin {
+  width: 16px;
+  height: 16px;
+  background: var(--dg-fill);
+  box-shadow: 0 0 0 var(--dg-line) var(--dg-ink);
+  /* 角を落としたピクセルの丸 */
+  clip-path: polygon(5px 0, 11px 0, 16px 5px, 16px 11px, 11px 16px, 5px 16px, 0 11px, 0 5px);
+  translate: 0 11px;
+  z-index: 1;
+}
+
+/* 端に寄せた札でも、旗は必ず日付の真上に立てる */
+.dg-time-point-start .dg-time-stem,
+.dg-time-point-start .dg-time-pin {
+  margin-left: 10px;
+}
+
+.dg-time-point-end .dg-time-stem,
+.dg-time-point-end .dg-time-pin {
+  margin-right: 10px;
+}
+
+/* 下側に出す点は上下反転して軸の下にぶら下げる */
+.dg-time-point-down {
+  top: 50%;
+  justify-content: flex-start;
+  flex-direction: column-reverse;
+}
+
+.dg-time-point-down .dg-time-pin {
+  translate: 0 -11px;
+}
+
+/* ================================ money */
+.dg-money-flow {
+  display: flex;
+  align-items: center;
+  gap: var(--dg-gap);
+  min-width: min-content;
+}
+
+.dg-money-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  min-width: 76px;
+}
+
+.dg-money-mid {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  flex: 1;
+  min-width: 84px;
+  padding-bottom: 22px;
+}
+
+.dg-money-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.dg-money-amount .dg-num {
+  color: var(--dg-money-edge);
+  text-shadow:
+    1px 1px 0 var(--dg-ink),
+    -1px 0 0 var(--dg-ink),
+    0 -1px 0 var(--dg-ink),
+    1px 0 0 var(--dg-ink);
+}
+
+/* Arrow は横に伸びる部品なので、縦積みの中では自分で幅を持たせる */
+.dg-money-arrow {
+  display: flex;
+}
+
+.dg-money-arrow .dg-flow {
+  width: 100%;
+}
+
+.dg-money-mid .dg-chip {
+  animation: dg-coin 900ms steps(2, end) infinite alternate;
+}
+
+@keyframes dg-coin {
+  to {
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-money-mid .dg-chip {
+    animation: none;
+  }
+}
+
+/* 内訳の台帳。領収書のように右揃えで桁を並べる */
+.dg-ledger {
+  margin: var(--dg-gap-lg) 0 0;
+  border-top: 2px dashed var(--dg-grid);
+  padding-top: var(--dg-gap);
+}
+
+.dg-ledger-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+.dg-ledger-row dt {
   font-weight: bold;
 }
 
-.dg-t-s {
-  font-size: 11px;
+/* 名目と金額の間をドットで繋ぐ */
+.dg-ledger-row dt::after {
+  content: '';
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.dg-ledger-row dd {
+  margin: 0 0 0 auto;
+  padding-left: 8px;
+}
+
+.dg-ledger-total {
+  margin-top: 4px;
+  border-top: var(--dg-line) double var(--dg-ink);
+  padding-top: 6px;
+}
+
+.dg-ledger-total dd .dg-num {
+  color: var(--dg-money-edge);
+  text-shadow:
+    1px 1px 0 var(--dg-ink),
+    -1px 0 0 var(--dg-ink),
+    0 -1px 0 var(--dg-ink);
+}
+
+/* ================================ land */
+.dg-land {
+  display: flex;
+  align-items: stretch;
+  min-width: min-content;
+}
+
+.dg-land-cell {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  min-width: 96px;
+  padding-left: var(--dg-gap-lg);
+}
+
+.dg-land-cell:first-child {
+  padding-left: 0;
+}
+
+.dg-land-parcel {
+  flex: 1;
+  min-height: 104px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow:
+    0 0 0 var(--dg-line) var(--dg-ink),
+    inset 0 0 0 3px var(--dg-edge);
+}
+
+/* 境界線: 赤い破線 + 境界標の看板 */
+.dg-land-border {
+  position: absolute;
+  left: calc(var(--dg-gap-lg) / 2);
+  top: -8px;
+  bottom: -8px;
+  width: var(--dg-line);
+  translate: -50% 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--dg-time-edge) 0 6px,
+    transparent 6px 12px
+  );
+}
+
+.dg-land-border .dg-chip {
+  translate: 0 -60%;
+}
+
+.dg-land-road {
+  height: 34px;
+  margin-top: var(--dg-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 var(--dg-line) var(--dg-ink);
+}
+
+/* ================================ floorplan */
+.dg-plan {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 66px;
+  gap: var(--dg-line);
+  padding: var(--dg-line);
+  background: var(--dg-ink);
+  min-width: min-content;
+}
+
+.dg-lg .dg-plan {
+  grid-auto-rows: 78px;
+}
+
+.dg-plan-room {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  box-shadow: inset 0 0 0 2px rgb(63 38 49 / 0.25);
+}
+
+.dg-plan-room .dg-tag {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.dg-plan-room .dg-num {
+  font-size: var(--dg-fs-note);
+  background: var(--dg-paper);
+  padding: 0 3px;
+}
+
+/* 玄関は必ず外壁に接する。左下の外壁を切り欠く */
+.dg-plan-door {
+  position: absolute;
+  left: 14px;
+  bottom: 0;
+  translate: 0 40%;
+  background: var(--dg-paper);
+  box-shadow: 0 0 0 var(--dg-line) var(--dg-ink);
+  padding: 1px 8px;
+  font-size: var(--dg-fs-note);
+  font-weight: bold;
 }

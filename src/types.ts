@@ -18,7 +18,14 @@ export interface Character {
   }
 }
 
-export type DiagramType = 'area' | 'land' | 'timeline' | 'parties' | 'money' | 'floorplan'
+export type DiagramType =
+  | 'area'
+  | 'land'
+  | 'timeline'
+  | 'parties'
+  | 'money'
+  | 'floorplan'
+  | 'ratio'
 
 /** ハゲタの解説につける図 */
 export interface DiagramSpec {

@@ -1,0 +1,334 @@
+/*
+ * 図解デザイントークン ―「ハゲ田の野帳(やちょう)」
+ * ------------------------------------------------------------------
+ * 色は Kenney Tiny Town / Tiny Dungeon のドット絵から実際に抽出した値
+ * (= Endesga 32 パレット)。スプライトとSVG/CSSが同じ絵に見えるよう、
+ * 線の色はスプライトの輪郭色 #3f2631 で完全に統一する。
+ * 設計意図は docs/DESIGN.md 参照。
+ */
+
+.dg {
+  /* --- 紙とインク(中立色。意味を持たない) --- */
+  --dg-ink: #3f2631; /* スプライトの輪郭と同一。すべての線・文字 */
+  --dg-ink-2: #5a6988; /* 補助線・注記 */
+  --dg-paper: #fdf6e3; /* 野帳の紙 */
+  --dg-grid: #c0cbdc; /* 方眼 */
+
+  /* --- 意味の色(装飾では使わない) --- */
+  --dg-own: #fdbe53; /* 所有 ― 本人・自分側の権利者・持分 */
+  --dg-own-edge: #e38628;
+  --dg-right: #76e4ff; /* 権利 ― 相手方・契約・権利の対象 */
+  --dg-right-edge: #0099db;
+  --dg-money: #fee761; /* お金 ― 金額・支払い */
+  --dg-money-edge: #feae34;
+  --dg-time: #f28462; /* 期限 ― 期間・締切 */
+  --dg-time-edge: #c34b35;
+  --dg-land: #84c669; /* 実体 ― 土地・建物そのもの */
+  --dg-land-edge: #479f4a;
+  --dg-other: #c0cbdc; /* 第三者・対象外・余り */
+  --dg-other-edge: #8b9bb4;
+
+  /* --- 目盛(すべて4の倍数。16pxタイルの1/4を最小単位とする) --- */
+  --dg-u: 4px; /* 基本単位 */
+  --dg-line: 3px; /* 枠線・箱線の太さ(1本しかない) */
+  --dg-gap: 8px;
+  --dg-gap-lg: 16px;
+  --dg-pad: 12px;
+  --dg-sprite: 24px; /* ドット絵チップ 16px×1.5 */
+  --dg-cell: 8px; /* 方眼の目 = タイルの半分 */
+
+  /* --- 文字 --- */
+  /* 数値と単位はドットフォント(野帳に押した数字)、語句は丸ゴシック(手書き) */
+  --dg-font-dot: 'DotGothic16', 'Courier New', monospace;
+  --dg-fs-num: 16px; /* ドットフォントは16px設計。等倍で使う */
+  --dg-fs-num-lg: 24px;
+  --dg-fs-label: 13px;
+  --dg-fs-note: 12px;
+
+  --dg-dur: 140ms;
+}
+
+/* 復習画面など大きく見せる場所 */
+.dg-lg {
+  --dg-sprite: 32px;
+  --dg-fs-label: 15px;
+  --dg-fs-note: 13px;
+  --dg-fs-num: 16px;
+  --dg-fs-num-lg: 32px;
+  --dg-pad: 16px;
+  --dg-gap-lg: 20px;
+  max-width: min(100%, 34rem);
+  margin-inline: auto;
+}
+
+/* ================================================================
+ * プリミティブ
+ * ============================================================= */
+
+/* 野帳の1ページ。方眼紙 + インクの枠 + 見出しタブ */
+.dg {
+  font-size: var(--dg-fs-label);
+  line-height: 1.35;
+  color: var(--dg-ink);
+  /* 図が横に間延びしないよう頭を押さえる。会話ウィンドウは狭く、復習画面は広い */
+  max-width: min(100%, 26rem);
+  margin-block: var(--dg-gap) var(--dg-gap-lg);
+  animation: dg-in var(--dg-dur) steps(3, end) both;
+}
+
+@keyframes dg-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg {
+    animation: none;
+  }
+}
+
+.dg-tab {
+  display: inline-block;
+  font-family: var(--dg-font-dot);
+  font-size: var(--dg-fs-note);
+  letter-spacing: 0.08em;
+  background: var(--dg-ink);
+  color: var(--dg-paper);
+  padding: 2px 8px 1px;
+  /* 上2角だけ落とす = ピクセルの階段 */
+  clip-path: polygon(3px 0, calc(100% - 3px) 0, 100% 3px, 100% 100%, 0 100%, 0 3px);
+}
+
+.dg-sheet {
+  /* 方眼紙。ハードストップなので拡大してもボケない */
+  background-color: var(--dg-paper);
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      var(--dg-grid) 0 1px,
+      transparent 1px var(--dg-cell)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--dg-grid) 0 1px,
+      transparent 1px var(--dg-cell)
+    );
+  border: var(--dg-line) solid var(--dg-ink);
+  padding: var(--dg-pad);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.dg-sheet::-webkit-scrollbar {
+  height: 6px;
+}
+
+.dg-sheet::-webkit-scrollbar-thumb {
+  background: var(--dg-other-edge);
+}
+
+/* 箱: 角の4ピクセルを落としたピクセル枠。border ではなく box-shadow で描く */
+.dg-box {
+  --dg-fill: var(--dg-other);
+  --dg-edge: var(--dg-other-edge);
+  position: relative;
+  background: var(--dg-fill);
+  box-shadow:
+    0 calc(var(--dg-line) * -1) 0 0 var(--dg-ink),
+    0 var(--dg-line) 0 0 var(--dg-ink),
+    calc(var(--dg-line) * -1) 0 0 0 var(--dg-ink),
+    var(--dg-line) 0 0 0 var(--dg-ink),
+    /* 内側に1段明るい縁 = ドット絵のハイライト */ inset 0 2px 0 0 rgb(255 255 255 / 0.45),
+    inset 0 -2px 0 0 var(--dg-edge);
+  padding: 6px 8px;
+  text-align: center;
+  font-weight: bold;
+  word-break: auto-phrase;
+}
+
+/* 役割色。装飾ではなく意味に対応する */
+.dg-own {
+  --dg-fill: var(--dg-own);
+  --dg-edge: var(--dg-own-edge);
+}
+.dg-right {
+  --dg-fill: var(--dg-right);
+  --dg-edge: var(--dg-right-edge);
+}
+.dg-money {
+  --dg-fill: var(--dg-money);
+  --dg-edge: var(--dg-money-edge);
+}
+.dg-time {
+  --dg-fill: var(--dg-time);
+  --dg-edge: var(--dg-time-edge);
+}
+.dg-land {
+  --dg-fill: var(--dg-land);
+  --dg-edge: var(--dg-land-edge);
+}
+.dg-other {
+  --dg-fill: var(--dg-other);
+  --dg-edge: var(--dg-other-edge);
+}
+
+/* 数値。ドットフォント。等幅で桁を揃える */
+.dg-num {
+  font-family: var(--dg-font-dot);
+  font-size: var(--dg-fs-num);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.dg-num-lg {
+  font-size: var(--dg-fs-num-lg);
+}
+
+.dg-note {
+  font-size: var(--dg-fs-note);
+  color: var(--dg-ink-2);
+  font-weight: normal;
+}
+
+/* ドット絵チップ。Kenney のタイルをそのまま切り出す */
+.dg-chip {
+  display: block;
+  width: var(--dg-sprite);
+  height: var(--dg-sprite);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  flex: none;
+}
+
+/* 人物チップ: 足元に影を落として地面に立たせる */
+.dg-chip-person {
+  filter: drop-shadow(0 2px 0 rgb(63 38 49 / 0.3));
+}
+
+/* 家チップ: 屋根+壁の2タイルを積む */
+.dg-house {
+  display: grid;
+  width: var(--dg-sprite);
+  image-rendering: pixelated;
+  flex: none;
+  filter: drop-shadow(2px 2px 0 rgb(63 38 49 / 0.25));
+}
+
+.dg-house > span {
+  width: var(--dg-sprite);
+  height: var(--dg-sprite);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* 矢印: 軸 + ピクセルの階段でできた矢じり */
+.dg-arrow {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 40px;
+}
+
+.dg-arrow-line {
+  flex: 1;
+  height: var(--dg-line);
+  background: var(--dg-arrow-color, var(--dg-ink));
+}
+
+.dg-arrow-head {
+  width: 10px;
+  height: 16px;
+  background: var(--dg-arrow-color, var(--dg-ink));
+  flex: none;
+  /* 3段の階段。斜辺ではなくピクセルの段差にする */
+  clip-path: polygon(0 0, 4px 3px, 4px 5px, 8px 6px, 8px 10px, 4px 11px, 4px 13px, 0 16px, 0 0);
+}
+
+.dg-arrow-head-left {
+  transform: scaleX(-1);
+}
+
+.dg-arrow-label {
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  bottom: calc(100% + 2px);
+  white-space: nowrap;
+  background: var(--dg-paper);
+  padding: 0 4px;
+  font-size: var(--dg-fs-note);
+  font-weight: bold;
+}
+
+.dg-flow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 2px;
+}
+
+/* 破線(見えない線 = 権利・関係) */
+.dg-dashed {
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--dg-ink) 0 5px,
+    transparent 5px 10px
+  );
+  background-color: transparent !important;
+}
+
+/* 当事者や区画の名前札 */
+.dg-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: bold;
+  font-size: var(--dg-fs-label);
+  background: var(--dg-paper);
+  padding: 1px 5px;
+  box-shadow: 0 0 0 2px var(--dg-ink);
+}
+
+.dg-swatch {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  background: var(--dg-fill, var(--dg-other));
+  box-shadow: 0 0 0 2px var(--dg-ink);
+}
+
+/* 図の下に付ける読み取りの手がかり */
+.dg-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-top: var(--dg-gap);
+  padding-top: var(--dg-gap);
+  border-top: 2px dashed var(--dg-grid);
+}
+
+.dg-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--dg-fs-note);
+}
+
+.dg-legend-item b {
+  font-family: var(--dg-font-dot);
+  font-size: var(--dg-fs-note);
+}
+
+.dg-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
