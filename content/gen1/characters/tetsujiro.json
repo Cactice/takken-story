@@ -1,0 +1,21 @@
+{
+  "id": "tetsujiro",
+  "name": "ガストン",
+  "sprite": "sprites/tetsujiro.png",
+  "personality": "72歳。町に古アパートを2棟持つご隠居大家。関西出身で「〜でっしゃろ」「あかんあかん」とコテコテの関西弁。ケチだが情に厚く、店子とのトラブルを頻繁に持ち込んでくる。",
+  "age": 72,
+  "gender": "male",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "わしはケチやからな、家賃の安い家がええ。土地は広いほうがええで",
+    "likedFeatures": [
+      "家賃が安い",
+      "広い庭",
+      "木造"
+    ],
+    "dislikedFeatures": [
+      "家賃が高い",
+      "築浅"
+    ]
+  }
+}

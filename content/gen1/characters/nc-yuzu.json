@@ -1,0 +1,21 @@
+{
+  "id": "nc-yuzu",
+  "name": "ユズ",
+  "sprite": "sprites/nc-yuzu.png",
+  "personality": "24歳。イラストレーター。在宅仕事なので、駅よりも作業できる広さがほしい。",
+  "age": 24,
+  "gender": "female",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "部屋が分かれていて、広さのある家がいいです",
+    "likedFeatures": [
+      "広い庭",
+      "2階建て",
+      "静か"
+    ],
+    "dislikedFeatures": [
+      "駅近",
+      "隣が近い"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "nc-hana",
+  "name": "ハナ",
+  "sprite": "sprites/nc-hana.png",
+  "personality": "36歳。タクの妻。子育て中で、車の音が気になって仕方ない。",
+  "age": 36,
+  "gender": "female",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "子どもがいるので、車の通らない静かな場所がいいです",
+    "likedFeatures": [
+      "静か",
+      "日当たり良好",
+      "広い庭"
+    ],
+    "dislikedFeatures": [
+      "駅近",
+      "隣が近い"
+    ]
+  }
+}

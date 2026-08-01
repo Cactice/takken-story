@@ -1,0 +1,21 @@
+{
+  "id": "nc-fuki",
+  "name": "フキ",
+  "sprite": "sprites/nc-fuki.png",
+  "personality": "70歳。カイの母。足腰が弱く、段差と階段が苦手。庭いじりが生きがい。",
+  "age": 70,
+  "gender": "female",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "階段はもう無理じゃねえ。静かで段差のない家がええ",
+    "likedFeatures": [
+      "バリアフリー",
+      "静か",
+      "広い庭"
+    ],
+    "dislikedFeatures": [
+      "駅近",
+      "2階建て"
+    ]
+  }
+}

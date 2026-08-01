@@ -1,0 +1,21 @@
+{
+  "id": "kr-yoshie",
+  "name": "シルビア",
+  "sprite": "sprites/kr-yoshie.png",
+  "personality": "68歳。商店街で呉服店を営んでいた未亡人。おっとり上品だが芯は強い。夫の遺産や実家の共有名義のことで相談に来る。口調は「〜ですのよ」「あらまあ」と柔らかい丁寧語。",
+  "age": 68,
+  "gender": "female",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "主人の遺した家を出て、静かに暮らせるところへ移りたいのですのよ",
+    "likedFeatures": [
+      "静か",
+      "日当たり良好",
+      "バリアフリー"
+    ],
+    "dislikedFeatures": [
+      "駅近",
+      "2階建て"
+    ]
+  }
+}

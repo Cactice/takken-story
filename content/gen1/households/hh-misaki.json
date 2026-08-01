@@ -1,0 +1,11 @@
+{
+  "id": "hh-misaki",
+  "kind": "single",
+  "label": "オリビア",
+  "moveReason": "村の診療所に医師として赴任することになった",
+  "topicId": "zei-fudosan",
+  "budget": 9,
+  "memberIds": [
+    "misaki"
+  ]
+}

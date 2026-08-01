@@ -1,0 +1,11 @@
+{
+  "id": "hh-kana",
+  "kind": "single",
+  "label": "カナ",
+  "moveReason": "自分のカフェを開くために、住みながら店をやれる家を探して移住してきた",
+  "topicId": "hourei-yoto",
+  "budget": 9,
+  "memberIds": [
+    "nc-kana"
+  ]
+}

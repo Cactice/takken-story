@@ -1,0 +1,21 @@
+{
+  "id": "nc-jin",
+  "name": "ジン",
+  "sprite": "sprites/nc-jin.png",
+  "personality": "23歳。専門学校を出たての新米調理師。ユズとルームシェアで家賃を折半するつもり。",
+  "age": 23,
+  "gender": "male",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "二人で借りるので、とにかく家賃が安い家がいいっす",
+    "likedFeatures": [
+      "家賃が安い",
+      "駅近",
+      "2階建て"
+    ],
+    "dislikedFeatures": [
+      "家賃が高い",
+      "築浅"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "misaki",
+  "name": "オリビア",
+  "sprite": "sprites/misaki.png",
+  "personality": "34歳。町医者の内科医。冷静で理知的、休日はカフェ巡りが趣味。クリニックの移転や自宅の買い替えを検討中で、数字に細かい質問が多い。口調は「〜かしら」「なるほど、論理的ね」と落ち着いた敬語混じり。",
+  "age": 34,
+  "gender": "female",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "夜勤明けに眠れる静かさと、頑丈な建物がいいわ。維持費も気になるかしら",
+    "likedFeatures": [
+      "RC造",
+      "築浅",
+      "静か"
+    ],
+    "dislikedFeatures": [
+      "木造",
+      "再建築不可"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "nc-ume",
+  "name": "ウメ",
+  "sprite": "sprites/nc-ume.png",
+  "personality": "66歳。タツじいの妻。買い物好きで社交的。夫の「静かな家」志向とはいつも意見が合わない。",
+  "age": 66,
+  "gender": "female",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "わたしは毎日買い物に出たいの。お店が近いほうが助かるわ",
+    "likedFeatures": [
+      "駅近",
+      "日当たり良好",
+      "2階建て"
+    ],
+    "dislikedFeatures": [
+      "静か",
+      "畑付き"
+    ]
+  }
+}

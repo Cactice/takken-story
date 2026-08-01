@@ -1,0 +1,12 @@
+{
+  "id": "hh-aoba",
+  "kind": "share",
+  "label": "ジンとユズ(ルームシェア)",
+  "moveReason": "同級生二人で家賃を折半して借りる家を探しに村へ来た",
+  "topicId": "minpo-chintai",
+  "budget": 8,
+  "memberIds": [
+    "nc-jin",
+    "nc-yuzu"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "hh-oomori",
+  "kind": "family",
+  "label": "大森さん一家",
+  "moveReason": "実家を引き払う母を引き取り、三人で暮らせる家を探しに来た",
+  "topicId": "minpo-souzoku",
+  "budget": 10,
+  "memberIds": [
+    "nc-kai",
+    "nc-rina",
+    "nc-fuki"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "nc-kai",
+  "name": "カイ",
+  "sprite": "sprites/nc-kai.png",
+  "personality": "41歳。母フキを引き取って同居することにした会社員。実家の相続のことで頭が痛い。",
+  "age": 41,
+  "gender": "male",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "母と同居できる広さで、通勤にも困らない場所がいいです",
+    "likedFeatures": [
+      "駅近",
+      "2階建て",
+      "築浅"
+    ],
+    "dislikedFeatures": [
+      "再建築不可",
+      "家賃が高い"
+    ]
+  }
+}

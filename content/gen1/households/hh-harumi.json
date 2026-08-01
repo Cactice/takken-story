@@ -1,0 +1,11 @@
+{
+  "id": "hh-harumi",
+  "kind": "single",
+  "label": "ハルミ",
+  "moveReason": "会社の辞令で2年だけ村の工場に赴任することになり、期間限定の住まいを探している",
+  "topicId": "shakka",
+  "budget": 7,
+  "memberIds": [
+    "nc-harumi"
+  ]
+}

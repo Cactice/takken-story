@@ -1,0 +1,21 @@
+{
+  "id": "hinata",
+  "name": "メープル",
+  "sprite": "sprites/hinata.png",
+  "personality": "16歳。商店街のパン屋「サクライベーカリー」の看板娘。明るく世話焼きで、将来は自分の店を持つのが夢。店舗物件のことでよく相談に来る。口調は「〜だよね!」「えへへ」と元気いっぱい。恋愛候補。",
+  "age": 16,
+  "gender": "female",
+  "romanceable": true,
+  "moveIn": {
+    "demands": "いつか1階でパン屋をやりたいから、お店を開いていい家がいいな!",
+    "likedFeatures": [
+      "事業用可",
+      "駅近",
+      "2階建て"
+    ],
+    "dislikedFeatures": [
+      "第一種低層住居専用地域",
+      "静か"
+    ]
+  }
+}

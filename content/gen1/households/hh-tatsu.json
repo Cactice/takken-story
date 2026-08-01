@@ -1,0 +1,12 @@
+{
+  "id": "hh-tatsu",
+  "kind": "couple",
+  "label": "タツじい夫婦",
+  "moveReason": "都会の団地の階段がつらくなり、老後を静かに過ごすため夫婦で村に戻ってきた",
+  "topicId": "hourei-kaihatsu",
+  "budget": 6,
+  "memberIds": [
+    "nc-tatsu",
+    "nc-ume"
+  ]
+}

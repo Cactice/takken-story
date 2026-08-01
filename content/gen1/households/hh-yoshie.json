@@ -1,0 +1,11 @@
+{
+  "id": "hh-yoshie",
+  "kind": "single",
+  "label": "シルビア",
+  "moveReason": "亡き夫の遺した家を出て、静かな村で暮らすことにした",
+  "topicId": "minpo-kyoyu",
+  "budget": 6,
+  "memberIds": [
+    "kr-yoshie"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "kr-genta",
+  "name": "ブルーノ",
+  "sprite": "sprites/kr-genta.png",
+  "personality": "45歳。ブルーノ工務店の大工の棟梁。腕は確かで職人気質、声がでかい。現場のトラブルや建物まわりの法律のことで相談に来る。口調は「〜だべ!」「がっはっは!」と豪快。",
+  "age": 45,
+  "gender": "male",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "材木を置ける広い土地がいるべ! 古い家は自分で直すから構わんべ",
+    "likedFeatures": [
+      "広い庭",
+      "木造",
+      "駐車場あり"
+    ],
+    "dislikedFeatures": [
+      "築浅",
+      "家賃が高い"
+    ]
+  }
+}

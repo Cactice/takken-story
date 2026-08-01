@@ -1,0 +1,21 @@
+{
+  "id": "nc-taku",
+  "name": "タク",
+  "sprite": "sprites/nc-taku.png",
+  "personality": "38歳。転勤で村に来た会社員。通勤時間を1分でも削りたい現実主義者。",
+  "age": 38,
+  "gender": "male",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "毎日通勤するので、とにかく駅に近いところがいいです",
+    "likedFeatures": [
+      "駅近",
+      "築浅",
+      "2階建て"
+    ],
+    "dislikedFeatures": [
+      "静か",
+      "畑付き"
+    ]
+  }
+}

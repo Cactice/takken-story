@@ -1,0 +1,11 @@
+{
+  "id": "hh-tetsujiro",
+  "kind": "single",
+  "label": "ガストン",
+  "moveReason": "関西からアパート経営の拠点を村に移してきた",
+  "topicId": "shakuchi",
+  "budget": 4,
+  "memberIds": [
+    "tetsujiro"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "nc-noa",
+  "name": "ノア",
+  "sprite": "sprites/nc-noa.png",
+  "personality": "29歳。ミントの婚約者。在宅で音楽制作をしていて、音のことにうるさい。",
+  "age": 29,
+  "gender": "male",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "仕事で音を出すので、防音のしっかりした部屋がいいです",
+    "likedFeatures": [
+      "防音",
+      "RC造",
+      "駅近"
+    ],
+    "dislikedFeatures": [
+      "木造",
+      "隣が近い"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "nc-mint",
+  "name": "ミント",
+  "sprite": "sprites/nc-mint.png",
+  "personality": "27歳。ノアの婚約者。園芸が趣味で、土いじりのできる家を夢見ている。",
+  "age": 27,
+  "gender": "female",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "二人で暮らすなら、庭で野菜を育てられる静かな家がいいな",
+    "likedFeatures": [
+      "広い庭",
+      "静か",
+      "日当たり良好"
+    ],
+    "dislikedFeatures": [
+      "RC造",
+      "駅近"
+    ]
+  }
+}

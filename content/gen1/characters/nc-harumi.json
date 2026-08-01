@@ -1,0 +1,22 @@
+{
+  "id": "nc-harumi",
+  "name": "ハルミ",
+  "sprite": "sprites/nc-harumi.png",
+  "personality": "36歳。単身赴任で2年だけ村の工場に来た会社員。合理的で決断が早い。",
+  "age": 36,
+  "gender": "female",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "2年で必ず出ていくので、短く借りられて駅に近い家がいいです",
+    "likedFeatures": [
+      "駅近",
+      "築浅",
+      "家賃が安い"
+    ],
+    "dislikedFeatures": [
+      "広い庭",
+      "畑付き",
+      "家賃が高い"
+    ]
+  }
+}

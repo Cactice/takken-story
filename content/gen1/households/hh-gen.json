@@ -1,0 +1,11 @@
+{
+  "id": "hh-gen",
+  "kind": "single",
+  "label": "ゲンさん",
+  "moveReason": "会社を辞めて畑をやりたくなり、畑ごと住める家を探して村に移ってきた",
+  "topicId": "hourei-nochi",
+  "budget": 5,
+  "memberIds": [
+    "nc-gen"
+  ]
+}

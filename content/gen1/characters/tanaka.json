@@ -1,0 +1,21 @@
+{
+  "id": "tanaka",
+  "name": "ポッポさん",
+  "sprite": "sprites/tanaka.png",
+  "personality": "62歳。のんびり屋の農家。先祖の土地の売却を考えている。口調はゆったりしていて、話が脱線しがち。",
+  "age": 62,
+  "gender": "male",
+  "romanceable": false,
+  "moveIn": {
+    "demands": "畑のそばに住みたいのう。土地の広いところがええわ",
+    "likedFeatures": [
+      "畑付き",
+      "広い庭",
+      "静か"
+    ],
+    "dislikedFeatures": [
+      "駅近",
+      "RC造"
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "hh-midori",
+  "kind": "single",
+  "label": "みどり",
+  "moveReason": "前のアパートがペット禁止で、犬のゴンタと一緒に住める家を探して村に来た",
+  "topicId": "minpo-chintai",
+  "budget": 6,
+  "memberIds": [
+    "nc-midori"
+  ]
+}
