@@ -22,6 +22,7 @@ import {
   EXAM_MONTH,
   REWARD_CONSULT,
   MONEY_START,
+  INITIAL_RESIDENTS,
   REWARD_EXAM_FAIL,
   REWARD_EXAM_PASS,
   START_YEAR,
@@ -145,6 +146,7 @@ export default function App() {
             appliedExamYear: 0,
             lastExamYear: 0,
             examResults: [],
+            residents: INITIAL_RESIDENTS,
           }
           saveState(fresh)
           setState(fresh)
@@ -155,6 +157,10 @@ export default function App() {
   }
 
   const { year, month, day } = calendarOf(state)
+  // 村にいるのは開始時はハゲ田社長だけ。物件案内の契約成立で住民が増える
+  const residentIds = new Set(state.residents ?? INITIAL_RESIDENTS)
+  const residentCharacters = characters.filter((c) => residentIds.has(c.id))
+
   const available = availableConsultations(state, month, year)
   const alertIds = new Set(
     available
@@ -248,7 +254,7 @@ export default function App() {
       </header>
 
       <TownView
-        characters={characters}
+        characters={residentCharacters}
         gender={state.gender}
         alertIds={alertIds}
         inputLocked={
@@ -319,7 +325,13 @@ export default function App() {
           key={tourNewcomer.id}
           newcomer={tourNewcomer}
           onFinish={({ reward }) => {
-            if (reward > 0) update((s) => ({ ...s, money: s.money + reward }))
+            // 契約成立(報酬あり)= その転入者が村に住み着く
+            if (reward > 0)
+              update((s) => ({
+                ...s,
+                money: s.money + reward,
+                residents: [...(s.residents ?? INITIAL_RESIDENTS), tourNewcomer.id],
+              }))
             setTourDismissedDay(state.daysElapsed)
             setTourNewcomer(null)
           }}

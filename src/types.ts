@@ -72,7 +72,15 @@ export interface GameState {
   examResults: ExamResult[]
   /** 恋愛の状態(住民IDごと)。旧セーブとの互換のため任意 */
   romance?: Record<string, RomanceState>
+  /**
+   * 村に住んでいる住民ID。開始時はハゲ田社長だけで、物件案内の契約成立で増える。
+   * 旧セーブとの互換のため任意(未定義なら全員在住として扱う)
+   */
+  residents?: string[]
 }
+
+/** 開始時から村にいる住民(ハゲ田社長のみ) */
+export const INITIAL_RESIDENTS = ['tencho-gozo']
 
 export const START_AGE = 15
 export const START_YEAR = 1

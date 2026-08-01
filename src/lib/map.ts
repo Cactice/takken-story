@@ -16,7 +16,7 @@ export const T = {
   mushroom: 29,
   path: 25,
   soil: 41,
-  gravel: 43,
+  vacantLot: 39,
   // 屋根(青灰=RC/洋風、赤=木造)
   roofBlueL: 48,
   roofBlueM: 49,
@@ -45,14 +45,13 @@ export const T = {
   doorStone: 89,
   // 小物
   sign: 83,
-  mailbox: 104,
   barrel: 130,
   log: 106,
 } as const
 
 /**
  * 地面レイヤー
- * G=草 t=草むら f=花 P=道 D=砂利(空き地) F=土(畑)
+ * G=草 t=草むら f=花 P=道 D=荒れ地(空き地) F=土(畑)
  */
 export const GROUND: readonly string[] = [
   'GGGGGGGGGGGGGGGGGGGGGGGGG',
@@ -82,7 +81,7 @@ export const GROUND_TILE: Record<string, number> = {
   t: T.grassTuft,
   f: T.flowers,
   P: T.path,
-  D: T.gravel,
+  D: T.vacantLot,
   F: T.soil,
 }
 
@@ -219,7 +218,7 @@ export const DECOR: readonly Decor[] = [
   ] as const).map(([x, y], i) => ({ x, y, tile: i % 2 ? T.treeOrange : T.treeGreen, solid: true })),
   // 不動産屋まわり
   { x: 1, y: 6, tile: T.sign, solid: true },
-  { x: 5, y: 6, tile: T.mailbox, solid: true },
+  { x: 5, y: 6, tile: T.bush },
   // 工務店の資材
   { x: 22, y: 11, tile: T.log, solid: true },
   { x: 22, y: 10, tile: T.barrel, solid: true },
