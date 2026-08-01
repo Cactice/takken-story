@@ -26,7 +26,8 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      # プラットフォーム依存のオプション依存でlockがずれても落ちないようにする
+      - run: npm install --no-audit --no-fund
       - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
