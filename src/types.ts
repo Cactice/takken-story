@@ -119,6 +119,15 @@ export interface GameState {
   residentHomes?: Record<string, string>
   /** 住民ID → 村に来た日(daysElapsed)。引っ越したばかりかの判定に使う */
   residentSince?: Record<string, number>
+  /**
+   * 取得済みの「ハゲ田のメモ」= 解決した相談イベントのID(取得順)。
+   * イベント解決時にここへ追加される想定。未定義の旧セーブは experiencedEvents から復元する
+   */
+  memos?: string[]
+  /**
+   * 自宅の棚に並べたメモ。自宅に入ると memos が全部ここへ移り、追従から外れる(身軽になる)
+   */
+  shelvedMemos?: string[]
   /** オープニング(ハゲ田が自宅まで案内する演出)を見たか */
   openingDone?: boolean
   /** 選んだ世代(いまは第1世代のみ実装) */

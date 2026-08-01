@@ -31,6 +31,7 @@ import type { Follower } from './lib/follower'
 import { propertyById } from './lib/properties'
 import { FollowerTalk } from './components/tour/FollowerTalk'
 import { MemoBook } from './components/memo/MemoBook'
+import { HomeInterior } from './components/home/HomeInterior'
 import { MAP_OF_GENERATION, ARIKITA } from './lib/maps'
 import type { GameMap } from './lib/maps'
 import { arrivalStaging, openingStaging } from './lib/staging'
@@ -210,6 +211,10 @@ export default function App() {
   /** ハゲ田のメモ(本)に話しかけたとき */
   const [memoPrompt, setMemoPrompt] = useState(false)
   const [memoOpen, setMemoOpen] = useState(false)
+  /** 自宅の中にいるか。入ると持っていたメモが棚に並ぶ */
+  const [insideHome, setInsideHome] = useState(false)
+  /** 自宅の本棚を開いて復習中 */
+  const [shelfOpen, setShelfOpen] = useState(false)
 
   const dispatchTour = useCallback(
     (a: TourAction) => setTour((t) => (t === null ? t : tourReducer(t, a))),
@@ -423,9 +428,14 @@ export default function App() {
         })
 
   /* ---------------- 追従とマップ上の内見 ---------------- */
-  // ponytail: 本は「解決したイベント数」で数える。GameState にメモ一覧を持たせるのは
-  // 復習画面(自宅の棚)を作るときでいい。連なりすぎても邪魔なので上限だけ入れてある
-  const bookCount = Math.min(state.experiencedEvents.length, MAX_BOOKS)
+  // 取得済みのメモ(eventId、取得順)。イベント解決時に GameState.memos へ積まれる想定。
+  // まだ積まれていない旧セーブは、解決済みイベントから復元する
+  const memoIds = state.memos ?? [...new Set(state.experiencedEvents.map((e) => e.eventId))]
+  const shelvedIds = state.shelvedMemos ?? []
+  /** まだ棚に並べていないメモ = 後ろについてくる本。自宅に入ると空になる */
+  const carriedIds = memoIds.filter((id) => !shelvedIds.includes(id))
+  // 連なりすぎても邪魔なので、ついてくる冊数には上限を入れてある
+  const bookCount = Math.min(carriedIds.length, MAX_BOOKS)
   const touringOnMap = tour !== null && (tour.phase.kind === 'map' || tour.phase.kind === 'arriving')
   const followers: Follower[] = [
     ...(touringOnMap && tour
@@ -505,11 +515,22 @@ export default function App() {
     )
   }
 
-  /** 手持ちのハゲ田のメモ(= 解決した相談)。新しい順 */
-  const memoEvents = [...state.experiencedEvents]
-    .reverse()
-    .map((x) => events.find((e) => e.id === x.eventId))
-    .filter((e) => e !== undefined)
+  const eventsOf = (ids: readonly string[]) =>
+    [...ids].reverse().map((id) => events.find((e) => e.id === id)).filter((e) => e !== undefined)
+  /** ついてきている(まだ棚に並べていない)ハゲ田のメモ。新しい順 */
+  const memoEvents = eventsOf(carriedIds)
+  /** 自宅の棚に並んでいるメモ。新しい順 */
+  const shelfEvents = eventsOf(shelvedIds)
+
+  /** 自宅に入る: 持っていたメモが全部、部屋の棚に並ぶ(身軽になる) */
+  const enterHome = () => {
+    setInsideHome(true)
+    update((s) => ({
+      ...s,
+      memos: memoIds,
+      shelvedMemos: [...shelvedIds, ...carriedIds],
+    }))
+  }
 
   const finishExam = (answers: ExamAnswer[]) => {
     const correct = answers.filter((a) => a.correct).length
@@ -563,6 +584,7 @@ export default function App() {
           viewedFull ||
           memoPrompt ||
           memoOpen ||
+          insideHome ||
           inspected !== null ||
           followerTalk !== null
         }
@@ -580,7 +602,9 @@ export default function App() {
           if (!state.openingDone) update((s) => ({ ...s, openingDone: true }))
         }}
         onTalkFollower={talkToFollower}
-        onPropertyViewed={(id) => setViewedProperty(id)}
+        // ponytail: 自宅は「向いてスペース → 物件パネル(ボロ屋のスペック)→ 閉じると中へ」。
+        // TownView は別作業中で触れないので、既存の物件パネルの導線に相乗りしている
+        onPropertyViewed={(id) => (id === 'player-home' ? enterHome() : setViewedProperty(id))}
       />
 
       {talkingTo && !examDue && !romanceOpen && (
@@ -734,6 +758,23 @@ export default function App() {
       )}
 
       {memoOpen && <MemoBook memos={memoEvents} onClose={() => setMemoOpen(false)} />}
+
+      {/* 自宅の中。棚に並んだメモを本棚の前のスペースで復習できる */}
+      {insideHome && (
+        <HomeInterior
+          gender={state.gender}
+          books={shelfEvents.map((e) => ({
+            id: e.id,
+            characterId: e.characterId,
+            title: e.memo?.title ?? e.title,
+          }))}
+          locked={shelfOpen}
+          onOpenShelf={() => shelfEvents.length > 0 && setShelfOpen(true)}
+          onLeave={() => setInsideHome(false)}
+        />
+      )}
+
+      {shelfOpen && <MemoBook memos={shelfEvents} onClose={() => setShelfOpen(false)} />}
 
       {examDue && applied && (
         <ExamScreen
