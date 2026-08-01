@@ -1,0 +1,83 @@
+/* ドット絵に馴染む図解: 太線・少ない色・等幅フォント */
+.dg {
+  width: 100%;
+  max-width: 22rem;
+  height: auto;
+  display: block;
+  margin: 0 auto 0.5rem;
+  image-rendering: pixelated;
+}
+
+.dg-bg {
+  fill: #fffdf5;
+  stroke: var(--color-ink, #2b2b2b);
+  stroke-width: 4;
+}
+
+.dg-line {
+  fill: none;
+  stroke: var(--color-ink, #2b2b2b);
+  stroke-width: 3;
+}
+
+.dg-line-thick {
+  stroke: var(--color-ink, #2b2b2b);
+  stroke-width: 5;
+}
+
+.dg-border {
+  stroke: #c0392b;
+  stroke-width: 4;
+  stroke-dasharray: 6 4;
+}
+
+.dg-dash {
+  stroke: var(--color-ink, #2b2b2b);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+
+.dg-arrow {
+  fill: var(--color-ink, #2b2b2b);
+}
+
+.dg-fill-a {
+  fill: #f2c14e;
+  stroke: var(--color-ink, #2b2b2b);
+  stroke-width: 3;
+}
+
+.dg-fill-b {
+  fill: #8ec7f0;
+  stroke: var(--color-ink, #2b2b2b);
+  stroke-width: 3;
+}
+
+.dg-fill-c {
+  fill: #a8dba0;
+  stroke: var(--color-ink, #2b2b2b);
+  stroke-width: 3;
+}
+
+.dg-road {
+  fill: #d9d4c5;
+  stroke: var(--color-ink, #2b2b2b);
+  stroke-width: 3;
+}
+
+.dg-coin {
+  fill: #ffd75e;
+  stroke: var(--color-ink, #2b2b2b);
+  stroke-width: 3;
+}
+
+.dg-t {
+  fill: var(--color-ink, #2b2b2b);
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.dg-t-s {
+  font-size: 11px;
+}

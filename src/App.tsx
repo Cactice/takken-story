@@ -5,13 +5,19 @@ import { DialogueBox } from './components/dialogue/DialogueBox'
 import { ExamScreen, passLine } from './components/exam/ExamScreen'
 import type { ExamAnswer } from './components/exam/ExamScreen'
 import { DateMeter } from './components/hud/DateMeter'
+import { TourScreen, newcomers } from './components/tour/TourScreen'
+import type { Newcomer } from './lib/tour'
 import { useGameClock } from './hooks/useGameClock'
 import { characters, events } from './lib/content'
 import { availableConsultations, buildYearSchedule } from './lib/schedule'
+import { RomanceOverlay } from './components/romance/RomanceOverlay'
+import { romanceContentFor, romanceStateOf, talkOnce } from './lib/romance'
+import type { RomanceState } from './lib/romance'
 import { loadState, saveState } from './lib/save'
 import { playerSpriteStyle } from './lib/sprites'
 import {
   APPLY_DEADLINE_MONTH,
+  DAYS_PER_MONTH,
   EXAM_DAY,
   EXAM_MONTH,
   REWARD_CONSULT,
@@ -77,6 +83,10 @@ export default function App() {
   const [talkingTo, setTalkingTo] = useState<Character | null>(null)
   /** 応募ダイアログを「今年は受けない」で閉じた年(未セーブ。リロードで再表示されるだけ) */
   const [applyDismissedYear, setApplyDismissedYear] = useState(0)
+  /** 案内中の転入者 */
+  const [tourNewcomer, setTourNewcomer] = useState<Newcomer | null>(null)
+  /** 転入者の案内を断った日 */
+  const [tourDismissedDay, setTourDismissedDay] = useState(-1)
 
   const update = useCallback((fn: (s: GameState) => GameState) => {
     setState((prev) => {
@@ -116,8 +126,8 @@ export default function App() {
     cal.day >= EXAM_DAY &&
     state.lastExamYear < cal.year
 
-  // 試験・結果表示中は時計を止める(表示中に月をまたがないように)
-  useGameClock(state !== null && !examDue, tickDay)
+  // 試験・物件案内の表示中は時計を止める(表示中に月をまたがないように)
+  useGameClock(state !== null && !examDue && tourNewcomer === null, tickDay)
 
   if (!state || !cal) {
     return (
@@ -158,6 +168,23 @@ export default function App() {
       ? null
       : (events.find((e) => e.characterId === talkingTo.id && available.includes(e.id)) ?? null)
 
+  // 恋愛: 異性かつ romanceable な相手で、今日の相談がないときは恋愛会話に入る
+  const romanceContent = talkingTo ? romanceContentFor(talkingTo.id, state.gender) : null
+  const romanceOpen = romanceContent !== null && pendingEvent === null && !examDue
+  /** 相手ごとの恋愛状態を差し替える */
+  const updateRomance = (characterId: string, fn: (prev: RomanceState) => RomanceState) =>
+    update((s) => ({
+      ...s,
+      romance: { ...s.romance, [characterId]: fn(romanceStateOf(s.romance, characterId)) },
+    }))
+  /** 会話を始めたら親密度が上がる(相談でも雑談でも) */
+  const openTalk = (c: Character) => {
+    setTalkingTo(c)
+    if (romanceContentFor(c.id, state.gender)) updateRomance(c.id, talkOnce)
+  }
+  // TODO: 結婚 → 出産 → 世代交代(別途実装)
+  const onRelationshipMaxed = (characterId: string) => void characterId
+
   // 1年目はハゲタ社長が自動申込。2年目以降は6月の確認ダイアログで応募
   const applied = year === START_YEAR || state.appliedExamYear === year
   const applyPromptOpen =
@@ -167,10 +194,32 @@ export default function App() {
     month === APPLY_DEADLINE_MONTH &&
     !applied &&
     applyDismissedYear !== year
+  // 3ヶ月に1度、会社に転入者が来る
+  // ponytail: 暫定トリガー。マップの会社に「!」が出せるようになったら、そこの入店処理から setTourNewcomer を呼べばよい
+  const offeredNewcomer = newcomers[Math.floor(state.daysElapsed / (3 * DAYS_PER_MONTH)) % newcomers.length]
+  const tourPromptOpen =
+    !examDue &&
+    !applyPromptOpen &&
+    talkingTo === null &&
+    tourNewcomer === null &&
+    offeredNewcomer !== undefined &&
+    day === 1 &&
+    month % 3 === 1 &&
+    tourDismissedDay !== state.daysElapsed
+
   const examQuestions = state.yearSchedule
     .map((s) => events.find((e) => e.id === s.eventId))
     .filter((e) => e !== undefined)
   const experiencedIds = new Set(state.experiencedEvents.map((e) => e.eventId))
+
+  // 相談がないときは、その住民と最後に解決した論点の「あのときはありがとう」を話す
+  const solvedLine =
+    talkingTo === null || pendingEvent !== null
+      ? undefined
+      : [...state.experiencedEvents]
+          .reverse()
+          .map((x) => events.find((e) => e.id === x.eventId))
+          .find((e) => e !== undefined && e.characterId === talkingTo.id)?.resolvedLine
 
   const finishExam = (answers: ExamAnswer[]) => {
     const correct = answers.filter((a) => a.correct).length
@@ -202,15 +251,19 @@ export default function App() {
         characters={characters}
         gender={state.gender}
         alertIds={alertIds}
-        inputLocked={talkingTo !== null || examDue || applyPromptOpen}
-        onTapCharacter={setTalkingTo}
+        inputLocked={
+          talkingTo !== null || examDue || applyPromptOpen || tourPromptOpen || tourNewcomer !== null
+        }
+        onTapCharacter={openTalk}
       />
 
-      {talkingTo && !examDue && (
+      {talkingTo && !examDue && !romanceOpen && (
         <DialogueBox
           key={talkingTo.id + (pendingEvent?.id ?? '')}
           character={talkingTo}
           event={pendingEvent}
+          gender={state.gender}
+          smallTalk={solvedLine}
           onComplete={(eventId) =>
             update((s) => ({
               ...s,
@@ -226,6 +279,19 @@ export default function App() {
         />
       )}
 
+      {romanceOpen && talkingTo && romanceContent && (
+        <RomanceOverlay
+          key={talkingTo.id}
+          character={talkingTo}
+          content={romanceContent}
+          st={romanceStateOf(state.romance, talkingTo.id)}
+          gender={state.gender}
+          onUpdate={(fn) => updateRomance(talkingTo.id, fn)}
+          onRelationshipMaxed={onRelationshipMaxed}
+          onClose={() => setTalkingTo(null)}
+        />
+      )}
+
       {applyPromptOpen && (
         <PromptOverlay
           title="📮 宅建試験の応募(6月末締切)"
@@ -234,6 +300,29 @@ export default function App() {
             { label: '応募する', onPick: () => update((s) => ({ ...s, appliedExamYear: year })) },
             { label: '今年は受けない', onPick: () => setApplyDismissedYear(year) },
           ]}
+        />
+      )}
+
+      {tourPromptOpen && (
+        <PromptOverlay
+          title="🏢 会社に転入者が来ている"
+          body={`ハゲタ「新人、${offeredNewcomer.name}さんが村に越してくる。\n物件を案内してやれ」`}
+          options={[
+            { label: '案内する', onPick: () => setTourNewcomer(offeredNewcomer) },
+            { label: 'あとにする', onPick: () => setTourDismissedDay(state.daysElapsed) },
+          ]}
+        />
+      )}
+
+      {tourNewcomer && (
+        <TourScreen
+          key={tourNewcomer.id}
+          newcomer={tourNewcomer}
+          onFinish={({ reward }) => {
+            if (reward > 0) update((s) => ({ ...s, money: s.money + reward }))
+            setTourDismissedDay(state.daysElapsed)
+            setTourNewcomer(null)
+          }}
         />
       )}
 

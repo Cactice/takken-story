@@ -1,0 +1,13 @@
+{
+  "id": "nc-rokuro",
+  "name": "ロクロー",
+  "sprite": "sprites/nc-rokuro.png",
+  "personality": "24歳のギター弾き。人なつっこいが夜型で声が大きい。口調は「〜っすね!」",
+  "age": 24,
+  "moveReason": "バンドの練習場所を追い出されて、思いきり音を出せる村に引っ越してきた",
+  "demands": "音楽を大音量で流したいから、防音性が高い家がいいっす!",
+  "likedFeatures": ["防音", "RC造", "駅近"],
+  "dislikedFeatures": ["木造", "隣が近い", "家賃が高い"],
+  "budget": 9,
+  "topicId": "sonota-tatemono"
+}

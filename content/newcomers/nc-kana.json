@@ -1,0 +1,13 @@
+{
+  "id": "nc-kana",
+  "name": "カナ",
+  "sprite": "sprites/nc-kana.png",
+  "personality": "28歳。都会のカフェを辞めて独立を目指す。テキパキしていて計算が早い。",
+  "age": 28,
+  "moveReason": "自分のカフェを開くために、住みながら店をやれる家を探して移住してきた",
+  "demands": "1階でカフェをやりたいので、お店を開いていい家がいいです",
+  "likedFeatures": ["事業用可", "駅近", "2階建て"],
+  "dislikedFeatures": ["第一種低層住居専用地域", "再建築不可", "家賃が高い"],
+  "budget": 9,
+  "topicId": "hourei-yoto"
+}

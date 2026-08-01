@@ -1,0 +1,13 @@
+{
+  "id": "nc-midori",
+  "name": "みどり",
+  "sprite": "sprites/nc-midori.png",
+  "personality": "31歳。大型犬のゴンタと暮らす写真家。おっとりしているが犬のことになると譲らない。",
+  "age": 31,
+  "moveReason": "前のアパートがペット禁止で、犬のゴンタと一緒に住める家を探して村に来た",
+  "demands": "ゴンタが走り回れる庭があって、ペット可の家がいいです",
+  "likedFeatures": ["ペット可", "広い庭", "静か"],
+  "dislikedFeatures": ["駅近", "家賃が高い", "築浅"],
+  "budget": 6,
+  "topicId": "minpo-chintai"
+}

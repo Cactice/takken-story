@@ -1,3 +1,5 @@
+import type { RomanceState } from './lib/romance'
+
 export type Gender = 'male' | 'female'
 
 export interface Character {
@@ -5,6 +7,15 @@ export interface Character {
   name: string
   sprite: string
   personality: string
+}
+
+export type DiagramType = 'area' | 'land' | 'timeline' | 'parties' | 'money' | 'floorplan'
+
+/** ハゲタの解説につける図 */
+export interface DiagramSpec {
+  type: DiagramType
+  labels: string[]
+  values?: number[]
 }
 
 export interface GameEvent {
@@ -15,6 +26,13 @@ export interface GameEvent {
   choices: string[]
   correctChoice: number
   explanation: string
+  diagram?: DiagramSpec
+  /** 解説を受けて主人公が住民にかみ砕いて説明するセリフ */
+  playerLines?: string[]
+  /** 住民の感謝のセリフ */
+  thanksLine?: string
+  /** 解決済みの住民に再度話しかけたときのセリフ */
+  resolvedLine?: string
 }
 
 /** 体験済み相談(体験した年つき) */
@@ -52,6 +70,8 @@ export interface GameState {
   /** 試験を消化(受験/見送り/未応募)した年 */
   lastExamYear: number
   examResults: ExamResult[]
+  /** 恋愛の状態(住民IDごと)。旧セーブとの互換のため任意 */
+  romance?: Record<string, RomanceState>
 }
 
 export const START_AGE = 15

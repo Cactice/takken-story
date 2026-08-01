@@ -30,7 +30,7 @@
   left: 50%;
   top: 50%;
   display: grid;
-  grid-template-columns: repeat(20, var(--tile));
+  grid-template-columns: repeat(var(--cols, 25), var(--tile));
   grid-auto-rows: var(--tile);
   transform: translate3d(
     calc((var(--px) + 0.5) * var(--tile) * -1),
@@ -47,6 +47,25 @@
 
 .obj {
   z-index: 1;
+}
+
+/* 空き地の看板は建物より小さく、地面に刺さって見えるように */
+.land-sign {
+  transform: scale(0.7) translateY(12%);
+  transform-origin: center bottom;
+}
+
+/* 会社の頭上に出る「!」(新しい転入者のサイン) */
+.building-alert {
+  display: grid;
+  place-items: center;
+  color: #e74c3c;
+  font-weight: bold;
+  font-size: calc(var(--tile) * 0.7);
+  text-shadow: 2px 2px 0 #fff;
+  pointer-events: none;
+  z-index: 3;
+  animation: bob 0.6s infinite alternate;
 }
 
 .char-sprite {
