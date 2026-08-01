@@ -1,0 +1,23 @@
+{
+  "id": "kk-yano",
+  "name": "矢野",
+  "sprite": "sprites/kk-yano.png",
+  "generation": 4,
+  "appearsIn": [
+    4
+  ],
+  "age": 35,
+  "gender": "male",
+  "romanceable": false,
+  "personality": "35歳。黒会市役所都市計画課の職員。淡々としているが、業者を試すような質問をする癖がある。免許取消を経た会社が本当に立ち直ったのか、窓口から見届けようとしている。",
+  "motive": "街を、燃えない・崩れない形で次の世代に渡す。",
+  "weakness": "規則を盾にしすぎて、事情のある相手を切り捨てたことがある。",
+  "catchphrase": "試してますよ。本当に立ち直ったのか、見ておきたいので。",
+  "relations": [
+    {
+      "characterId": "hageta-mio",
+      "kind": "business",
+      "note": "申請の窓口で何度も顔を合わせる"
+    }
+  ]
+}

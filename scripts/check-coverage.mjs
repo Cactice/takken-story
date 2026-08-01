@@ -33,6 +33,8 @@ function walk(dir) {
 }
 
 const GENS = [1, 2, 3, 4, 5];
+const STAGE = { 1: 'ありきた村(基礎)', 2: '黒会市(誘惑)', 3: 'ありきた村(サスペンス)', 4: '黒会市(再建)', 5: '村+市+白夜村(総力戦)' };
+const KINDS = ['trouble', 'newcomer', 'work', 'business', 'village', 'dispute', 'life', 'farewell', 'romance', 'season'];
 const events = GENS.flatMap((g) => walk(`content/gen${g}/events`)).map((path) => ({
   path,
   data: JSON.parse(readFileSync(path, 'utf8')),
@@ -50,6 +52,47 @@ for (const { path, data } of events) {
   if (data.generation !== gen) errors.push(`${path}: generation ${data.generation} がフォルダ gen${gen} と不一致`);
   // 分野はフォルダで分けない(docs/CONTENT_SCHEMA.md)。分野は topicId から導く
   if (!data.topicId) errors.push(`${path}: topicId がない`);
+  // フォルダ = イベントの種類(kind)
+  const kindDir = path.split('/')[3];
+  if (data.kind !== kindDir) errors.push(`${path}: kind "${data.kind}" がフォルダ ${kindDir}/ と不一致`);
+  if (!KINDS.includes(kindDir)) errors.push(`${path}: 未定義の種類フォルダ ${kindDir}/`);
+  if (!Array.isArray(data.cast) || data.cast.length === 0) errors.push(`${path}: cast がない`);
+  if (data.characterId && data.cast?.[0] !== data.characterId)
+    errors.push(`${path}: characterId "${data.characterId}" が cast の先頭と不一致`);
+}
+
+// --- 人物 -------------------------------------------------------------------
+const characters = new Map(); // id -> { gens:Set, path }
+for (const g of GENS) {
+  for (const p of walk(`content/gen${g}/characters`)) {
+    const c = JSON.parse(readFileSync(p, 'utf8'));
+    if (c.id !== basename(p, '.json')) errors.push(`${p}: id "${c.id}" がファイル名と不一致`);
+    if (characters.has(c.id)) errors.push(`${p}: 人物ID "${c.id}" が ${characters.get(c.id).path} と重複`);
+    characters.set(c.id, { gens: new Set(c.appearsIn ?? [g]), path: p });
+  }
+}
+for (const [id, c] of characters) {
+  for (const r of c.relations ?? []) void r;
+  const raw = JSON.parse(readFileSync(c.path, 'utf8'));
+  for (const r of raw.relations ?? []) {
+    if (!characters.has(r.characterId)) errors.push(`${c.path}: relations の "${r.characterId}" が存在しない (${id})`);
+  }
+}
+// イベントの cast が実在し、その世代に登場する人物か
+for (const { path, data } of events) {
+  for (const id of data.cast ?? []) {
+    const c = characters.get(id);
+    if (!c) errors.push(`${path}: cast の "${id}" が characters に存在しない`);
+    else if (!c.gens.has(data.generation))
+      errors.push(`${path}: cast の "${id}" は第${[...c.gens].join('/')}世代の人物。gen${data.generation} のイベントで参照している`);
+  }
+}
+// 世帯の memberIds
+for (const g of GENS) {
+  for (const p of walk(`content/gen${g}/households`)) {
+    const h = JSON.parse(readFileSync(p, 'utf8'));
+    for (const id of h.memberIds ?? []) if (!characters.has(id)) errors.push(`${p}: memberIds の "${id}" が存在しない`);
+  }
 }
 
 const topics = parseTopics();
@@ -63,7 +106,9 @@ const orphans = [...byTopic.keys()].filter((t) => !known.has(t));
 const missing = topics.filter((t) => !byTopic.has(t.id));
 
 // --- 出力 -------------------------------------------------------------------
-console.log(`イベント ${events.length}件 / 論点 ${topics.length}件`);
+console.log(`イベント ${events.length}件 / 論点 ${topics.length}件 / 人物 ${characters.size}人`);
+console.log('世代ごと: ' + GENS.map((g) => `gen${g}=${events.filter((e) => e.data.generation === g).length}`).join(' '));
+console.log('種類ごと: ' + KINDS.map((k) => `${k}=${events.filter((e) => e.data.kind === k).length}`).join(' '));
 console.log(`イベントが無い論点: ${missing.length}件`);
 console.log(`topics.md に無い topicId: ${orphans.length}件 ${orphans.join(', ')}`);
 for (const e of errors) console.error('ERROR ' + e);
@@ -92,6 +137,19 @@ if (process.argv.includes('--write')) {
     '',
     `**topics.md に存在しない topicId を持つイベント: ${orphans.length}件** ` +
       (orphans.map((o) => `\`${o}\`(${byTopic.get(o).map((e) => e.data.id).join(', ')})`).join(', ') || '(なし)'),
+    '',
+    '## 世代ごとのイベント数',
+    '',
+    '| 世代 | 舞台 | イベント数 | 種類の内訳 |',
+    '|---|---|---|---|',
+    ...GENS.map((g) => {
+      const evs = events.filter((e) => e.data.generation === g);
+      const kinds = KINDS.map((k) => [k, evs.filter((e) => e.data.kind === k).length])
+        .filter(([, n]) => n)
+        .map(([k, n]) => `${k} ${n}`)
+        .join(' / ');
+      return `| 第${g}世代 | ${STAGE[g]} | ${evs.length} | ${kinds} |`;
+    }),
     '',
     '## 分野ごとの過不足(実試験の出題比率との比較)',
     '',

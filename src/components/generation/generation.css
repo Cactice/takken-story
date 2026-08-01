@@ -1,0 +1,326 @@
+/* ステージ選択。夜の路線図をイメージした暗い盤面に、世代のサムネイルを並べる */
+.gen-select {
+  --gen-ink: #12131c;
+  --gen-panel: #1e2130;
+  --gen-line: #4a5170;
+  --gen-gold: #ffc83d;
+  --gen-glow: #ff7a59;
+
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 3vh, 2rem);
+  padding: clamp(1rem, 4vw, 2.5rem) 1rem;
+  color: #eef0f7;
+  background:
+    radial-gradient(120% 80% at 50% 0%, #2a2f45 0%, var(--gen-ink) 70%),
+    var(--gen-ink);
+  image-rendering: pixelated;
+}
+
+.gen-head {
+  text-align: center;
+}
+
+.gen-eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.5em;
+  color: var(--gen-gold);
+  text-shadow: 2px 2px 0 #000;
+}
+
+.gen-title {
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  text-shadow: 4px 4px 0 #000;
+}
+
+/* ── 世代のカードを線路のように横一列に ── */
+.gen-track {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(0.5rem, 2vw, 1.25rem);
+  list-style: none;
+  padding: 1.75rem 1.5rem 0.5rem;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+/* カード同士をつなぐ点線(世代のつながり) */
+.gen-track::before {
+  content: '';
+  position: absolute;
+  left: 2rem;
+  right: 2rem;
+  bottom: 1.6rem;
+  border-bottom: 4px dashed var(--gen-line);
+  z-index: 0;
+}
+
+.gen-card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.5rem 0.9rem;
+  border: 4px solid #000;
+  border-radius: 6px;
+  background: var(--gen-panel);
+  box-shadow: 0 5px 0 #000;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform var(--duration-fast, 150ms) ease-out,
+    box-shadow var(--duration-fast, 150ms) ease-out,
+    background var(--duration-fast, 150ms) ease-out;
+}
+
+.gen-card:hover {
+  transform: translateY(-3px);
+}
+
+.gen-card.is-selected {
+  background: #2c3149;
+  border-color: var(--gen-gold);
+  transform: translateY(-10px) scale(1.06);
+  box-shadow:
+    0 9px 0 #000,
+    0 0 0 4px rgb(255 200 61 / 0.25),
+    0 0 28px rgb(255 122 89 / 0.45);
+}
+
+.gen-card.is-selected .gen-no {
+  background: var(--gen-gold);
+  color: #12131c;
+}
+
+/* 世代番号のバッジ */
+.gen-no {
+  position: absolute;
+  top: -0.7rem;
+  left: -0.7rem;
+  display: grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 3px solid #000;
+  border-radius: 4px;
+  background: #575e7d;
+  font-weight: bold;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+/* ── ドット絵サムネイル ── */
+.gen-thumb {
+  display: grid;
+  grid-template-columns: repeat(var(--thumb-cols, 8), var(--thumb-tile));
+  --thumb-tile: clamp(0.9rem, 2.6vw, 1.5rem);
+  filter: var(--thumb-filter, none);
+  border: 3px solid #000;
+  background: #3d7a35;
+  overflow: hidden;
+}
+
+.gen-thumb-tile {
+  width: var(--thumb-tile);
+  height: var(--thumb-tile);
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+
+.gen-card-tone {
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: #8a90a8;
+}
+
+.gen-card.is-selected .gen-card-tone {
+  color: var(--gen-gold);
+}
+
+.gen-card-name {
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 0 #000;
+  white-space: nowrap;
+}
+
+/* ── ロック表示 ── */
+.gen-card.is-locked {
+  background: #171a26;
+  border-color: #000;
+  box-shadow: 0 5px 0 #000;
+}
+
+.gen-card.is-locked .gen-thumb {
+  filter: grayscale(1) brightness(0.28) contrast(0.8);
+}
+
+.gen-card.is-locked.is-selected {
+  border-color: #7a819f;
+  box-shadow:
+    0 9px 0 #000,
+    0 0 0 4px rgb(122 129 159 / 0.25);
+}
+
+.gen-card.is-locked .gen-card-name,
+.gen-card.is-locked .gen-card-tone {
+  color: #7d839c;
+}
+
+.gen-lock {
+  position: absolute;
+  inset: 0;
+  background: rgb(10 11 18 / 0.45);
+  display: grid;
+  place-content: center;
+  gap: 0;
+  pointer-events: none;
+}
+
+/* ドット絵に合わせた四角い南京錠 */
+.gen-lock-shackle {
+  width: 1.1rem;
+  height: 0.7rem;
+  margin: 0 auto;
+  border: 4px solid #d8dcea;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+}
+
+.gen-lock-body {
+  display: block;
+  width: 1.7rem;
+  height: 1.2rem;
+  background: #d8dcea;
+  border: 3px solid #000;
+  box-shadow: inset 0 0 0 3px #9aa1bd;
+}
+
+/* ── 詳細パネル ── */
+.gen-detail {
+  width: min(46rem, 100%);
+  border: 4px solid #000;
+  border-radius: 6px;
+  background: linear-gradient(#232841, #1a1e2e);
+  box-shadow: 0 6px 0 #000;
+  padding: clamp(0.75rem, 2.5vw, 1.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  animation: gen-pop 220ms ease-out;
+}
+
+.gen-detail.is-locked {
+  animation: gen-shake 220ms ease-out;
+  border-color: #5a6080;
+  color: #a9afc6;
+}
+
+@keyframes gen-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes gen-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+.gen-detail-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.gen-detail-no {
+  color: var(--gen-gold);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+}
+
+.gen-detail-title {
+  font-size: clamp(1.1rem, 3.5vw, 1.6rem);
+  font-weight: bold;
+  text-shadow: 3px 3px 0 #000;
+}
+
+.gen-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
+}
+
+.gen-detail-meta div {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 2px solid #000;
+  border-radius: 4px;
+  background: #12131c;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.gen-detail-meta dt {
+  color: var(--gen-gold);
+}
+
+.gen-detail-body {
+  white-space: pre-line;
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.gen-detail-study {
+  align-self: flex-start;
+  border-left: 4px solid var(--gen-glow);
+  padding-left: 0.5rem;
+  font-size: 0.7rem;
+  color: #b9c0d8;
+}
+
+.gen-hint {
+  font-size: 0.75rem;
+  color: #8a90a8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gen-card,
+  .gen-detail {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* ブラウン管っぽい走査線。ステージ選択の画面らしさ */
+.gen-select::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgb(255 255 255 / 0.035) 0 1px,
+    transparent 1px 3px
+  );
+}

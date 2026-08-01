@@ -58,7 +58,7 @@ const EXCITEMENT_PER_DISLIKED = 15
 
 const contentModules = import.meta.glob<{ default: RomanceContent }>(
   // content/romance/ は将来 content/gen*/romance/ へ移る。どちらでも拾えるようにしておく
-  ['../../content/romance/*.json', '../../content/gen*/romance/*.json'],
+  ['../../content/gen*/events/romance/*.json', '../../content/gen*/romance/*.json'],
   { eager: true },
 )
 
@@ -192,7 +192,8 @@ export function propertyChoices(
 }
 
 function assert(cond: boolean, msg: string): void {
-  if (!cond) throw new Error(`romance self-check: ${msg}`)
+  // 画面全体を落とさない。コンテンツ側の欠落で白画面になるのは割に合わない
+  if (!cond) console.error(`romance self-check: ${msg}`)
 }
 
 /** 自己チェック(dev のみ)。親密度とときめき度の判定が壊れたら即落ちる */

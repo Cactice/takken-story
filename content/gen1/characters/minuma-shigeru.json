@@ -1,0 +1,37 @@
+{
+  "id": "minuma-shigeru",
+  "name": "見沼 茂",
+  "sprite": "sprites/minuma-shigeru.png",
+  "generation": 1,
+  "age": 66,
+  "gender": "male",
+  "family": "見沼家",
+  "romanceable": false,
+  "initialResident": true,
+  "personality": "66歳。ありきた村の古株、見沼家の当主。村の寄合の顔役で、山も田も、花屋の下の土地も見沼家のもの。「村ってのはな」と語り出したら長い。よそから来た者にはなかなか心を開かないが、一度認めた相手は身内として扱う。",
+  "motive": "先祖から預かった土地を、一坪も減らさずに次へ渡す。",
+  "weakness": "変わることが怖い。境界も権利も「昔からこうだ」で済ませてきたツケが、孫の代で噴き出す。",
+  "catchphrase": "村ってのはな、そういうもんだで。",
+  "relations": [
+    {
+      "characterId": "minuma-haru",
+      "kind": "spouse",
+      "note": "妻"
+    },
+    {
+      "characterId": "ren",
+      "kind": "tenant",
+      "note": "花屋の底地を貸している"
+    },
+    {
+      "characterId": "suzuki-takeo",
+      "kind": "neighbor",
+      "note": "畑を挟んだ隣。都会から来た新参と見ている"
+    },
+    {
+      "characterId": "tencho-gozo",
+      "kind": "friend",
+      "note": "幼なじみ。憎まれ口を叩き合う仲"
+    }
+  ]
+}

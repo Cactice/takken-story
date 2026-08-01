@@ -1,0 +1,29 @@
+{
+  "id": "hageta-goro",
+  "name": "ハゲ田 吾郎",
+  "sprite": "sprites/hageta-goro.png",
+  "generation": 3,
+  "appearsIn": [
+    3
+  ],
+  "age": 51,
+  "gender": "male",
+  "family": "ハゲ田家",
+  "romanceable": false,
+  "personality": "51歳。ひばり不動産の二代目社長。初代ハゲ田の息子で、父ゆずりのつるつる頭を気にしている。父が主人公の祖父を育てたように、今度は自分が孫を預かる番だと思っている。書類を集めさせたら村一番。",
+  "motive": "父から受け取った店と、父が拾った家系との縁を切らさないこと。",
+  "weakness": "父ほど腹をくくれない。決定的な場面で他人に判断を委ねがち。",
+  "catchphrase": "親父の代からの付き合いです。うちが手伝います。",
+  "relations": [
+    {
+      "characterId": "sobo",
+      "kind": "friend",
+      "note": "亡き恩人の妻"
+    },
+    {
+      "characterId": "anzai",
+      "kind": "business",
+      "note": "事件で組む弁護士"
+    }
+  ]
+}

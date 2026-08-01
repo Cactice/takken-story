@@ -2,10 +2,18 @@
   "id": "nc-kana",
   "name": "カナ",
   "sprite": "sprites/nc-kana.png",
-  "personality": "28歳。都会のカフェを辞めて独立を目指す。テキパキしていて計算が早い。",
+  "generation": 1,
   "age": 28,
   "gender": "female",
   "romanceable": false,
+  "personality": "28歳。都会のカフェを辞めて独立を目指す。テキパキしていて計算が早い。",
+  "relations": [
+    {
+      "characterId": "hinata",
+      "kind": "rival",
+      "note": "同じ商店街に店を出したい者どうし"
+    }
+  ],
   "moveIn": {
     "demands": "1階でカフェをやりたいので、お店を開いていい家がいいです",
     "likedFeatures": [

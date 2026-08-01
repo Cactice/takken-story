@@ -2,10 +2,26 @@
   "id": "tanaka",
   "name": "ポッポさん",
   "sprite": "sprites/tanaka.png",
-  "personality": "62歳。のんびり屋の農家。先祖の土地の売却を考えている。口調はゆったりしていて、話が脱線しがち。",
+  "generation": 1,
   "age": 62,
   "gender": "male",
   "romanceable": false,
+  "personality": "62歳。先祖代々の田畑を継いだ農家。話がのんびりしていて必ず脱線する。「やあやあ」が口癖。人を疑うということを知らず、そのせいで何度も損をしかけている。畑の土のことなら誰よりも詳しい。",
+  "motive": "継ぐ者のいない田畑を、誰か大事にしてくれる人に渡したい。",
+  "weakness": "断れない。頼まれると判子を押してしまう。",
+  "catchphrase": "やあやあ、まあ聞いてくだされ。",
+  "relations": [
+    {
+      "characterId": "nc-gen",
+      "kind": "mentor",
+      "note": "就農しに来たゲンさんに畑を教えている"
+    },
+    {
+      "characterId": "minuma-shigeru",
+      "kind": "friend",
+      "note": "寄合仲間。茂には頭が上がらない"
+    }
+  ],
   "moveIn": {
     "demands": "畑のそばに住みたいのう。土地の広いところがええわ",
     "likedFeatures": [

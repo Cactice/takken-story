@@ -2,10 +2,18 @@
   "id": "nc-harumi",
   "name": "ハルミ",
   "sprite": "sprites/nc-harumi.png",
-  "personality": "36歳。単身赴任で2年だけ村の工場に来た会社員。合理的で決断が早い。",
+  "generation": 1,
   "age": 36,
   "gender": "female",
   "romanceable": false,
+  "personality": "36歳。単身赴任で2年だけ村の工場に来た会社員。合理的で決断が早い。",
+  "relations": [
+    {
+      "characterId": "tetsujiro",
+      "kind": "landlord",
+      "note": "ひばり荘の大家。理屈で押し返す相手"
+    }
+  ],
   "moveIn": {
     "demands": "2年で必ず出ていくので、短く借りられて駅に近い家がいいです",
     "likedFeatures": [

@@ -1,0 +1,43 @@
+{
+  "id": "suzuki-takeo",
+  "name": "鈴木 武男",
+  "sprite": "sprites/suzuki-takeo.png",
+  "generation": 1,
+  "age": 38,
+  "gender": "male",
+  "family": "鈴木家",
+  "romanceable": false,
+  "personality": "38歳。都会の会社を辞めて村に土地を買い、家を建てた転入者。人当たりがよく、村のことを一生懸命勉強してくる。ただ空回りしがちで、挨拶の順番や寄合の作法を毎回間違えては見沼家に苦い顔をされる。",
+  "motive": "子どもを土のある場所で育てたい。よそ者ではなく村の一員になりたい。",
+  "weakness": "調べる前に動いてしまう。境界も口約束で済ませてしまい、それが六十年後の争いの種になる。",
+  "catchphrase": "いい村ですね! いや、ほんとに。",
+  "relations": [
+    {
+      "characterId": "suzuki-nao",
+      "kind": "spouse",
+      "note": "妻"
+    },
+    {
+      "characterId": "suzuki-sora",
+      "kind": "child",
+      "note": "息子"
+    },
+    {
+      "characterId": "minuma-shigeru",
+      "kind": "neighbor",
+      "note": "畑を挟んだ隣。挨拶に通っているが打ち解けない"
+    }
+  ],
+  "moveIn": {
+    "demands": "都会から家族三人で移ります。子ども部屋のとれる家を建てたいんです",
+    "likedFeatures": [
+      "広い庭",
+      "静か",
+      "日当たり良好"
+    ],
+    "dislikedFeatures": [
+      "再建築不可",
+      "隣が近い"
+    ]
+  }
+}

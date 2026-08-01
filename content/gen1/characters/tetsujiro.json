@@ -2,10 +2,26 @@
   "id": "tetsujiro",
   "name": "ガストン",
   "sprite": "sprites/tetsujiro.png",
-  "personality": "72歳。町に古アパートを2棟持つご隠居大家。関西出身で「〜でっしゃろ」「あかんあかん」とコテコテの関西弁。ケチだが情に厚く、店子とのトラブルを頻繁に持ち込んでくる。",
+  "generation": 1,
   "age": 72,
   "gender": "male",
   "romanceable": false,
+  "personality": "72歳。関西から流れてきて、村に木造アパート「ひばり荘」を二棟持つご隠居大家。「〜でっしゃろ」「あかんあかん」とコテコテの関西弁。ケチで計算高いが、家賃を滞納した店子を追い出したことは一度もない。主人公を「坊」と呼ぶ。",
+  "motive": "アパートを二棟とも埋めて、死ぬまで人の声がする建物にしておきたい。",
+  "weakness": "妻に先立たれてから独り。損得の話をしていないと寂しさに追いつかれる。",
+  "catchphrase": "おう坊、聞いてくれや。",
+  "relations": [
+    {
+      "characterId": "nc-harumi",
+      "kind": "tenant",
+      "note": "ひばり荘101号室の店子。理屈で押されると勝てない"
+    },
+    {
+      "characterId": "tencho-gozo",
+      "kind": "business",
+      "note": "空室が出ると真っ先に駆け込む相手"
+    }
+  ],
   "moveIn": {
     "demands": "わしはケチやからな、家賃の安い家がええ。土地は広いほうがええで",
     "likedFeatures": [

@@ -1,0 +1,23 @@
+{
+  "id": "kk-daiki",
+  "name": "大貴",
+  "sprite": "sprites/kk-daiki.png",
+  "generation": 2,
+  "appearsIn": [
+    2
+  ],
+  "age": 24,
+  "gender": "male",
+  "romanceable": false,
+  "personality": "24歳。地方から黒会市に出てきたばかりの若者。人懐こく「〜っす」と話す。都会のやり方を何も知らず、駅前で声をかけられるままについていってしまう。都会版のチップ。",
+  "motive": "都会でちゃんと部屋を借りて、ちゃんと働く。",
+  "weakness": "断れない。その場の空気に流されて判を押す。",
+  "catchphrase": "やっちゃったかもしれないっす…。",
+  "relations": [
+    {
+      "characterId": "kk-tsuzuki",
+      "kind": "helper",
+      "note": "何度も助けられている"
+    }
+  ]
+}

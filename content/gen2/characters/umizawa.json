@@ -1,0 +1,31 @@
+{
+  "id": "umizawa",
+  "name": "海沢",
+  "sprite": "sprites/umizawa.png",
+  "generation": 2,
+  "appearsIn": [
+    2,
+    3,
+    4,
+    5
+  ],
+  "age": 48,
+  "gender": "male",
+  "romanceable": false,
+  "personality": "48歳。黒会市のコンサルタント。物腰は柔らかく、話は必ず筋が通っている。実家は地方の小さな不動産屋で、村ごと寂れて父の店が潰れるのを高校生のときに見ている。以来「情は人を救わない、効率だけが救う」と信じている。悪人ではなく、利益と合理を極限まで突き詰めた不動産屋のなれの果て。",
+  "motive": "完全に管理された人工の街をつくり、寂れて消える村を二度と生まないこと。",
+  "weakness": "救えなかった故郷。古い村を見ると、潰さずにいられない。",
+  "catchphrase": "合理的でしょう?",
+  "relations": [
+    {
+      "characterId": "kk-tsuzuki",
+      "kind": "rival",
+      "note": "何度も邪魔をされてきた相手。内心では認めている"
+    },
+    {
+      "characterId": "byakuya-sena",
+      "kind": "mentor",
+      "note": "白夜村の広報。弟子として育てている"
+    }
+  ]
+}

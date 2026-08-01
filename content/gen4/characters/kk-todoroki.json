@@ -1,0 +1,23 @@
+{
+  "id": "kk-todoroki",
+  "name": "轟",
+  "sprite": "sprites/kk-todoroki.png",
+  "generation": 4,
+  "appearsIn": [
+    4
+  ],
+  "age": 60,
+  "gender": "male",
+  "romanceable": false,
+  "personality": "60歳。黒会市の建設会社社長。声がでかく、思いつきで動く。法令の細かいところは全部人任せだが、現場の勘は確か。潰れかけた会社に最初に手を貸したのはこの人。",
+  "motive": "自分の建てた建物で街の景色を変えること。",
+  "weakness": "数字と手続きに弱い。急いで判を押して何度も損をしている。",
+  "catchphrase": "なんだ、そうか! …わし、昨日から眠れんかったんだ。",
+  "relations": [
+    {
+      "characterId": "hageta-mio",
+      "kind": "business",
+      "note": "手続きを全面的に頼っている"
+    }
+  ]
+}

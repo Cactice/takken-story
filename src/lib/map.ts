@@ -286,6 +286,24 @@ export function propertyIdAt(x: number, y: number): string | undefined {
   return propertyAtCell.get(`${x},${y}`)
 }
 
+/** 建物の入口の前(契約した住民を立たせる場所)。埋まっているタイルは避ける */
+export function frontOfBuilding(id: string, taken: ReadonlySet<string> = new Set()): [number, number] | undefined {
+  const b = BUILDINGS.find((x) => x.id === id)
+  if (!b) return undefined
+  const [ex, ey] = b.entrance
+  const around: [number, number][] = [
+    [ex, ey + 1],
+    [ex - 1, ey + 1],
+    [ex + 1, ey + 1],
+    [ex - 1, ey],
+    [ex + 1, ey],
+    [ex, ey + 2],
+  ]
+  return around.find(
+    ([x, y]) => inBounds(x, y) && !isSolid(x, y) && !taken.has(`${x},${y}`),
+  )
+}
+
 /** マップの整合性チェック(開発時のみ)。ここが落ちたらタイル座標がずれている */
 export function checkMap(): string[] {
   const errors: string[] = []

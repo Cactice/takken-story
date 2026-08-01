@@ -1,0 +1,29 @@
+{
+  "id": "minuma-kaoru",
+  "name": "見沼 薫",
+  "sprite": "sprites/minuma-kaoru.png",
+  "generation": 3,
+  "appearsIn": [
+    3
+  ],
+  "age": 58,
+  "gender": "male",
+  "family": "見沼家",
+  "romanceable": false,
+  "personality": "58歳。見沼茂の孫で、見沼家の当主。祖父から「土地を減らすな」とだけ教わって育った。声が大きく短気だが、筋を通されると黙って引く。鈴木家を「数年前に越してきた家」と呼び続けているが、実際にはもう六十年になる。",
+  "motive": "先祖の土地を一坪も失わないこと。それだけが当主の仕事だと思っている。",
+  "weakness": "書類より記憶を信じる。登記も境界も確かめずに来た。",
+  "catchphrase": "うちの土地だ。登記を見てみろ。",
+  "relations": [
+    {
+      "characterId": "minuma-sae",
+      "kind": "child",
+      "note": "娘。意見が合わない"
+    },
+    {
+      "characterId": "suzuki-mamoru",
+      "kind": "feud",
+      "note": "境界で争っている隣家"
+    }
+  ]
+}

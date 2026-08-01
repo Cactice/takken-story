@@ -28,6 +28,12 @@ export interface PropertySpec {
   road: string
   features: string[]
   legalNotes: string[]
+  /**
+   * 戸数。契約1件でここに1世帯が入る。戸建は1、アパートは4〜8、マンションは10〜20。
+   * 第1世代のありきた村は戸建が多い(村なので自然で、1契約=1軒が埋まる手応えがある)。
+   * いま何戸埋まっているかはゲーム状態側(GameState.occupancy)が持つ。
+   */
+  units: number
 }
 
 export const PROPERTIES: readonly PropertySpec[] = [
@@ -52,6 +58,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '事務所には報酬額の掲示と標識(宅地建物取引業者票)の掲示義務がある',
       '帳簿・従業者名簿を備え付ける義務がある',
     ],
+    units: 1,
   },
   {
     id: 'player-home',
@@ -74,6 +81,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '現況有姿での引渡し。契約不適合責任の免除特約あり',
       '普通借家契約(期間2年・更新あり)。貸主からの更新拒絶には正当事由が必要',
     ],
+    units: 1,
   },
   {
     id: 'mansion',
@@ -97,6 +105,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '敷地利用権は専有部分と分離処分できない(規約に別段の定めなし)',
       '重要事項説明では管理費・修繕積立金の額と滞納額の説明が必要',
     ],
+    units: 12,
   },
   {
     id: 'apart-wood',
@@ -119,6 +128,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '通常損耗・経年変化の原状回復費用は原則として貸主負担',
       '敷金は明渡し時に未払賃料等を控除して返還する義務がある',
     ],
+    units: 8,
   },
   {
     id: 'apart-old',
@@ -141,6 +151,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '旧耐震基準の建物。耐震診断・改修の記録なし',
       '越境物がある場合は重要事項ではないが、覚書の有無を売買時に確認すべき',
     ],
+    units: 6,
   },
   {
     id: 'clinic',
@@ -163,6 +174,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '第一種低層住居専用地域なので高さは10m(または12m)以下に制限される',
       '外壁の後退距離1mが都市計画で定められている',
     ],
+    units: 1,
   },
   {
     id: 'bakery',
@@ -185,6 +197,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '防火地域・準防火地域にまたがる場合は、厳しいほう(防火地域)の規制が敷地全体に適用される',
       '2階を自ら貸主として賃貸するだけなら宅建業の免許は不要',
     ],
+    units: 1,
   },
   {
     id: 'flower',
@@ -208,6 +221,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '借地上の建物を第三者に譲渡するには地主の承諾(または裁判所の許可)が必要',
       '建物を登記しておけば、土地が売られても新所有者に借地権を対抗できる',
     ],
+    units: 1,
   },
   {
     id: 'house-misaki',
@@ -230,6 +244,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '居住用財産を売った場合、3,000万円の特別控除の対象になりうる',
       '売主が個人なので、契約不適合責任の期間を引渡しから2年とする特約も有効',
     ],
+    units: 1,
   },
   {
     id: 'kimono',
@@ -253,6 +268,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '各共有者はいつでも共有物の分割を請求できる',
       '増築部分が未登記。売買前に表題部の変更登記が必要',
     ],
+    units: 1,
   },
   {
     id: 'koumuten',
@@ -275,6 +291,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '床面積10㎡を超える増改築には建築確認が必要(防火・準防火地域内なら10㎡以下でも必要)',
       '工事中は建築確認済の表示と設計図書の備置きが必要',
     ],
+    units: 1,
   },
   {
     id: 'farmhouse',
@@ -297,6 +314,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '農林漁業を営む者の住宅・農業用倉庫は、市街化調整区域では開発許可が不要',
       '農家以外の人が住宅として買う場合は用途変更の許可が要り、原則認められない',
     ],
+    units: 1,
   },
   {
     id: 'field',
@@ -317,6 +335,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '市街化区域内の農地なら、あらかじめ農業委員会に届出をすれば4条・5条の許可は不要',
       '許可を受けずにした売買契約は効力を生じない',
     ],
+    units: 1,
   },
   {
     id: 'vacant-hill',
@@ -336,6 +355,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '住宅と兼用し、店舗部分が50㎡以下かつ建物の1/2未満なら兼用住宅として建築できる',
       '高さは10m(または12m)以下。北側斜線制限もかかる',
     ],
+    units: 1,
   },
   {
     id: 'vacant-river',
@@ -355,6 +375,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '宅地造成等工事規制区域内で一定規模を超える盛土・切土をするには知事等の許可が必要',
       '2項道路に接する場合、道路中心線から2mまで敷地を後退(セットバック)する必要がある',
     ],
+    units: 1,
   },
   {
     id: 'vacant-station',
@@ -374,6 +395,7 @@ export const PROPERTIES: readonly PropertySpec[] = [
       '6m×4/10=240% > 指定200% となり、この土地は200%が適用される',
       '角地なので建蔽率が10%緩和され、90%まで建てられる(特定行政庁の指定がある場合)',
     ],
+    units: 1,
   },
 ]
 

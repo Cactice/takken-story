@@ -1,0 +1,23 @@
+{
+  "id": "kk-koga",
+  "name": "古賀",
+  "sprite": "sprites/kk-koga.png",
+  "generation": 2,
+  "appearsIn": [
+    2
+  ],
+  "age": 62,
+  "gender": "male",
+  "romanceable": false,
+  "personality": "62歳。黒会市の宅建業協会の事務局長。開業も廃業も三十年ぶん見てきた生き字引。手続きの話をするときだけ饒舌になる。若い業者が海沢に取り込まれるのを何度も見てきた。",
+  "motive": "協会に入る業者を、まっとうなまま続けさせること。",
+  "weakness": "止められなかった業者の名前を全部覚えている。",
+  "catchphrase": "商売を始める前に、まず法律の話を覚えなさい。",
+  "relations": [
+    {
+      "characterId": "umizawa",
+      "kind": "distrust",
+      "note": "何人も若手を持っていかれた相手"
+    }
+  ]
+}

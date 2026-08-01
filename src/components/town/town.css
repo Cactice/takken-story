@@ -149,3 +149,29 @@
   color: var(--color-ink);
   opacity: 0.7;
 }
+
+/* 追従キャラ。主人公と同じ transform 移動なので、歩いても隊列が崩れない */
+.follower {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--tile);
+  height: var(--tile);
+  transform: translate3d(calc(var(--fx) * var(--tile)), calc(var(--fy) * var(--tile)), 0);
+  transition: transform 150ms linear;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ハゲ田のメモ(本)。Kenney の素材に本タイルが無いのでCSSで描いた背表紙付きの四角 */
+.follower-book {
+  position: absolute;
+  left: 30%;
+  top: 45%;
+  width: 40%;
+  height: 30%;
+  background: linear-gradient(90deg, #6b3b1f 0 22%, #d8c9a3 22% 100%);
+  border: 2px solid #3b2412;
+  border-radius: 1px;
+  box-shadow: 2px 2px 0 rgb(0 0 0 / 0.25);
+}

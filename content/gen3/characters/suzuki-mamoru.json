@@ -1,0 +1,29 @@
+{
+  "id": "suzuki-mamoru",
+  "name": "鈴木 衛",
+  "sprite": "sprites/suzuki-mamoru.png",
+  "generation": 3,
+  "appearsIn": [
+    3
+  ],
+  "age": 55,
+  "gender": "male",
+  "family": "鈴木家",
+  "romanceable": false,
+  "personality": "55歳。鈴木武男の孫で、村で測量の仕事をしている。祖父が口約束で済ませた境界を、図面で確かめ直そうとしている。丁寧な物腰だが、見沼家に「よそ者」と言われると一度だけ強く言い返す。",
+  "motive": "鈴木家が村の一員だと、記録の上で証明すること。",
+  "weakness": "祖父の残した測量図に、自分でも説明のつかない線が一本ある。",
+  "catchphrase": "食い込んでいません。図面を見てください。",
+  "relations": [
+    {
+      "characterId": "suzuki-riku",
+      "kind": "child",
+      "note": "息子"
+    },
+    {
+      "characterId": "minuma-kaoru",
+      "kind": "feud",
+      "note": "境界で争っている隣家"
+    }
+  ]
+}

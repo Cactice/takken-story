@@ -2,10 +2,26 @@
   "id": "kr-yoshie",
   "name": "シルビア",
   "sprite": "sprites/kr-yoshie.png",
-  "personality": "68歳。商店街で呉服店を営んでいた未亡人。おっとり上品だが芯は強い。夫の遺産や実家の共有名義のことで相談に来る。口調は「〜ですのよ」「あらまあ」と柔らかい丁寧語。",
+  "generation": 1,
   "age": 68,
   "gender": "female",
   "romanceable": false,
+  "personality": "68歳。商店街で呉服店を営んでいた未亡人。「〜ですのよ」「あらまあ」と柔らかい丁寧語。おっとりして見えるが、店を三十年一人で回してきた芯の強さがある。夫の遺した家が広すぎて持て余している。",
+  "motive": "家をきちんと誰かに渡し、身軽になって余生を過ごしたい。",
+  "weakness": "思い出のある物を手放す決心が、いつも一歩手前で鈍る。",
+  "catchphrase": "あらまあ、そうですのね。",
+  "relations": [
+    {
+      "characterId": "tencho-gozo",
+      "kind": "client",
+      "note": "空き家の媒介を任せている"
+    },
+    {
+      "characterId": "hinata",
+      "kind": "friend",
+      "note": "パン屋の常連。孫のようにかわいがっている"
+    }
+  ],
   "moveIn": {
     "demands": "主人の遺した家を出て、静かに暮らせるところへ移りたいのですのよ",
     "likedFeatures": [

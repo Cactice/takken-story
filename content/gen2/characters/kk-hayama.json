@@ -1,0 +1,24 @@
+{
+  "id": "kk-hayama",
+  "name": "葉山",
+  "sprite": "sprites/kk-hayama.png",
+  "generation": 2,
+  "appearsIn": [
+    2,
+    4
+  ],
+  "age": 29,
+  "gender": "male",
+  "romanceable": false,
+  "personality": "29歳。妻と二人ではじめての家を買う会社員。慎重だが押しに弱く、契約のたびに不安になって相談に来る。第4世代では息子の家探しに付き添う父親として再登場する。",
+  "motive": "家族が安心して暮らせる家を、無理のない金額で手に入れる。",
+  "weakness": "「人気物件です」と言われると判断が鈍る。",
+  "catchphrase": "それで、大丈夫なんでしょうか…?",
+  "relations": [
+    {
+      "characterId": "kk-hosokawa",
+      "kind": "neighbor",
+      "note": "マンションの理事長"
+    }
+  ]
+}

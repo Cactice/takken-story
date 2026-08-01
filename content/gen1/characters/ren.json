@@ -2,10 +2,27 @@
   "id": "ren",
   "name": "リオン",
   "sprite": "sprites/ren.png",
-  "personality": "17歳。花屋「みなせ生花店」の跡取り息子。クールで無口だが植物の話になると饒舌。実は将来の店舗経営を見据えて不動産に興味津々。口調は「…そうか」「別に、聞きたいだけだ」とぶっきらぼう丁寧。恋愛候補。",
+  "generation": 1,
   "age": 17,
   "gender": "male",
   "romanceable": true,
+  "home": "shop-flower",
+  "personality": "17歳。花屋「みなせ生花店」の跡取り息子。「…別に」「聞きたいだけだ」とぶっきらぼうだが、植物の話になると止まらない。店の建物は父のものだが土地は見沼家からの借地で、そのことをずっと気にしている。",
+  "motive": "花を根づかせる場所がほしい。借り物ではない土を持ちたい。",
+  "weakness": "人に頼るのが下手。相談する前に一人で調べて、たいてい遠回りする。",
+  "catchphrase": "…別に、聞きたいだけだ。",
+  "relations": [
+    {
+      "characterId": "minuma-shigeru",
+      "kind": "landlord",
+      "note": "花屋の底地の地主。頭が上がらない"
+    },
+    {
+      "characterId": "hinata",
+      "kind": "friend",
+      "note": "幼なじみ。並んで店を出す話をしている"
+    }
+  ],
   "moveIn": {
     "demands": "…花を育てる場所がいる。日当たりと庭は譲れない",
     "likedFeatures": [

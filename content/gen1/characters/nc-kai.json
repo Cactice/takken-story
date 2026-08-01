@@ -2,10 +2,23 @@
   "id": "nc-kai",
   "name": "カイ",
   "sprite": "sprites/nc-kai.png",
-  "personality": "41歳。母フキを引き取って同居することにした会社員。実家の相続のことで頭が痛い。",
+  "generation": 1,
   "age": 41,
   "gender": "male",
   "romanceable": false,
+  "personality": "41歳。母フキを引き取って同居することにした会社員。実家の相続のことで頭が痛い。",
+  "relations": [
+    {
+      "characterId": "nc-rina",
+      "kind": "spouse",
+      "note": "妻"
+    },
+    {
+      "characterId": "nc-fuki",
+      "kind": "parent",
+      "note": "引き取って同居する母"
+    }
+  ],
   "moveIn": {
     "demands": "母と同居できる広さで、通勤にも困らない場所がいいです",
     "likedFeatures": [

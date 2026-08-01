@@ -1,0 +1,30 @@
+{
+  "id": "suzuki-riku",
+  "name": "鈴木 陸",
+  "sprite": "sprites/suzuki-riku.png",
+  "generation": 3,
+  "appearsIn": [
+    3,
+    5
+  ],
+  "age": 24,
+  "gender": "male",
+  "family": "鈴木家",
+  "romanceable": false,
+  "personality": "24歳。衛の息子。都会に出たが戻ってきた。登記簿を読むのが好きで、日付の違和感に最初に気づく。第5世代では見沼冴と組んで村の受け皿づくりを担う。",
+  "motive": "家どうしの因縁を、自分の代で終わらせる。",
+  "weakness": "感情が先に出る。怒鳴ってから調べる。",
+  "catchphrase": "登記簿に、おかしな日付が一つあるんだ。",
+  "relations": [
+    {
+      "characterId": "suzuki-mamoru",
+      "kind": "parent",
+      "note": "父"
+    },
+    {
+      "characterId": "minuma-sae",
+      "kind": "ally",
+      "note": "同世代。家の因縁を越えて協力する"
+    }
+  ]
+}

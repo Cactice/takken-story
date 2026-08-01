@@ -1,0 +1,28 @@
+{
+  "id": "kk-tsuzuki",
+  "name": "都築 レイ",
+  "sprite": "sprites/kk-tsuzuki.png",
+  "generation": 2,
+  "appearsIn": [
+    2
+  ],
+  "age": 34,
+  "gender": "female",
+  "romanceable": false,
+  "personality": "34歳。黒会市の老舗不動産会社の敏腕営業。冷静で口が悪いが、法令に関しては一歩も引かない。競合でありながら、主人公が危ない橋を渡ろうとすると必ず止めに来る。「勝ち負けの話じゃないの」が口癖。",
+  "motive": "この街から、嘘で家を売る店を一軒でも減らす。",
+  "weakness": "正しさを優先しすぎて数字で負け、社内での立場をいつも危うくしている。",
+  "catchphrase": "勝ち負けの話じゃないの。免許の話をしてるの。",
+  "relations": [
+    {
+      "characterId": "umizawa",
+      "kind": "rival",
+      "note": "手口を知り尽くしている相手"
+    },
+    {
+      "characterId": "kk-mei",
+      "kind": "friend",
+      "note": "事務員のメイを気にかけている"
+    }
+  ]
+}

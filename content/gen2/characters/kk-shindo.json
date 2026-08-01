@@ -1,0 +1,23 @@
+{
+  "id": "kk-shindo",
+  "name": "進藤",
+  "sprite": "sprites/kk-shindo.png",
+  "generation": 2,
+  "appearsIn": [
+    2
+  ],
+  "age": 41,
+  "gender": "male",
+  "romanceable": false,
+  "personality": "41歳。新築マンションを建てる建設会社の社長。景気がいいときは気前がよく、資金が詰まると途端に急かす。「今すぐ」「明日から」が口癖で、法定の手続きを待つのが何より苦手。",
+  "motive": "完売させて次の現場を回す。止まったら死ぬ、という実感で生きている。",
+  "weakness": "急ぐあまり、危ない橋を人に渡らせようとする。",
+  "catchphrase": "他社に先を越されたら終わりだ。今すぐだ!",
+  "relations": [
+    {
+      "characterId": "umizawa",
+      "kind": "business",
+      "note": "販売戦略を任せている"
+    }
+  ]
+}

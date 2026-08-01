@@ -1,0 +1,23 @@
+{
+  "id": "anzai",
+  "name": "安西",
+  "sprite": "sprites/anzai.png",
+  "generation": 3,
+  "appearsIn": [
+    3
+  ],
+  "age": 44,
+  "gender": "female",
+  "romanceable": false,
+  "personality": "44歳。隣町から通う弁護士。感情の高ぶった当事者の間に静かに割って入り、「登記だけで決まる話ではないんですよ」と前提を並べ直す。事件の裏に黒会市の影があることに早くから気づいている。",
+  "motive": "田舎の権利関係が、力の強い者に食われるのを防ぐ。",
+  "weakness": "依頼人に肩入れしすぎる。一件のために生活が壊れる。",
+  "catchphrase": "感情ではなく、いつから誰が使ってきたかを調べましょう。",
+  "relations": [
+    {
+      "characterId": "hageta-goro",
+      "kind": "business",
+      "note": "証拠集めで組む相手"
+    }
+  ]
+}

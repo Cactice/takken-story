@@ -1,0 +1,30 @@
+{
+  "id": "minuma-sae",
+  "name": "見沼 冴",
+  "sprite": "sprites/minuma-sae.png",
+  "generation": 3,
+  "appearsIn": [
+    3,
+    5
+  ],
+  "age": 26,
+  "gender": "female",
+  "family": "見沼家",
+  "romanceable": false,
+  "personality": "26歳。薫の娘。都会の大学を出て村に戻ってきた。父の「昔からこうだ」に一つずつ根拠を求める。第5世代では村の再生の中心人物として、鈴木家と手を組む。",
+  "motive": "村を、感情ではなく事実で残す。",
+  "weakness": "父を否定しきれない。争いの当事者になると声が震える。",
+  "catchphrase": "ねえお父さん、それ、確かめたの?",
+  "relations": [
+    {
+      "characterId": "minuma-kaoru",
+      "kind": "parent",
+      "note": "父"
+    },
+    {
+      "characterId": "suzuki-riku",
+      "kind": "ally",
+      "note": "同世代。いがみ合う家の垣根を越えて協力する"
+    }
+  ]
+}

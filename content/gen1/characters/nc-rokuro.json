@@ -2,10 +2,12 @@
   "id": "nc-rokuro",
   "name": "ロクロー",
   "sprite": "sprites/nc-rokuro.png",
-  "personality": "24歳のギター弾き。人なつっこいが夜型で声が大きい。口調は「〜っすね!」",
+  "generation": 1,
   "age": 24,
   "gender": "male",
   "romanceable": false,
+  "personality": "24歳のギター弾き。人なつっこいが夜型で声が大きい。口調は「〜っすね!」",
+  "relations": [],
   "moveIn": {
     "demands": "音楽を大音量で流したいから、防音性が高い家がいいっす!",
     "likedFeatures": [

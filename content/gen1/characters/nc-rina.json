@@ -2,10 +2,18 @@
   "id": "nc-rina",
   "name": "リナ",
   "sprite": "sprites/nc-rina.png",
-  "personality": "39歳。カイの妻。義母との同居に前向きだが、家事動線には妥協しない。",
+  "generation": 1,
   "age": 39,
   "gender": "female",
   "romanceable": false,
+  "personality": "39歳。カイの妻。義母との同居に前向きだが、家事動線には妥協しない。",
+  "relations": [
+    {
+      "characterId": "nc-kai",
+      "kind": "spouse",
+      "note": "夫"
+    }
+  ],
   "moveIn": {
     "demands": "三人で暮らせる広さと、日当たりのよさは譲れません",
     "likedFeatures": [

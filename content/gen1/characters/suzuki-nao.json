@@ -1,0 +1,38 @@
+{
+  "id": "suzuki-nao",
+  "name": "鈴木 奈緒",
+  "sprite": "sprites/suzuki-nao.png",
+  "generation": 1,
+  "age": 35,
+  "gender": "female",
+  "family": "鈴木家",
+  "romanceable": false,
+  "personality": "35歳。武男の妻。夫の思いつきに振り回されながら、実務は全部この人が締めている。数字と間取りに強く、内見では真っ先に収納を開ける。「うちは」と話し始めたら決定事項。",
+  "motive": "家族の暮らしを、夫の夢に潰されない形で成立させる。",
+  "weakness": "村の付き合いを合理で切ってしまい、知らぬ間に距離を作る。",
+  "catchphrase": "うちは、そこは譲れません。",
+  "relations": [
+    {
+      "characterId": "suzuki-takeo",
+      "kind": "spouse",
+      "note": "夫"
+    },
+    {
+      "characterId": "minuma-haru",
+      "kind": "neighbor",
+      "note": "隣の奥さん。世間話の温度差に少し戸惑っている"
+    }
+  ],
+  "moveIn": {
+    "demands": "子ども部屋と収納は必須です。日当たりも譲れません",
+    "likedFeatures": [
+      "日当たり良好",
+      "広い庭",
+      "築浅"
+    ],
+    "dislikedFeatures": [
+      "木造",
+      "隣が近い"
+    ]
+  }
+}

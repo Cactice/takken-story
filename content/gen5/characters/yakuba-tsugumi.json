@@ -1,0 +1,28 @@
+{
+  "id": "yakuba-tsugumi",
+  "name": "つぐみ",
+  "sprite": "sprites/yakuba-tsugumi.png",
+  "generation": 5,
+  "appearsIn": [
+    5
+  ],
+  "age": 33,
+  "gender": "female",
+  "romanceable": false,
+  "personality": "33歳。ありきた村役場の職員で、空き家バンクの担当。前のめりで手が早く、勢い余って危ない土地まで宅地にしようとする。村に人を戻すことに人生を賭けている。",
+  "motive": "村の人口を増やし、統廃合の話を止めること。",
+  "weakness": "成果を急ぐ。数を追って安全を後回しにしかける。",
+  "catchphrase": "村始まって以来です!",
+  "relations": [
+    {
+      "characterId": "minuma-sae",
+      "kind": "ally",
+      "note": "空き家と農地の受け皿づくりで組む"
+    },
+    {
+      "characterId": "suzuki-riku",
+      "kind": "ally",
+      "note": "測量と登記の調査を頼んでいる"
+    }
+  ]
+}

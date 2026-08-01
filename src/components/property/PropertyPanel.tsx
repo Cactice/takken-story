@@ -4,7 +4,16 @@ import './property.css'
 
 interface Props {
   spec: PropertySpec
+  /** 埋まっている戸数(未指定なら空き家) */
+  occupied?: number
   onClose: () => void
+}
+
+/** 「空き家」「3/8戸 入居中」「満室」 */
+export function occupancyLabel(spec: PropertySpec, occupied: number): string {
+  if (occupied <= 0) return spec.units > 1 ? `空き家(全${spec.units}戸)` : '空き家'
+  if (occupied >= spec.units) return spec.units > 1 ? `満室(${spec.units}/${spec.units}戸)` : '入居中(満室)'
+  return `${occupied}/${spec.units}戸 入居中`
 }
 
 type Row = [label: string, value: string]
@@ -26,7 +35,7 @@ function rowsOf(p: PropertySpec): Row[] {
 }
 
 /** 建物・土地のスペック一覧。矢印かスペースで閉じる(操作は矢印+スペースのみ) */
-export function PropertyPanel({ spec, onClose }: Props) {
+export function PropertyPanel({ spec, occupied = 0, onClose }: Props) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (
@@ -52,7 +61,7 @@ export function PropertyPanel({ spec, onClose }: Props) {
         </h2>
 
         <dl className="prop-rows">
-          {rowsOf(spec).map(([label, value]) => (
+          {[['入居状況', occupancyLabel(spec, occupied)] as Row, ...rowsOf(spec)].map(([label, value]) => (
             <div key={label} className="prop-row">
               <dt>{label}</dt>
               <dd>{value}</dd>

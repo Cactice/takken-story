@@ -38,6 +38,8 @@ export interface GameEvent {
   id: string
   characterId: string
   topicId: string
+  /** 相談の見出し(ハゲ田のメモの表題にも使う) */
+  title?: string
   dialogue: string[]
   choices: string[]
   correctChoice: number
@@ -93,10 +95,17 @@ export interface GameState {
    * 旧セーブとの互換のため任意(未定義なら全員在住として扱う)
    */
   residents?: string[]
+  /**
+   * 建物ID → 埋まっている戸数。開始時はすべて空き家(村にいるのは主人公とハゲ田だけ)。
+   * 契約が成立するとその建物の空き戸が1つ埋まる
+   */
+  occupancy?: Record<string, number>
+  /** 住民ID → 契約して住んでいる建物ID。マップの立ち位置に使う */
+  residentHomes?: Record<string, string>
 }
 
 /** 開始時から村にいる住民(ハゲ田社長のみ) */
-export const INITIAL_RESIDENTS = ['tencho-gozo']
+export const INITIAL_RESIDENTS = ['tencho-gozo', 'minuma-shigeru', 'minuma-haru']
 
 export const START_AGE = 15
 export const START_YEAR = 1

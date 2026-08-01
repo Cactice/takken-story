@@ -3,11 +3,12 @@
  * 純粋関数のみ。副作用(タイマー・描画・メモ発行)は呼び出し側 = TourScreen が持つ。
  */
 
+import type { PropertySpec } from './properties'
+
 /* ------------------------------------------------------------------ *
  * 物件データ
- * ponytail: src/lib/properties.ts を別エージェントが作成中。出来たら
- * `import { properties } from './properties'` に差し替え、この型が合わなければ
- * toTourProperty() のようなアダプタを1つ足すだけで済むようにしてある。
+ * マップ上の建物・土地(properties.ts の PropertySpec)を、案内ゲームが使う
+ * 数値中心の形に変換して扱う。表示用の文字列は PropertySpec 側が持つ。
  * ------------------------------------------------------------------ */
 export interface TourProperty {
   id: string
@@ -37,89 +38,46 @@ export interface TourProperty {
   legalNotes: string[]
 }
 
-/** properties.ts が出来るまでの仮データ */
-export const DUMMY_PROPERTIES: TourProperty[] = [
-  {
-    id: 'p-hibari-so',
-    name: 'ひばり荘 201号室',
-    structure: '木造',
-    floors: 2,
-    ageYears: 28,
-    area: 42,
-    zoning: '第一種低層住居専用地域',
-    buildingCoverage: 50,
-    floorAreaRatio: 100,
-    rent: 4,
-    depositMonths: 1,
-    keyMoneyMonths: 0,
-    features: ['家賃が安い', '日当たり良好', '駐車場あり', '木造'],
-    legalNotes: ['第一種低層住居専用地域のため店舗の営業はできない'],
-  },
-  {
-    id: 'p-grand-maison',
-    name: 'グランドメゾンありきた 305号室',
-    structure: 'RC造',
-    floors: 5,
-    ageYears: 3,
-    area: 55,
-    zoning: '近隣商業地域',
-    buildingCoverage: 80,
-    floorAreaRatio: 300,
-    rent: 9,
-    depositMonths: 2,
-    keyMoneyMonths: 1,
-    features: ['RC造', '防音', '駅近', '築浅'],
-    legalNotes: ['管理規約でリフォームに制限あり'],
-  },
-  {
-    id: 'p-shotengai',
-    name: '商店街の店舗付き住宅',
-    structure: '鉄骨造',
-    floors: 2,
-    ageYears: 15,
-    area: 78,
-    zoning: '近隣商業地域',
-    buildingCoverage: 80,
-    floorAreaRatio: 200,
-    rent: 8,
-    depositMonths: 2,
-    keyMoneyMonths: 1,
-    features: ['事業用可', '駅近', '2階建て'],
-    legalNotes: ['1階部分は店舗用途で契約する必要がある'],
-  },
-  {
-    id: 'p-nouka',
-    name: '村はずれの農家',
-    structure: '木造',
-    floors: 2,
-    ageYears: 52,
-    area: 120,
-    zoning: '市街化調整区域',
-    buildingCoverage: 60,
-    floorAreaRatio: 200,
-    rent: 4,
-    depositMonths: 1,
-    keyMoneyMonths: 0,
-    features: ['畑付き', '広い庭', '静か', 'ペット可', '木造'],
-    legalNotes: ['市街化調整区域のため建て替えに開発許可が必要', '畑を宅地にするには農地法の許可が必要'],
-  },
-  {
-    id: 'p-kominka',
-    name: '平屋の古民家',
-    structure: '木造',
-    floors: 1,
-    ageYears: 61,
-    area: 66,
-    zoning: '第一種低層住居専用地域',
-    buildingCoverage: 50,
-    floorAreaRatio: 100,
-    rent: 3,
-    depositMonths: 0,
-    keyMoneyMonths: 0,
-    features: ['バリアフリー', '静か', '広い庭', 'ペット可', '木造'],
-    legalNotes: ['接道義務を満たさず再建築不可'],
-  },
-]
+/** "築26年" / "建蔽率 60%" / "土地 1,900㎡" のような表記から最初の数値を取り出す */
+function num(text: string | undefined, fallback: number): number {
+  const m = text?.replace(/,/g, '').match(/-?\d+(\.\d+)?/)
+  return m ? Number(m[0]) : fallback
+}
+
+/** "敷金1ヶ月 / 礼金なし" → 敷金1・礼金0 */
+function months(deposit: string | undefined, label: string): number {
+  const m = deposit?.replace(/,/g, '').match(new RegExp(`${label}\\s*(\\d+(?:\\.\\d+)?)`))
+  return m ? Number(m[1]) : 0
+}
+
+/**
+ * マップ上の物件を案内ゲーム用に変換する。
+ * ponytail: 売買物件(価格だけの物件)は「価格 ÷ 300 = 月あたりの負担」というざっくり
+ * 換算で家賃相当にしている。世帯の予算が月額なので比較の軸を揃えるためだけの近似。
+ * 実際の利回りで詰めたくなったらこの 300 を触れば済む。
+ */
+export const RENT_FROM_PRICE = 300
+
+export function toTourProperty(p: PropertySpec): TourProperty {
+  const isRent = p.price.includes('賃料')
+  const price = num(p.price, 0)
+  return {
+    id: p.id,
+    name: p.name,
+    structure: p.structure ?? '土地',
+    floors: Math.max(1, num(p.floors, 1)),
+    ageYears: num(p.age, 0),
+    area: num(p.kind === 'land' ? p.landArea : p.area, num(p.landArea, 0)),
+    zoning: p.zoning,
+    buildingCoverage: num(p.coverage, 60),
+    floorAreaRatio: num(p.floorAreaRatio, 200),
+    rent: isRent ? price : Math.max(1, Math.round(price / RENT_FROM_PRICE)),
+    depositMonths: months(p.deposit, '敷金'),
+    keyMoneyMonths: months(p.deposit, '礼金'),
+    features: p.features,
+    legalNotes: p.legalNotes,
+  }
+}
 
 /* ------------------------------------------------------------------ *
  * 転入は「世帯」単位(単身・カップル・家族・ルームシェア)
@@ -127,6 +85,19 @@ export const DUMMY_PROPERTIES: TourProperty[] = [
  * 組み立てたもの。JSON の読み込みは lib/content.ts が持つ。
  * ------------------------------------------------------------------ */
 export type HouseholdKind = 'single' | 'couple' | 'family' | 'share'
+
+/**
+ * 話し方と着眼点。同じ物件でも人によって見るところと言い回しが違う。
+ * ponytail: いまは年齢とIDから機械的に決めている。content 側のキャラJSONに
+ * `voice: { style, focus }` を持たせたら toTourMember がそのまま流し込むだけでよい。
+ */
+export type VoiceStyle = 'polite' | 'casual' | 'kid' | 'elder' | 'gruff'
+
+export interface MemberVoice {
+  style: VoiceStyle
+  /** 家を見るときに真っ先に見るところ(通勤・日当たり・庭・段差 など) */
+  focus: string
+}
 
 /** 世帯のメンバー1人分の希望 */
 export interface TourMember {
@@ -137,6 +108,20 @@ export interface TourMember {
   demands: string
   likedFeatures: string[]
   dislikedFeatures: string[]
+  voice: MemberVoice
+}
+
+const FOCUS_POOL = ['通勤のしやすさ', '日当たり', '間取りの使い勝手', '静かさ', '庭と外まわり', '段差と動線']
+
+/** content に voice が無いあいだの割り当て。年齢で口調、IDで着眼点を散らす */
+export function defaultVoice(id: string, age: number, likedFeatures: string[]): MemberVoice {
+  const style: VoiceStyle =
+    age > 0 && age <= 12
+      ? 'kid'
+      : age >= 65
+        ? 'elder'
+        : (['polite', 'casual', 'gruff'] as const)[hash(`v/${id}`) % 3]
+  return { style, focus: likedFeatures[0] ?? FOCUS_POOL[hash(`f/${id}`) % FOCUS_POOL.length] }
 }
 
 export interface TourHousehold {
@@ -158,15 +143,20 @@ export function toTourMember(c: {
   id: string
   name: string
   age?: number
+  /** content 側で口調を持たせたらここに入る(無ければ defaultVoice) */
+  voice?: MemberVoice
   moveIn?: { demands: string; likedFeatures: string[]; dislikedFeatures: string[] }
 }): TourMember {
+  const age = c.age ?? 0
+  const likedFeatures = c.moveIn?.likedFeatures ?? []
   return {
     id: c.id,
     name: c.name,
-    age: c.age ?? 0,
+    age,
     demands: c.moveIn?.demands ?? '特に希望はないです',
-    likedFeatures: c.moveIn?.likedFeatures ?? [],
+    likedFeatures,
     dislikedFeatures: c.moveIn?.dislikedFeatures ?? [],
+    voice: c.voice ?? defaultVoice(c.id, age, likedFeatures),
   }
 }
 
@@ -177,9 +167,11 @@ export const HP_MAX = 100
 /** 時間経過: この間隔で HP_DRAIN_PER_TICK ずつ減る */
 export const HP_TICK_MS = 3000
 export const HP_DRAIN_PER_TICK = 1
-/** 興味のない物件を案内したときの追加ダメージ(嫌がったメンバー1人につき・1物件1回まで) */
-export const HP_PENALTY_DISLIKE = 12
-/** 世帯全員が気に入った物件を案内したときの回復(メンバー1人につき) */
+/** はっきり嫌がったメンバー1人につき減る量(1物件1回まで) */
+export const HP_PENALTY_DISLIKE = 8
+/** 「ピンと来ない」1人につき減る量。内見の結果が「何も起きない」にならないようにする */
+export const HP_PENALTY_MEH = 4
+/** 気に入ったメンバー1人につき回復する量 */
 export const HP_BONUS_ALL_LIKE = 6
 /** 35条の質問に誤答したときのダメージ */
 export const HP_PENALTY_WRONG = 20
@@ -193,8 +185,10 @@ export function brokerageFee(p: TourProperty): number {
 
 /* ------------------------------------------------------------------ *
  * 住民の反応
+ * 内見の結果は必ず「機嫌が下がる」か「契約候補になる」のどちらか。
+ * 何も起きない結果は作らない(内見する意味がなくなるため)。
  * ------------------------------------------------------------------ */
-export type Mood = 'like' | 'neutral' | 'dislike'
+export type Mood = 'like' | 'meh' | 'dislike'
 
 export interface Reaction {
   mood: Mood
@@ -205,10 +199,82 @@ export interface Reaction {
   line: string
 }
 
-/** 物件の説明文(特徴+法的注意点+構造+用途地域)に keyword が含まれるか */
+/**
+ * 物件データから読み取れる「暗黙の特徴」。
+ * 物件の紹介文は言葉づかいがまちまちなので、数値から言える特徴を足してやらないと
+ * 「築浅がいい」「静かがいい」といった要望と噛み合わない。
+ */
+export function derivedFeatures(p: TourProperty): string[] {
+  const text = [...p.features, ...p.legalNotes].join('/')
+  const out: string[] = []
+  if (p.ageYears <= 15) out.push('築浅')
+  if (p.ageYears >= 30) out.push('築古')
+  if (p.rent <= 4) out.push('家賃が安い')
+  if (p.floors >= 2) out.push('2階建て')
+  else out.push('平屋', 'バリアフリー')
+  if (p.zoning.includes('低層住居') || p.zoning.includes('調整区域') || p.zoning.includes('農業'))
+    out.push('静か')
+  if (p.zoning.includes('商業') || p.zoning.includes('工業')) out.push('駅近', '事業用可')
+  if (text.includes('バス停') || text.includes('村役場') || text.includes('県道')) out.push('駅近')
+  if (text.includes('庭') || text.includes('畑') || text.includes('農')) out.push('広い庭')
+  if (text.includes('畑') || text.includes('農地')) out.push('畑付き')
+  if (text.includes('店舗') || text.includes('事務所') || text.includes('作業')) out.push('事業用可')
+  if (text.includes('駐車') || text.includes('駐輪')) out.push('駐車場あり')
+  if (p.structure.includes('RC')) out.push('防音')
+  if (text.includes('日当たり') || text.includes('南向き') || text.includes('南斜面'))
+    out.push('日当たり良好')
+  if (p.area >= 100) out.push('広い')
+  if (p.buildingCoverage >= 80) out.push('隣が近い')
+  if (text.includes('ペット不可')) return out
+  if (text.includes('庭') || p.zoning.includes('調整区域')) out.push('ペット可')
+  return out
+}
+
+/** 物件の説明文(特徴+法的注意点+構造+用途地域+暗黙の特徴)に keyword が含まれるか */
 function mentions(p: TourProperty, keyword: string): boolean {
-  const haystack = [...p.features, ...p.legalNotes, p.structure, p.zoning].join('/')
+  const haystack = [...p.features, ...p.legalNotes, ...derivedFeatures(p), p.structure, p.zoning].join('/')
   return haystack.includes(keyword)
+}
+
+/** 口調ごとの言い回し。同じ気分でも人によって言葉が変わる */
+interface Phrases {
+  like: (hits: string) => string
+  mixed: (hits: string, misses: string) => string
+  meh: (focus: string) => string
+  dislike: (misses: string) => string
+}
+
+const VOICES: Record<VoiceStyle, Phrases> = {
+  polite: {
+    like: (h) => `${h}なんですね! ここ、気に入りました`,
+    mixed: (h, m) => `${h}はいいですね。ただ、${m}のが引っかかります`,
+    meh: (f) => `${f}を見たかったんですが…この家は決め手に欠けますね`,
+    dislike: (m) => `${m}のはちょっと…私には難しいです`,
+  },
+  casual: {
+    like: (h) => `お、${h}じゃん! ここ好きだな`,
+    mixed: (h, m) => `${h}はアリ。でも${m}のがなあ`,
+    meh: (f) => `${f}は…まあ普通かな。決め手がないんだよね`,
+    dislike: (m) => `${m}のはナシだって。ここは無理`,
+  },
+  kid: {
+    like: (h) => `わー! ${h}だって! ここがいい!`,
+    mixed: (h, m) => `${h}はすき! でも${m}のはやだ`,
+    meh: (f) => `${f}、べつにふつう。つまんない`,
+    dislike: (m) => `やだ、${m}んだもん`,
+  },
+  elder: {
+    like: (h) => `${h}とは、ええ家じゃなあ`,
+    mixed: (h, m) => `${h}はええが、${m}のがのう`,
+    meh: (f) => `${f}がのう…わしにはどうもピンとこん`,
+    dislike: (m) => `${m}のはいかん。年寄りには堪えるよ`,
+  },
+  gruff: {
+    like: (h) => `${h}か。悪くない。ここでいい`,
+    mixed: (h, m) => `${h}は認める。だが${m}がな`,
+    meh: (f) => `${f}が物足りん。わざわざ来た甲斐がないな`,
+    dislike: (m) => `${m}のは無理だ。話にならん`,
+  },
 }
 
 /** メンバー1人の反応。予算は世帯合計で判定する */
@@ -218,17 +284,22 @@ export function reactionTo(m: TourMember, p: TourProperty, budget: number): Reac
   if (p.rent > budget) misses.push('家賃が高い')
 
   const score = hits.length - misses.length
-  const mood: Mood = score > 0 ? 'like' : score < 0 ? 'dislike' : 'neutral'
+  const mood: Mood = score > 0 ? 'like' : score < 0 ? 'dislike' : hits.length > 0 ? 'meh' : 'meh'
+  const v = VOICES[m.voice.style]
   const because = (xs: string[]) => xs.join('と')
 
   const line =
     mood === 'like'
-      ? `${because(hits)}なんですね! ここ、いいなあ。`
+      ? misses.length > 0
+        ? v.mixed(because(hits), because(misses))
+        : v.like(because(hits))
       : mood === 'dislike'
-        ? `うーん…${because(misses)}のはちょっと…。`
+        ? hits.length > 0
+          ? v.mixed(because(hits), because(misses))
+          : v.dislike(because(misses))
         : hits.length > 0
-          ? `${because(hits)}はいいけど、${because(misses)}のが引っかかるかな。`
-          : '悪くはないけど、ピンと来ないですね…。'
+          ? v.mixed(because(hits), because(misses))
+          : v.meh(m.voice.focus)
 
   return { mood, hits, misses, line }
 }
@@ -237,13 +308,17 @@ export function reactionTo(m: TourMember, p: TourProperty, budget: number): Reac
 export interface HouseholdReaction {
   /** メンバーごとの反応(household.members と同じ順) */
   each: { member: TourMember; reaction: Reaction }[]
-  /** 世帯としての総意。割れたら neutral */
+  /** 世帯としての総意 */
   mood: Mood
-  /** 嫌がったメンバー数(この人数分だけHPが減る) */
+  /** はっきり嫌がったメンバー数 */
   dislikes: number
-  /** 全員が気に入った */
-  allLike: boolean
-  /** 世帯としての一言(割れたときは折衷の言葉になる) */
+  /** ピンと来なかったメンバー数 */
+  mehs: number
+  /** 気に入ったメンバー数 */
+  likes: number
+  /** 契約候補にできる = 嫌がる人がおらず、気に入った人がいる */
+  candidate: boolean
+  /** 世帯としての一言 */
   line: string
 }
 
@@ -251,29 +326,31 @@ export function householdReaction(h: TourHousehold, p: TourProperty): HouseholdR
   const each = h.members.map((member) => ({ member, reaction: reactionTo(member, p, h.budget) }))
   const likers = each.filter((e) => e.reaction.mood === 'like')
   const haters = each.filter((e) => e.reaction.mood === 'dislike')
-  const allLike = likers.length === each.length
-  const mood: Mood =
-    allLike ? 'like' : haters.length > 0 && likers.length === 0 ? 'dislike' : 'neutral'
+  const mehs = each.filter((e) => e.reaction.mood === 'meh')
+  const candidate = haters.length === 0 && likers.length > 0
+  const mood: Mood = candidate ? 'like' : haters.length > 0 ? 'dislike' : 'meh'
 
   const names = (xs: typeof each) => xs.map((e) => e.member.name).join('と')
-  const line =
-    each.length === 1
-      ? each[0].reaction.line
-      : allLike
-        ? `${names(each)}「ここ、みんな気に入りました!」`
-        : likers.length > 0 && haters.length > 0
-          ? `${names(likers)}は乗り気だが、${names(haters)}は渋い顔だ。折り合いをつけたいところ。`
-          : haters.length > 0
-            ? `${names(haters)}「…この家はちょっと」`
-            : '世帯そろって、可もなく不可もなくという顔をしている。'
+  const line = candidate
+    ? each.length === 1
+      ? `${names(likers)}はこの家が気に入ったようだ。契約に進める。`
+      : `${names(likers)}が乗り気だ。反対する人もいない — この物件なら契約に進める。`
+    : haters.length > 0 && likers.length > 0
+      ? `${names(likers)}は乗り気だが、${names(haters)}が首を振っている。折り合わない物件は疲れるだけだ。`
+      : haters.length > 0
+        ? `${names(haters)}「…この家はちょっと」`
+        : `${names(mehs)}は反応が薄い。決め手のない内見に付き合わせた分、疲れが出た。`
 
-  return { each, mood, dislikes: haters.length, allLike, line }
+  return { each, mood, dislikes: haters.length, mehs: mehs.length, likes: likers.length, candidate, line }
 }
 
-/** 1物件あたりのHP増減。全員 like なら人数分プラス、嫌がった人数分だけマイナス */
+/**
+ * 1物件あたりのHP増減。0にはならない:
+ * 契約候補 → 気に入った人数分プラス / それ以外 → 嫌がった人+ピンと来ない人の分だけマイナス
+ */
 export function hpDeltaFor(hr: HouseholdReaction): number {
-  if (hr.allLike) return HP_BONUS_ALL_LIKE * hr.each.length
-  return -HP_PENALTY_DISLIKE * hr.dislikes
+  if (hr.candidate) return HP_BONUS_ALL_LIKE * hr.likes
+  return -(hr.dislikes * HP_PENALTY_DISLIKE + hr.mehs * HP_PENALTY_MEH)
 }
 
 /* ------------------------------------------------------------------ *
@@ -416,15 +493,15 @@ export function disclosureFor(p: TourProperty): DisclosureItem[] {
 
 /* ------------------------------------------------------------------ *
  * 状態機械
+ * 物件を回るところ(map)はマップ側 = TownView が主役なので、ここでは
+ * 「案内中である」という状態と内見の加減点だけを持つ。
  * ------------------------------------------------------------------ */
 export type TourPhase =
-  /** 会社での面談(要望を聞く) */
+  /** 会社での面談(要望を聞く)。オーバーレイ */
   | { kind: 'briefing'; line: number }
-  /** 物件を回る */
-  | { kind: 'visit'; index: number; step: 'spec' | 'reaction' | 'hageta' }
-  /** 契約する物件を選ぶ */
-  | { kind: 'choose'; sel: number }
-  /** 35条書面の読み上げ */
+  /** マップ上を連れ回して物件を見せる */
+  | { kind: 'map' }
+  /** 35条書面の読み上げ。オーバーレイ */
   | { kind: 'disclosure'; index: number; step: 'read' | 'question' | 'feedback'; sel: number; correct: boolean }
   /** 契約成立 or 失敗 */
   | { kind: 'done'; success: boolean }
@@ -436,15 +513,18 @@ export interface EarnedMemo {
 
 export interface TourState {
   household: TourHousehold
-  properties: TourProperty[]
   hp: number
   phase: TourPhase
-  /** 加減点済みの物件(同じ物件で二重に増減させない) */
+  /** 内見済みの物件。同じ物件では二度とHPが動かない */
   scored: string[]
-  contractedId: string | null
+  /** 契約に進める物件(世帯が気に入った物件) */
+  candidates: string[]
+  /** 直前に内見した物件(追従キャラの「さっきの家どうだった?」に使う) */
+  lastVisited: TourProperty | null
+  contracted: TourProperty | null
   /** 成立時の報酬(万円) */
   reward: number
-  /** 発生したメモ。呼び出し側が新着分を onMemoEarned で拾う */
+  /** 発生したメモ。呼び出し側が新着分を拾う */
   memos: EarnedMemo[]
 }
 
@@ -455,6 +535,10 @@ export type TourAction =
   | { type: 'move'; delta: number }
   /** 時間経過 */
   | { type: 'tick' }
+  /** マップ上で物件を内見した */
+  | { type: 'inspect'; property: TourProperty }
+  /** 内見済みの物件で契約に進む */
+  | { type: 'contract'; property: TourProperty }
 
 const KIND_LABEL: Record<HouseholdKind, string> = {
   single: '単身',
@@ -470,17 +554,19 @@ export function briefingLines(h: TourHousehold): string[] {
     `${h.label}「${h.moveReason}んです」`,
     ...h.members.map((m) => `${m.name}(${m.age}歳)「${m.demands}」`),
     `ハゲタ「予算は世帯で月${h.budget}万円までだ。全員の希望に折り合いをつけろよ」`,
+    `ハゲタ「${h.label}を連れて村を回れ。建物を向いてスペースで物件の話ができる」`,
   ]
 }
 
-export function initTour(household: TourHousehold, properties: TourProperty[]): TourState {
+export function initTour(household: TourHousehold): TourState {
   return {
     household,
-    properties,
     hp: HP_MAX,
     phase: { kind: 'briefing', line: 0 },
     scored: [],
-    contractedId: null,
+    candidates: [],
+    lastVisited: null,
+    contracted: null,
     reward: 0,
     memos: [],
   }
@@ -495,9 +581,14 @@ function applyHp(s: TourState, delta: number): TourState {
 
 const damage = (s: TourState, amount: number) => applyHp(s, -amount)
 
-function startVisit(s: TourState, index: number): TourState {
-  if (index >= s.properties.length) return { ...s, phase: { kind: 'choose', sel: 0 } }
-  return { ...s, phase: { kind: 'visit', index, step: 'spec' } }
+/** その物件はもう内見済みか(2回目以降はHPが動かない) */
+export function isInspected(s: TourState, propertyId: string): boolean {
+  return s.scored.includes(propertyId)
+}
+
+/** 世帯が気に入った物件か(契約に進めるのはここだけ) */
+export function isCandidate(s: TourState, propertyId: string): boolean {
+  return s.candidates.includes(propertyId)
 }
 
 export function tourReducer(s: TourState, a: TourAction): TourState {
@@ -506,11 +597,33 @@ export function tourReducer(s: TourState, a: TourAction): TourState {
 
   if (a.type === 'tick') return damage(s, HP_DRAIN_PER_TICK)
 
-  if (a.type === 'move') {
-    if (ph.kind === 'choose') {
-      const n = s.properties.length
-      return { ...s, phase: { ...ph, sel: (ph.sel + a.delta + n) % n } }
+  if (a.type === 'inspect') {
+    if (ph.kind !== 'map') return s
+    const p = a.property
+    const next = { ...s, lastVisited: p }
+    if (isInspected(s, p.id)) return next
+    const hr = householdReaction(s.household, p)
+    return applyHp(
+      {
+        ...next,
+        scored: [...s.scored, p.id],
+        candidates: hr.candidate ? [...s.candidates, p.id] : s.candidates,
+      },
+      hpDeltaFor(hr),
+    )
+  }
+
+  if (a.type === 'contract') {
+    // 気に入っていない物件では契約に進めない
+    if (ph.kind !== 'map' || !isCandidate(s, a.property.id)) return s
+    return {
+      ...s,
+      contracted: a.property,
+      phase: { kind: 'disclosure', index: 0, step: 'read', sel: 0, correct: false },
     }
+  }
+
+  if (a.type === 'move') {
     if (ph.kind === 'disclosure' && ph.step === 'question') {
       const n = disclosureFor(contractedProperty(s)).at(ph.index)?.question.choices.length ?? 3
       return { ...s, phase: { ...ph, sel: (ph.sel + a.delta + n) % n } }
@@ -523,44 +636,16 @@ export function tourReducer(s: TourState, a: TourAction): TourState {
     case 'briefing': {
       const lines = briefingLines(s.household)
       if (ph.line + 1 < lines.length) return { ...s, phase: { kind: 'briefing', line: ph.line + 1 } }
-      // 引越し理由に紐づくメモを獲得
-      return startVisit(
-        {
-          ...s,
-          memos: [...s.memos, { topicId: s.household.topicId, title: `${s.household.label}の引越し理由` }],
-        },
-        0,
-      )
-    }
-
-    case 'visit': {
-      const p = s.properties[ph.index]
-      if (ph.step === 'spec') return { ...s, phase: { ...ph, step: 'reaction' } }
-      if (ph.step === 'reaction') {
-        // 嫌がったメンバーの人数分だけ減り、全員が気に入れば人数分回復(同じ物件では1回だけ)
-        const delta = hpDeltaFor(householdReaction(s.household, p))
-        const first = !s.scored.includes(p.id)
-        const next = first && delta !== 0 ? applyHp({ ...s, scored: [...s.scored, p.id] }, delta) : s
-        if (next.phase.kind === 'done') return next
-        const comment = hagetaCommentFor(p, s.household.id)
-        if (!comment) return startVisit(next, ph.index + 1)
-        return {
-          ...next,
-          memos: [...next.memos, { topicId: comment.topicId, title: comment.title }],
-          phase: { ...ph, step: 'hageta' },
-        }
-      }
-      return startVisit(s, ph.index + 1)
-    }
-
-    case 'choose': {
-      const p = s.properties[ph.sel]
+      // 引越し理由に紐づくメモを獲得して、マップへ出る
       return {
         ...s,
-        contractedId: p.id,
-        phase: { kind: 'disclosure', index: 0, step: 'read', sel: 0, correct: false },
+        memos: [...s.memos, { topicId: s.household.topicId, title: `${s.household.label}の引越し理由` }],
+        phase: { kind: 'map' },
       }
     }
+
+    case 'map':
+      return s
 
     case 'disclosure': {
       const p = contractedProperty(s)
@@ -579,6 +664,37 @@ export function tourReducer(s: TourState, a: TourAction): TourState {
   }
 }
 
+/** 契約対象の物件。disclosure/done でしか呼ばない */
 export function contractedProperty(s: TourState): TourProperty {
-  return s.properties.find((p) => p.id === s.contractedId) ?? s.properties[0]
+  if (!s.contracted) throw new Error('契約対象の物件が決まっていない')
+  return s.contracted
+}
+
+/* ------------------------------------------------------------------ *
+ * 追従キャラに話しかけたときのセリフ
+ * ------------------------------------------------------------------ */
+
+/**
+ * 状況に応じて出し分ける:
+ * 1. 機嫌が悪い → 疲れたと言う
+ * 2. 直前に見た物件がある → その感想(人によって違う)
+ * 3. それ以外 → 要望の再確認 or 雑談(人によって違う)
+ */
+export function followerLine(s: TourState, m: TourMember): string {
+  const h = s.household
+  if (s.hp <= HP_MAX * 0.4) return 'そろそろ疲れてきました…。今日はあと1、2軒にしませんか'
+
+  if (s.lastVisited) {
+    const r = reactionTo(m, s.lastVisited, h.budget)
+    return `さっき見た${s.lastVisited.name}ですけど… ${r.line}`
+  }
+
+  const smallTalk = [
+    `${h.moveReason}んです。いい家が見つかるといいなあ`,
+    'この村、思ったより広いんですね。歩くだけで楽しいです',
+    `${m.voice.focus}だけは譲れないんですよ、ほんとうに`,
+  ]
+  return hash(`talk/${m.id}`) % 2 === 0
+    ? `もう一度言いますね。${m.demands}`
+    : smallTalk[hash(`st/${m.id}/${h.id}`) % smallTalk.length]
 }

@@ -21,6 +21,14 @@ import {
   propertyIdAt,
 } from '../../lib/map'
 import { propertyById } from '../../lib/properties'
+import {
+  SCATTER_IDLE_MS,
+  advanceTrail,
+  followerPositions,
+  scatterPositions,
+  trailLength,
+} from '../../lib/follower'
+import type { Follower, Pos } from '../../lib/follower'
 import { PropertyPanel } from '../property/PropertyPanel'
 import './town.css'
 
@@ -33,7 +41,17 @@ interface Props {
   inputLocked: boolean
   /** 会社(ひばり不動産)の頭上に「!」を出す(新しい転入者のサイン) */
   companyAlert?: boolean
+  /** 主人公のすぐ後ろを一列でついてくるもの(案内中の世帯・ハゲ田のメモ) */
+  followers?: readonly Follower[]
+  /** 建物ID → 埋まっている戸数(物件パネルに入居状況を出す) */
+  occupancy?: Readonly<Record<string, number>>
+  /** 住民ID → 契約した家の前の立ち位置。無ければ既定の立ち位置 */
+  homeSpots?: Readonly<Record<string, [number, number]>>
   onTapCharacter: (c: Character) => void
+  /** 追従キャラに隣接して向いてスペース */
+  onTalkFollower?: (f: Follower) => void
+  /** 建物・看板の物件パネルを閉じたとき(案内中なら内見するか聞く) */
+  onPropertyViewed?: (propertyId: string) => void
 }
 
 const KEY_DIR: Record<string, [number, number, Facing]> = {
@@ -56,19 +74,49 @@ export function TownView({
   alertIds,
   inputLocked,
   companyAlert = false,
+  followers = [],
+  occupancy = {},
+  homeSpots = {},
   onTapCharacter,
+  onTalkFollower,
+  onPropertyViewed,
 }: Props) {
   const [player, setPlayer] = useState<[number, number]>(START_POS)
   const [facing, setFacing] = useState<Facing>('up')
   /** 歩数。1歩ごとに増やして足を踏み替える */
   const [step, setStep] = useState(0)
   const [openProperty, setOpenProperty] = useState<string | null>(null)
+  /** 主人公が通ったタイルの履歴(先頭が現在地)。後続はこれを1歩ずれでたどる */
+  const [trail, setTrail] = useState<Pos[]>([START_POS])
+
+  // 1歩動くたびに足跡を伸ばす。同じタイルなら advanceTrail が何もしない
+  useEffect(() => {
+    setTrail((t) => advanceTrail(t, player, trailLength(followers.length)))
+  }, [player, followers.length])
+
+  // 立ち止まると隊列がほどけて主人公の周りに広がる(全員に話しかけられるように)
+  const [idle, setIdle] = useState(false)
+  useEffect(() => {
+    setIdle(false)
+    const id = setTimeout(() => setIdle(true), SCATTER_IDLE_MS)
+    return () => clearTimeout(id)
+  }, [player, followers.length])
+
+  const followerAt = new Map<string, Follower>()
+  const followerSpots = idle
+    ? scatterPositions(player, followers.length, (x, y) => inBounds(x, y) && !isSolid(x, y))
+    : followerPositions(trail, followers.length)
+  followers.forEach((f, i) => {
+    const [fx, fy] = followerSpots[i]
+    // 先頭を優先(団子のときは先頭の1人と話す)
+    if (!followerAt.has(`${fx},${fy}`)) followerAt.set(`${fx},${fy}`, f)
+  })
 
   // 住民は悩みに合った建物の前へ。未登録のIDは予備の立ち位置に回す
   let spare = 0
   const residents = characters.map((c) => ({
     character: c,
-    spot: RESIDENT_SPOTS[c.id] ?? SPARE_SPOTS[spare++ % SPARE_SPOTS.length],
+    spot: homeSpots[c.id] ?? RESIDENT_SPOTS[c.id] ?? SPARE_SPOTS[spare++ % SPARE_SPOTS.length],
   }))
 
   const panelOpen = openProperty !== null
@@ -104,29 +152,43 @@ export function TownView({
           onTapCharacter(faced)
           return [x, y]
         }
-        // 2. 向いている先が建物 or 空き地の看板 → 物件ステータス
+        // 2. 向いている先に追従キャラ → 会話
+        const facedFollower = followerAt.get(`${fx},${fy}`)
+        if (facedFollower) {
+          onTalkFollower?.(facedFollower)
+          return [x, y]
+        }
+        // 3. 向いている先が建物 or 空き地の看板 → 物件ステータス
         const propId = propertyIdAt(fx, fy)
         if (propId) {
           setOpenProperty(propId)
           return [x, y]
         }
-        // 3. 向きが合っていなくても隣の住民とは話せる(取り回し優先)
-        const neighbor = [
+        // 4. 向きが合っていなくても隣の住民・追従キャラとは話せる(取り回し優先)
+        const around = [
           [x, y - 1],
           [x, y + 1],
           [x - 1, y],
           [x + 1, y],
-        ]
+        ] as const
+        const neighbor = around
           .map(([nx, ny]) => residentAt.get(`${nx},${ny}`))
           .find((c) => c !== undefined)
-        if (neighbor) onTapCharacter(neighbor)
+        if (neighbor) {
+          onTapCharacter(neighbor)
+          return [x, y]
+        }
+        const nearFollower = around
+          .map(([nx, ny]) => followerAt.get(`${nx},${ny}`))
+          .find((f) => f !== undefined)
+        if (nearFollower) onTalkFollower?.(nearFollower)
         return [x, y]
       })
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
     // residents は characters から導出で毎回同値
-  }, [inputLocked, panelOpen, facing, characters, onTapCharacter]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [inputLocked, panelOpen, facing, characters, onTapCharacter, onTalkFollower, followers, trail, idle]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const openSpec = openProperty === null ? undefined : propertyById(openProperty)
 
@@ -228,6 +290,28 @@ export function TownView({
             </button>
           ))}
 
+          {/* 追従キャラ。当たり判定は持たない(主人公も住民もすり抜ける) */}
+          {followers.map((f, i) => {
+            const [fx, fy] = followerSpots[i]
+            return (
+              <div
+                key={f.id}
+                className="follower"
+                style={{ '--fx': fx, '--fy': fy } as CSSProperties}
+                aria-label={f.name ?? 'ハゲ田のメモ'}
+              >
+                {f.kind === 'member' ? (
+                  <span className="char-sprite" style={characterSpriteStyle(f.id)} />
+                ) : (
+                  // ponytail: Kenney の素材に本らしいタイルが無かったので、
+                  // 背表紙付きの小さな四角をCSSで描いて代用している
+                  <span className="follower-book" />
+                )}
+                {f.name && <span className="resident-name">{f.name}</span>}
+              </div>
+            )
+          })}
+
           <div className="player" aria-label="主人公">
             <span className="char-sprite player-sprite" style={playerSpriteStyle(gender, facing, step)} />
           </div>
@@ -235,10 +319,19 @@ export function TownView({
       </div>
 
       <p className="town-help">
-        矢印キーで移動 / 住民のとなりでスペースで会話 / 建物・看板を向いてスペースで物件情報
+        矢印キーで移動 / 住民・連れのとなりでスペースで会話 / 建物・看板を向いてスペースで物件情報
       </p>
 
-      {openSpec && <PropertyPanel spec={openSpec} onClose={() => setOpenProperty(null)} />}
+      {openSpec && (
+        <PropertyPanel
+          spec={openSpec}
+          occupied={occupancy[openSpec.id] ?? 0}
+          onClose={() => {
+            setOpenProperty(null)
+            onPropertyViewed?.(openSpec.id)
+          }}
+        />
+      )}
     </section>
   )
 }

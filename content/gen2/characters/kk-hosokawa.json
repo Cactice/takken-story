@@ -1,0 +1,24 @@
+{
+  "id": "kk-hosokawa",
+  "name": "細川",
+  "sprite": "sprites/kk-hosokawa.png",
+  "generation": 2,
+  "appearsIn": [
+    2,
+    4
+  ],
+  "age": 57,
+  "gender": "male",
+  "romanceable": false,
+  "personality": "57歳。分譲マンションの管理組合理事長。理屈っぽく几帳面で、総会の議事録を十年ぶん保管している。区分所有者どうしの揉め事を、なんとか話し合いで収めようとする苦労人。",
+  "motive": "住民同士がやり合わずに済む建物にすること。",
+  "weakness": "調整に疲れて、たまに全部投げ出したくなる。",
+  "catchphrase": "…では、丁寧に話し合うしかありませんな。",
+  "relations": [
+    {
+      "characterId": "kk-hayama",
+      "kind": "neighbor",
+      "note": "同じマンションの住人"
+    }
+  ]
+}

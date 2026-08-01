@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "check": "node scripts/check-tour.mjs && node scripts/check-coverage.mjs",
+    "check": "node scripts/check-tour.mjs && node scripts/check-follower.mjs && node scripts/check-coverage.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -20,6 +20,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
     "oxlint": "^1.75.0",
+    "playwright": "^1.62.1",
     "typescript": "~6.0.2",
     "vite": "^8.2.0"
   }

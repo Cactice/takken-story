@@ -2,10 +2,18 @@
   "id": "nc-gen",
   "name": "ゲンさん",
   "sprite": "sprites/nc-gen.png",
-  "personality": "45歳。脱サラして就農するために村へ。無口だが土の話になると止まらない。",
+  "generation": 1,
   "age": 45,
   "gender": "male",
   "romanceable": false,
+  "personality": "45歳。脱サラして就農するために村へ。無口だが土の話になると止まらない。",
+  "relations": [
+    {
+      "characterId": "tanaka",
+      "kind": "mentor",
+      "note": "ポッポさんに畑を教わっている"
+    }
+  ],
   "moveIn": {
     "demands": "畑付きの家がいい。野菜を作りながら暮らしたいんだ",
     "likedFeatures": [

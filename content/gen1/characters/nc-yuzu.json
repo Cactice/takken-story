@@ -2,10 +2,18 @@
   "id": "nc-yuzu",
   "name": "ユズ",
   "sprite": "sprites/nc-yuzu.png",
-  "personality": "24歳。イラストレーター。在宅仕事なので、駅よりも作業できる広さがほしい。",
+  "generation": 1,
   "age": 24,
   "gender": "female",
   "romanceable": false,
+  "personality": "24歳。イラストレーター。在宅仕事なので、駅よりも作業できる広さがほしい。",
+  "relations": [
+    {
+      "characterId": "nc-jin",
+      "kind": "roommate",
+      "note": "家賃を折半するルームシェア相手"
+    }
+  ],
   "moveIn": {
     "demands": "部屋が分かれていて、広さのある家がいいです",
     "likedFeatures": [

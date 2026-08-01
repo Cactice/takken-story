@@ -1,0 +1,27 @@
+{
+  "id": "minuma-haru",
+  "name": "見沼 ハル",
+  "sprite": "sprites/minuma-haru.png",
+  "generation": 1,
+  "age": 63,
+  "gender": "female",
+  "family": "見沼家",
+  "romanceable": false,
+  "initialResident": true,
+  "personality": "63歳。茂の妻。村じゅうの噂が集まってくる人で、誰が誰に何を貸したかを全部覚えている。「あらあら」が口癖。当人にとっては世間話でも、後の世代にとっては貴重な証言になる。",
+  "motive": "村の人間関係を波立てずに回したい。餅は配って歩くもの、という考え。",
+  "weakness": "口が軽い。悪気なく漏らした一言が、家どうしの溝を広げることがある。",
+  "catchphrase": "あらあら、聞いた? あの話。",
+  "relations": [
+    {
+      "characterId": "minuma-shigeru",
+      "kind": "spouse",
+      "note": "夫"
+    },
+    {
+      "characterId": "suzuki-nao",
+      "kind": "neighbor",
+      "note": "隣の奥さん。世間話はするが、少し距離がある"
+    }
+  ]
+}

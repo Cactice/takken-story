@@ -1,0 +1,29 @@
+{
+  "id": "hageta-mio",
+  "name": "ハゲ田 澪",
+  "sprite": "sprites/hageta-mio.png",
+  "generation": 4,
+  "appearsIn": [
+    4
+  ],
+  "age": 28,
+  "gender": "female",
+  "family": "ハゲ田家",
+  "romanceable": false,
+  "personality": "28歳。ハゲ田家の三代目で、初代・二代目と違って髪はふさふさ。村のひばり不動産を親に任せ、免許を取り消された主人公の会社を助けるため黒会市へ出てきた。歯に衣着せず、身内の甘さを一番に指摘する。",
+  "motive": "祖父の代から続く縁を、潰れかけた会社ごと立て直すこと。",
+  "weakness": "「ハゲ田家なのに禿げていない」といじられ続け、家名への引け目がある。",
+  "catchphrase": "…そういうことを言い出すから、うちの会社は潰れかけたんですよ。",
+  "relations": [
+    {
+      "characterId": "kk-todoroki",
+      "kind": "business",
+      "note": "再建で組む建設会社の社長"
+    },
+    {
+      "characterId": "kk-yano",
+      "kind": "business",
+      "note": "市役所の窓口担当"
+    }
+  ]
+}

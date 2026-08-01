@@ -49,16 +49,25 @@ content/
 
 ---
 
-## イベント `content/events/*.json`
+## イベント `content/gen<N>/events/<kind>/*.json`
+
+> **現在のデータの形**: 会話は `dialogue: string[]`(メンターの行は `ハゲタ「…」` で始め、表示時に
+> その世代のメンター名へ置換する)、試験問題は `choices` / `correctChoice` / `explanation`、
+> 主人公の説明は `playerLines`、感謝は `thanksLine`、解決後は `resolvedLine` を使っている。
+> 下の `script` / `quiz` / `memo` は**移行先の目標形**。移行するときも
+> `id` / `topicId` / `choices` / `correctChoice` / `explanation` の**法的な結論は変えない**こと。
 
 ```jsonc
 {
   "id": "ev-minpo-souzoku",              // 一意。ファイル名と一致させる
   "topicId": "minpo-souzoku",            // content/topics.md の論点ID
   "title": "遺産の分け方",                 // メモ・試験結果画面での見出し
-  "generation": 1,                        // 対象世代(省略時は全世代)
+  "generation": 1,                        // 対象世代。フォルダ gen<N> と一致させる
+  "kind": "trouble",                      // イベントの種類。フォルダ名と一致させる(下表)
+  "category": ["kenri"],                  // 分野。複数該当してよい kenri|gyoho|hourei|zei
+  "minAffection": 24,                     // 任意。親密度がこれ以上でないと発生しない(恋愛・打ち明け話)
 
-  "cast": ["kr-yoshie", "kr-genta"],     // 登場するキャラID(1人以上)
+  "cast": ["kr-yoshie", "kr-genta"],     // 登場するキャラID(1人以上)。先頭 = characterId(主役)
   "places": ["house-yoshie"],            // 関係する建物・土地ID(0件以上)
   "trigger": {                            // 発生条件
     "type": "talk",                       // talk | enterBuilding | company | date
@@ -94,13 +103,47 @@ content/
 }
 ```
 
+### `kind`(イベントの種類 = フォルダ名)
+分野ではなく**出来事の種類**で分ける。種類ごとに空白ができないよう配分する。
+
+| kind | 内容 | 主に受け持つ論点 |
+|---|---|---|
+| `trouble` | 住民の悩み・トラブル相談 | 民法全般、用途地域など生活に触れるもの |
+| `newcomer` | 転入(世帯の面談・物件案内) | 売買の基本、保証、建蔽率、借家 |
+| `work` | 会社の仕事(重説の読み上げ、媒介契約、広告、報酬計算) | 35条・37条・媒介・報酬・広告規制 |
+| `business` | 会社の制度(免許、営業保証金、保証協会、帳簿・名簿、監督処分) | 住民の悩みには絶対にならない業法の論点 |
+| `village` | 村の出来事(寄合、祭り、空き家、まちづくり) | 不法行為、土地の知識、農地法 |
+| `dispute` | 揉め事・争い(境界、相続争い、法廷) | 時効、共有、物権変動、登記 |
+| `life` | 主人公の人生(家賃、引越し、結婚、出産、世代交代) | 賃貸借の基本など |
+| `farewell` | 別れ(住民の死・退去) | 相続、原状回復 |
+| `romance` | 恋愛(親密度で進む会話、デート) | 兼用住宅、共有名義など「二人の住まい」の論点 |
+| `season` | 時勢(地価公示、統計、税制改正、災害) | 統計、地価公示、建物の知識、国土法 |
+
 ### `speaker` の値
 | 値 | 意味 |
 |---|---|
-| キャラID(`kr-yoshie` 等) | `content/characters/` の住民 |
+| キャラID(`kr-yoshie` 等) | `content/gen<N>/characters/` の人物 |
 | `"player"` | 主人公(名前・見た目はプレイヤーの選択に従う) |
 | `"mentor"` | 上司。**1世代目=ハゲ田社長、2世代目以降=父または母**。表示時に解決する |
 | `"narration"` | 地の文(話者名なし) |
+
+> `dialogue: string[]` を使っている現行データでは、メンターの行を `ハゲタ「…」` で書き、
+> 表示時にその世代のメンター名へ置換する(docs/GAME_DESIGN.md)。
+
+### 恋愛イベント(`kind: "romance"`)の追加フィールド
+恋愛は別カテゴリではなく**イベントの一種**。上記の共通フィールドに加えて、親密度のはしごを持つ:
+
+```jsonc
+{
+  "minAffection": 24,
+  "stages": [{ "minAffection": 0, "lines": ["…"] }],  // 親密度ごとの日常会話
+  "houseInviteLines": ["…"],                          // 家を見に行きたいと言い出す
+  "idealHome": { "description": "…", "likedFeatures": [], "dislikedFeatures": [] },
+  "reactions": { "good": [], "bad": [], "neutral": [] }, // 内見中の反応({feature} を差し込む)
+  "proposalLines": ["…"]
+}
+```
+デート(物件巡り)の中でもメンターが法的な話をし、`choices` / `explanation` で学習が成立する。
 
 ### `script[].effect`(任意)
 | 値 | 意味 |
@@ -121,20 +164,36 @@ content/
 
 ---
 
-## キャラクター `content/characters/*.json`
+## キャラクター `content/gen<N>/characters/*.json`
 
 ```jsonc
 {
   "id": "kr-yoshie",
   "name": "シルビア",
   "sprite": "villager-03",       // スプライト識別子
-  "personality": "68歳。元呉服店の未亡人。上品な口調",
+  "generation": 1,               // 初登場の世代。フォルダ gen<N> と一致させる
+  "appearsIn": [2, 4, 5],        // 任意。複数世代に登場する人物(海沢・見沼冴など)
   "age": 68,                      // 年齢(時間経過で加齢。死亡イベントの基準)
   "gender": "female",
+  "family": "見沼家",             // 任意。世代をまたぐ一族(見沼家・鈴木家・ハゲ田家)
   "romanceable": false,
-  "home": "house-yoshie"         // 住んでいる建物ID(近くに配置される)
+  "initialResident": true,        // 任意。ゲーム開始時から村にいる(既定は false。契約成立で増える)
+  "home": "house-yoshie",        // 住んでいる建物ID(近くに配置される)
+
+  // --- 人物を「論点の入れ物」にしないための項目 ---
+  "personality": "68歳。元呉服店の未亡人。おっとりして見えるが店を三十年一人で回した芯の強さがある。「〜ですのよ」",
+  "motive": "家をきちんと誰かに渡し、身軽になって余生を過ごしたい",   // その人が何をしたいか
+  "weakness": "思い出のある物を手放す決心が、いつも一歩手前で鈍る",   // 弱さ・欠点
+  "catchphrase": "あらまあ、そうですのね。",                          // 口癖
+  "relations": [                                                      // 人物どうしの関係
+    { "characterId": "hinata", "kind": "friend", "note": "孫のようにかわいがっている" }
+  ]
 }
 ```
+
+`relations[].kind` の例: `spouse` / `parent` / `child` / `family-like` / `friend` / `neighbor` /
+`landlord` / `tenant` / `client` / `business` / `mentor` / `ally` / `rival` / `feud` / `distrust` / `trouble` / `roommate` / `fiance`。
+**一人の人物のファイルは一つだけ**(IDの重複を避けるため)。複数世代に出る人物は `appearsIn` で示す。
 
 ## 物件・土地 `content/places/*.json`
 
@@ -192,25 +251,10 @@ content/
 **メンバーごとに希望が食い違ってよい**(夫は駅近・妻は静か)。折り合う物件を探すのがゲーム性。
 契約成立で**世帯全員が村の住民になる**。
 
-## 恋愛 `content/romance/*.json`
-```jsonc
-{
-  "characterId": "hinata",
-  "stages": [
-    { "minAffection": 0,  "lines": ["おはよう!今日もいい天気だね"] },
-    { "minAffection": 3,  "lines": ["最近よく話すね。ちょっと嬉しいかも"] },
-    { "minAffection": 6,  "lines": ["実はね…将来のこと考えることがあるんだ"] },
-    { "minAffection": 10, "lines": ["ねえ、いい家って…どんなのだと思う?"] }
-  ],
-  "houseInviteLines": ["ねえ、よかったら…家、見に行かない?"],
-  "idealHome": {
-    "description": "日当たりがよくて庭がある家",
-    "likedFeatures": ["日当たり良好", "庭付き"],
-    "dislikedFeatures": ["日当たり悪い", "騒音"]
-  },
-  "proposalLines": ["この家でなら…ずっと一緒に暮らせそう"]
-}
-```
+## 恋愛(`content/gen<N>/events/romance/*.json` へ統合済み)
+`content/romance/` は廃止。恋愛は **イベントの一種**(`kind: "romance"`)として events 配下に置く。
+形は「イベントの共通フィールド + 親密度のはしご」で、上の
+「恋愛イベント(`kind: "romance"`)の追加フィールド」を参照。
 
 ---
 
@@ -218,4 +262,11 @@ content/
 **すべて万円単位の整数**。`rent: 4` = 家賃4万円/月、`price: 1200` = 1200万円。円単位では持たない。
 
 ## 検証
-`npm run validate:content` で全JSONをスキーマ検証する(必須フィールド、話者IDの存在、topicId の存在、answer の範囲、参照先の place/character が実在するか)。
+```bash
+node scripts/check-coverage.mjs          # 検証のみ(不整合があれば exit 1)
+node scripts/check-coverage.mjs --write  # content/COVERAGE.md の対応表を再生成
+```
+検証項目: JSONがパースできるか / `id` とファイル名の一致 / id の重複 / `generation` とフォルダの一致 /
+`kind` とフォルダの一致 / `topicId` が topics.md に存在するか / `cast` の人物が実在するか /
+**イベントとキャラの世代ズレ**(gen1 のイベントが gen3 の人物を参照していないか。`appearsIn` を考慮) /
+人物IDの重複 / `relations` の参照先の実在 / 世帯 `memberIds` の実在 / 54論点の網羅。

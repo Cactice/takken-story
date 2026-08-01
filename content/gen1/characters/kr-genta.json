@@ -2,10 +2,26 @@
   "id": "kr-genta",
   "name": "ブルーノ",
   "sprite": "sprites/kr-genta.png",
-  "personality": "45歳。ブルーノ工務店の大工の棟梁。腕は確かで職人気質、声がでかい。現場のトラブルや建物まわりの法律のことで相談に来る。口調は「〜だべ!」「がっはっは!」と豪快。",
+  "generation": 1,
   "age": 45,
   "gender": "male",
   "romanceable": false,
+  "personality": "45歳。ブルーノ工務店の棟梁。声がでかく「〜だべ!」「がっはっは!」と豪快。腕は村一番だが、書類と役所が大の苦手で、いつも紙のことで誰かに助けてもらっている。",
+  "motive": "村に自分の建てた家を一軒でも多く残したい。",
+  "weakness": "若い衆を叱れない。現場の事故の責任をすべて自分でかぶろうとする。",
+  "catchphrase": "がっはっは! …と笑ってる場合じゃねえんだべ。",
+  "relations": [
+    {
+      "characterId": "hinata",
+      "kind": "client",
+      "note": "パン屋の建て替えを任されている"
+    },
+    {
+      "characterId": "nc-ume",
+      "kind": "trouble",
+      "note": "祭りの支度でけがをさせてしまった相手"
+    }
+  ],
   "moveIn": {
     "demands": "材木を置ける広い土地がいるべ! 古い家は自分で直すから構わんべ",
     "likedFeatures": [

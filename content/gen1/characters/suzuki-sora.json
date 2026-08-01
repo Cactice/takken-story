@@ -1,0 +1,38 @@
+{
+  "id": "suzuki-sora",
+  "name": "鈴木 ソラ",
+  "sprite": "sprites/suzuki-sora.png",
+  "generation": 1,
+  "age": 8,
+  "gender": "male",
+  "family": "鈴木家",
+  "romanceable": false,
+  "personality": "8歳。武男と奈緒の息子。虫とりが生きがいで、見沼家の裏山を勝手に自分の庭だと思っている。二階の窓から見沼家の屋根が見えるのが自慢。",
+  "motive": "カブトムシを飼う。庭のある家に住む。",
+  "weakness": "大人の言い争いの気配に敏感で、そういうときだけ黙る。",
+  "catchphrase": "ぼく、二階がいい!",
+  "relations": [
+    {
+      "characterId": "suzuki-takeo",
+      "kind": "parent",
+      "note": "父"
+    },
+    {
+      "characterId": "minuma-shigeru",
+      "kind": "neighbor",
+      "note": "「見沼のおじいちゃん」。裏山で会うと叱られるが嫌いではない"
+    }
+  ],
+  "moveIn": {
+    "demands": "庭でカブトムシ飼いたい!",
+    "likedFeatures": [
+      "広い庭",
+      "ペット可",
+      "日当たり良好"
+    ],
+    "dislikedFeatures": [
+      "RC造",
+      "防音"
+    ]
+  }
+}
