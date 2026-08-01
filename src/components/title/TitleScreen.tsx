@@ -4,12 +4,11 @@ import { playerSpriteStyle } from '../../lib/sprites'
 import './title.css'
 
 interface Props {
-  hasSave: boolean
   onStart: (gender: Gender) => void
-  onContinue: () => void
 }
 
-export function TitleScreen({ hasSave, onStart, onContinue }: Props) {
+// ponytail: 「つづきから」は当面なし(デバッグ中は毎回はじめから始めたい)。セーブ自体は続いている
+export function TitleScreen({ onStart }: Props) {
   const [gender, setGender] = useState<Gender>('male')
 
   return (
@@ -45,11 +44,6 @@ export function TitleScreen({ hasSave, onStart, onContinue }: Props) {
         <button type="button" className="pixel-btn" onClick={() => onStart(gender)}>
           はじめから
         </button>
-        {hasSave && (
-          <button type="button" className="pixel-btn pixel-btn-secondary" onClick={onContinue}>
-            つづきから
-          </button>
-        )}
       </div>
     </main>
   )

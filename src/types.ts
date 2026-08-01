@@ -10,6 +10,12 @@ export interface Character {
   age?: number
   gender?: Gender
   romanceable?: boolean
+  /** 雑談(ふだんの一言)。content 側の人物JSONから引く */
+  smallTalk?: string[]
+  /** 入居して間もない頃の一言(新居の話・引っ越しの感想) */
+  movedInLines?: string[]
+  /** 月ごとの一言。キーは "1"〜"12" */
+  seasonalLines?: Record<string, string[]>
   /** 転入時の希望(世帯で内見するときに使う) */
   moveIn?: {
     demands: string
@@ -102,6 +108,8 @@ export interface GameState {
   occupancy?: Record<string, number>
   /** 住民ID → 契約して住んでいる建物ID。マップの立ち位置に使う */
   residentHomes?: Record<string, string>
+  /** 住民ID → 村に来た日(daysElapsed)。引っ越したばかりかの判定に使う */
+  residentSince?: Record<string, number>
   /** オープニング(ハゲ田が自宅まで案内する演出)を見たか */
   openingDone?: boolean
   /** 選んだ世代(いまは第1世代のみ実装) */
