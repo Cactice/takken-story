@@ -148,3 +148,22 @@ export function arrivalStaging(members: StageActor[], near: Pos): Staging {
     ],
   }
 }
+
+/* ------------------------------------------------------------------ *
+ * 住民のうろつき(ポケモンのNPCと同じ、持ち場の周りを1歩ずつ)
+ * ------------------------------------------------------------------ */
+
+/** 持ち場からこれ以上離れない(探しに行けなくなるので遠出させない) */
+export const WANDER_RADIUS = 2
+
+/**
+ * うろつきの1歩。行けなければその場に留まる(たまに立ち止まって見える)。
+ * dir は 0〜3(上下左右)。乱数は呼び出し側が持つ = ここは純粋関数。
+ */
+export function wanderStep(base: Pos, cur: Pos, dir: number, canStand: CanStand): Pos {
+  const [dx, dy] = ([[0, -1], [0, 1], [-1, 0], [1, 0]] as const)[((dir % 4) + 4) % 4]
+  const next: Pos = [cur[0] + dx, cur[1] + dy]
+  if (!canStand(next[0], next[1])) return cur
+  if (distance(base, next) > WANDER_RADIUS) return cur
+  return next
+}

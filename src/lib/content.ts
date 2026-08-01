@@ -7,7 +7,12 @@ import type { HouseholdKind, TourHousehold } from './tour'
  * ファイル名は決め打ちせず、必ず glob で拾う(ファイルが増減しても壊れない)。
  * 世代は最上位フォルダ content/gen<N>/ で分かれる。
  */
-export const GENERATION = 1
+/**
+ * いま読み込んでいる世代。世代選択で切り替わる。
+ * ponytail: モジュール内の配列を差し替える形にしてある。世代をまたぐ同時プレイは
+ * 無いので、これで十分(選び直したときは App が loadGeneration を呼ぶ)。
+ */
+export let GENERATION = 1
 
 /** content/gen1/households/*.json の生データ。メンバーはIDで参照する */
 interface HouseholdJson {
@@ -48,16 +53,28 @@ export function characterById(id: string): Character | undefined {
   return characters.find((c) => c.id === id)
 }
 
+function householdsOfGeneration(): TourHousehold[] {
+  return ofGeneration(householdModules)
+    .map((h) => ({
+      ...h,
+      members: h.memberIds
+        .map(characterById)
+        .filter((c) => c !== undefined)
+        .map(toTourMember),
+    }))
+    .filter((h) => h.members.length > 0)
+}
+
 /** 転入の単位。人物は characters から解決する(データを二重に持たない) */
-export const households: TourHousehold[] = ofGeneration(householdModules)
-  .map((h) => ({
-    ...h,
-    members: h.memberIds
-      .map(characterById)
-      .filter((c) => c !== undefined)
-      .map(toTourMember),
-  }))
-  .filter((h) => h.members.length > 0)
+export const households: TourHousehold[] = householdsOfGeneration()
+
+/** 世代を切り替える(選択画面から呼ぶ)。配列の中身を入れ替える */
+export function loadGeneration(generation: number): void {
+  GENERATION = generation
+  characters.splice(0, characters.length, ...ofGeneration(characterModules))
+  events.splice(0, events.length, ...ofGeneration(eventModules))
+  households.splice(0, households.length, ...householdsOfGeneration())
+}
 
 export function eventsForCharacter(characterId: string): GameEvent[] {
   return events.filter((e) => e.characterId === characterId)

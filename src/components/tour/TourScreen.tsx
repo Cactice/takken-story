@@ -154,9 +154,12 @@ function TourBody({ state, onFinish }: { state: TourState; onFinish: (r: TourRes
     )
   }
 
-  // done
+  // arriving(登場中)と map(マップ上で内見中)はオーバーレイを出さない。
+  // ここを素通りさせると done の画面(契約は流れた)が誤って出る
+  if (ph.kind !== 'done') return null
+
   const p = state.contracted
-  const success = ph.kind === 'done' && ph.success
+  const success = ph.success
   return (
     <section className="tour-scene">
       <h2 className="tour-title">{success ? '🎉 契約成立!' : '💔 契約は流れた…'}</h2>

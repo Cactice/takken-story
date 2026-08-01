@@ -78,7 +78,14 @@
 }
 
 .resident {
-  position: relative;
+  /* 主人公・追従キャラと同じ transform 配置。1歩ごとに滑って動く */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--tile);
+  height: var(--tile);
+  transform: translate3d(calc(var(--fx) * var(--tile)), calc(var(--fy) * var(--tile)), 0);
+  transition: transform 400ms linear;
   border: none;
   background: none;
   padding: 0;
@@ -90,7 +97,8 @@
 
 .resident:hover,
 .resident:focus-visible {
-  transform: scale(1.15);
+  /* transform は位置に使っているので、拡大は scale プロパティで別に当てる */
+  scale: 1.15;
 }
 
 .resident-alert {

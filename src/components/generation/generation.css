@@ -1,22 +1,26 @@
-/* ステージ選択。夜の路線図をイメージした暗い盤面に、世代のサムネイルを並べる */
+/*
+ * ステージ選択。タイトル画面(title.css)と同じ「空 + 草原」の地色に、
+ * ハゲ田の野帳(docs/DESIGN.md / diagram/tokens.css)と同じ紙とインクでパネルを置く。
+ * 色は Endesga 32 のトークン値をそのまま写している(tokens.css は .dg スコープなので値だけ拝借)。
+ */
 .gen-select {
-  --gen-ink: #12131c;
-  --gen-panel: #1e2130;
-  --gen-line: #4a5170;
-  --gen-gold: #ffc83d;
-  --gen-glow: #ff7a59;
+  --gen-ink: var(--color-ink); /* 枠線はタイトル画面と同じインク */
+  --gen-ink-2: #5a6988; /* --dg-ink-2 補助 */
+  --gen-paper: #fdf6e3; /* --dg-paper 野帳の紙 */
+  --gen-grid: #c0cbdc; /* --dg-grid 方眼 */
+  --gen-own: #fdbe53; /* --dg-own 世代番号のバッジ */
+  --gen-own-edge: #e38628;
+  --gen-locked: #ded8c6;
 
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(1rem, 3vh, 2rem);
-  padding: clamp(1rem, 4vw, 2.5rem) 1rem;
-  color: #eef0f7;
-  background:
-    radial-gradient(120% 80% at 50% 0%, #2a2f45 0%, var(--gen-ink) 70%),
-    var(--gen-ink);
+  gap: clamp(0.75rem, 2.5vh, 1.5rem);
+  padding: clamp(1rem, 4vw, 2rem) 1rem;
+  color: var(--gen-ink);
+  background: linear-gradient(var(--color-sky) 0 60%, var(--color-grass) 60%);
   image-rendering: pixelated;
 }
 
@@ -26,17 +30,18 @@
 
 .gen-eyebrow {
   font-size: 0.7rem;
-  letter-spacing: 0.5em;
-  color: var(--gen-gold);
-  text-shadow: 2px 2px 0 #000;
+  font-weight: bold;
+  letter-spacing: 0.45em;
+  color: var(--gen-ink);
 }
 
 .gen-title {
   font-size: clamp(1.5rem, 5vw, 2.5rem);
-  text-shadow: 4px 4px 0 #000;
+  color: #fff;
+  text-shadow: 4px 4px 0 var(--gen-ink);
 }
 
-/* ── 世代のカードを線路のように横一列に ── */
+/* ── 世代のカードを一本道のように横一列に ── */
 .gen-track {
   position: relative;
   display: flex;
@@ -44,21 +49,27 @@
   justify-content: safe center;
   gap: clamp(0.5rem, 2vw, 1.25rem);
   list-style: none;
-  padding: 1.75rem 1.5rem 0.5rem;
+  padding: 1.75rem 1.5rem 1.4rem;
   max-width: 100%;
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
 }
 
-/* カード同士をつなぐ点線(世代のつながり) */
+/* カード同士をつなぐ土の道(世代のつながり) */
 .gen-track::before {
   content: '';
   position: absolute;
   left: 2rem;
   right: 2rem;
-  bottom: 1.6rem;
-  border-bottom: 4px dashed var(--gen-line);
+  bottom: 0.5rem;
+  height: 10px;
+  border-top: 3px solid var(--color-road-edge);
+  background: repeating-linear-gradient(
+    to right,
+    var(--color-road) 0 16px,
+    transparent 16px 24px
+  );
   z-index: 0;
 }
 
@@ -68,12 +79,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 0.5rem 0.9rem;
-  border: 4px solid #000;
-  border-radius: 6px;
-  background: var(--gen-panel);
-  box-shadow: 0 5px 0 #000;
+  gap: 0.35rem;
+  padding: 0.5rem 0.5rem 0.7rem;
+  border: 4px solid var(--gen-ink);
+  border-radius: 8px;
+  background: var(--gen-paper);
+  box-shadow: 0 5px 0 var(--gen-ink);
   color: inherit;
   font: inherit;
   cursor: pointer;
@@ -88,18 +99,12 @@
 }
 
 .gen-card.is-selected {
-  background: #2c3149;
-  border-color: var(--gen-gold);
+  background: #fff;
+  border-color: var(--color-accent);
   transform: translateY(-10px) scale(1.06);
   box-shadow:
-    0 9px 0 #000,
-    0 0 0 4px rgb(255 200 61 / 0.25),
-    0 0 28px rgb(255 122 89 / 0.45);
-}
-
-.gen-card.is-selected .gen-no {
-  background: var(--gen-gold);
-  color: #12131c;
+    0 9px 0 var(--gen-ink),
+    0 0 0 4px rgb(255 122 89 / 0.3);
 }
 
 /* 世代番号のバッジ */
@@ -111,12 +116,19 @@
   place-items: center;
   width: 1.8rem;
   height: 1.8rem;
-  border: 3px solid #000;
+  border: 3px solid var(--gen-ink);
   border-radius: 4px;
-  background: #575e7d;
+  background: var(--gen-own);
+  box-shadow: inset 0 -3px 0 0 var(--gen-own-edge);
   font-weight: bold;
   font-size: 0.9rem;
   line-height: 1;
+}
+
+.gen-card.is-selected .gen-no {
+  background: var(--color-accent);
+  color: #fff;
+  box-shadow: inset 0 -3px 0 0 #d9553a;
 }
 
 /* ── ドット絵サムネイル ── */
@@ -125,8 +137,8 @@
   grid-template-columns: repeat(var(--thumb-cols, 8), var(--thumb-tile));
   --thumb-tile: clamp(0.9rem, 2.6vw, 1.5rem);
   filter: var(--thumb-filter, none);
-  border: 3px solid #000;
-  background: #3d7a35;
+  border: 3px solid var(--gen-ink);
+  background: var(--color-grass);
   overflow: hidden;
 }
 
@@ -137,53 +149,49 @@
   image-rendering: pixelated;
 }
 
-.gen-card-tone {
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  color: #8a90a8;
-}
-
-.gen-card.is-selected .gen-card-tone {
-  color: var(--gen-gold);
-}
-
 .gen-card-name {
   font-size: 0.7rem;
   font-weight: bold;
-  text-shadow: 2px 2px 0 #000;
   white-space: nowrap;
 }
 
-/* ── ロック表示 ── */
+.gen-card-tone {
+  font-size: 0.6rem;
+  color: var(--gen-ink-2);
+}
+
+.gen-card.is-selected .gen-card-tone {
+  color: var(--color-accent);
+  font-weight: bold;
+}
+
+/* ── ロック表示(明るいまま、色を抜いて閉じる) ── */
 .gen-card.is-locked {
-  background: #171a26;
-  border-color: #000;
-  box-shadow: 0 5px 0 #000;
+  background: var(--gen-locked);
+  box-shadow: 0 5px 0 var(--gen-ink);
 }
 
 .gen-card.is-locked .gen-thumb {
-  filter: grayscale(1) brightness(0.28) contrast(0.8);
-}
-
-.gen-card.is-locked.is-selected {
-  border-color: #7a819f;
-  box-shadow:
-    0 9px 0 #000,
-    0 0 0 4px rgb(122 129 159 / 0.25);
+  filter: grayscale(1) brightness(1.05) contrast(0.7) opacity(0.55);
 }
 
 .gen-card.is-locked .gen-card-name,
 .gen-card.is-locked .gen-card-tone {
-  color: #7d839c;
+  color: #7d7a72;
+}
+
+.gen-card.is-locked.is-selected {
+  border-color: var(--gen-ink-2);
+  box-shadow:
+    0 9px 0 var(--gen-ink),
+    0 0 0 4px rgb(90 105 136 / 0.25);
 }
 
 .gen-lock {
   position: absolute;
   inset: 0;
-  background: rgb(10 11 18 / 0.45);
   display: grid;
   place-content: center;
-  gap: 0;
   pointer-events: none;
 }
 
@@ -192,7 +200,7 @@
   width: 1.1rem;
   height: 0.7rem;
   margin: 0 auto;
-  border: 4px solid #d8dcea;
+  border: 4px solid var(--gen-ink);
   border-bottom: none;
   border-radius: 4px 4px 0 0;
 }
@@ -201,18 +209,22 @@
   display: block;
   width: 1.7rem;
   height: 1.2rem;
-  background: #d8dcea;
-  border: 3px solid #000;
-  box-shadow: inset 0 0 0 3px #9aa1bd;
+  background: var(--gen-own);
+  border: 3px solid var(--gen-ink);
+  box-shadow: inset 0 -3px 0 0 var(--gen-own-edge);
 }
 
-/* ── 詳細パネル ── */
+/* ── 詳細パネル(野帳のページ) ── */
 .gen-detail {
   width: min(46rem, 100%);
-  border: 4px solid #000;
+  border: 4px solid var(--gen-ink);
   border-radius: 6px;
-  background: linear-gradient(#232841, #1a1e2e);
-  box-shadow: 0 6px 0 #000;
+  background-color: var(--gen-paper);
+  /* 方眼。8px = 16pxタイルの半分 */
+  background-image:
+    repeating-linear-gradient(to right, var(--gen-grid) 0 1px, transparent 1px 8px),
+    repeating-linear-gradient(to bottom, var(--gen-grid) 0 1px, transparent 1px 8px);
+  box-shadow: 0 6px 0 var(--gen-ink);
   padding: clamp(0.75rem, 2.5vw, 1.25rem);
   display: flex;
   flex-direction: column;
@@ -222,8 +234,7 @@
 
 .gen-detail.is-locked {
   animation: gen-shake 220ms ease-out;
-  border-color: #5a6080;
-  color: #a9afc6;
+  color: #6f6b62;
 }
 
 @keyframes gen-pop {
@@ -254,15 +265,17 @@
 }
 
 .gen-detail-no {
-  color: var(--gen-gold);
   font-size: 0.8rem;
-  letter-spacing: 0.1em;
+  font-weight: bold;
+  color: #fff;
+  background: var(--color-accent);
+  border: 2px solid var(--gen-ink);
+  padding: 0.1rem 0.4rem;
 }
 
 .gen-detail-title {
   font-size: clamp(1.1rem, 3.5vw, 1.6rem);
   font-weight: bold;
-  text-shadow: 3px 3px 0 #000;
 }
 
 .gen-detail-meta {
@@ -275,15 +288,16 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  border: 2px solid #000;
+  border: 2px solid var(--gen-ink);
   border-radius: 4px;
-  background: #12131c;
+  background: #fff;
   padding: 0.15rem 0.5rem;
   font-size: 0.75rem;
 }
 
 .gen-detail-meta dt {
-  color: var(--gen-gold);
+  font-weight: bold;
+  color: var(--gen-ink-2);
 }
 
 .gen-detail-body {
@@ -294,15 +308,17 @@
 
 .gen-detail-study {
   align-self: flex-start;
-  border-left: 4px solid var(--gen-glow);
+  border-left: 4px solid var(--color-accent);
   padding-left: 0.5rem;
   font-size: 0.7rem;
-  color: #b9c0d8;
+  color: var(--gen-ink-2);
 }
 
 .gen-hint {
   font-size: 0.75rem;
-  color: #8a90a8;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 2px 2px 0 rgb(43 43 61 / 0.5);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -311,17 +327,4 @@
     transition: none;
     animation: none;
   }
-}
-
-/* ブラウン管っぽい走査線。ステージ選択の画面らしさ */
-.gen-select::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgb(255 255 255 / 0.035) 0 1px,
-    transparent 1px 3px
-  );
 }

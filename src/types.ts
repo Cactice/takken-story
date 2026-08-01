@@ -16,6 +16,8 @@ export interface Character {
   movedInLines?: string[]
   /** 月ごとの一言。キーは "1"〜"12" */
   seasonalLines?: Record<string, string[]>
+  /** 住んでいる家への満足・不満の一言(契約した物件と希望の照合で出し分ける) */
+  homeLines?: { satisfied?: string[]; dissatisfied?: string[] }
   /** 転入時の希望(世帯で内見するときに使う) */
   moveIn?: {
     demands: string

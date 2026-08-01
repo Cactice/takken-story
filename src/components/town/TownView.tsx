@@ -29,7 +29,7 @@ import {
   trailLength,
 } from '../../lib/follower'
 import type { Follower, Pos } from '../../lib/follower'
-import { LEAD_GAP, distance, findPath, playerCanMove, stepToward } from '../../lib/staging'
+import { LEAD_GAP, distance, findPath, playerCanMove, stepToward, wanderStep } from '../../lib/staging'
 import type { Staging } from '../../lib/staging'
 import { PropertyPanel } from '../property/PropertyPanel'
 import './town.css'
@@ -61,6 +61,9 @@ interface Props {
   /** 建物・看板の物件パネルを閉じたとき(案内中なら内見するか聞く) */
   onPropertyViewed?: (propertyId: string) => void
 }
+
+/** 住民が1歩うろつく間隔 */
+const WANDER_MS = 2500
 
 /** 歩けるタイルか(カットシーンの経路探索に渡す) */
 const canStand = (x: number, y: number) => inBounds(x, y) && !isSolid(x, y)
@@ -131,13 +134,17 @@ export function TownView({
 
   // 住民は悩みに合った建物の前へ。未登録のIDは予備の立ち位置に回す
   let spare = 0
-  const residents = characters.map((c) => ({
+  const allResidents = characters.map((c) => ({
     character: c,
     spot: homeSpots[c.id] ?? RESIDENT_SPOTS[c.id] ?? SPARE_SPOTS[spare++ % SPARE_SPOTS.length],
   }))
 
   /* ---------------- 演出イベント(カットシーン)の再生 ---------------- */
   const [stageActors, setStageActors] = useState<Record<string, { pos: Pos; alert?: boolean }>>({})
+
+  // 演出で歩いている/追従しているキャラは、定位置の住民としては描かない(二重に出るため)
+  const elsewhere = new Set([...Object.keys(stageActors), ...followers.map((f) => f.id)])
+  const residents = allResidents.filter((r) => !elsewhere.has(r.character.id))
   const [pc, setPc] = useState(0)
   const [sayLine, setSayLine] = useState<{ actor: string; text: string } | null>(null)
   const stagingId = staging?.id ?? null
@@ -221,11 +228,37 @@ export function TownView({
   /** カットシーン中は原則動けない(lead 中だけは主人公が追いかける必要がある) */
   const stageLock = staging !== null && (sayLine !== null || !playerCanMove(cmd))
 
+  /* ---------------- 住民のうろつき ---------------- */
+  // 持ち場の周りを数秒に1歩。相談を持っている住民(「!」)は動かない(逃げ回ると理不尽)
+  const [wander, setWander] = useState<Record<string, Pos>>({})
+  const frozen = inputLocked || staging !== null
+  useEffect(() => {
+    if (frozen) return
+    const id = setInterval(() => {
+      setWander((w) => {
+        const movable = residents.filter((r) => !alertIds.has(r.character.id))
+        if (movable.length === 0) return w
+        const pick = movable[Math.floor(Math.random() * movable.length)]
+        const cid = pick.character.id
+        const cur = w[cid] ?? pick.spot
+        const next = wanderStep(pick.spot, cur, Math.floor(Math.random() * 4), canStand)
+        return next === cur ? w : { ...w, [cid]: next }
+      })
+    }, WANDER_MS)
+    return () => clearInterval(id)
+    // residents は characters からの導出で毎回同値
+  }, [frozen, characters, alertIds]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const panelOpen = openProperty !== null
 
   useEffect(() => {
     if (inputLocked || panelOpen || stageLock) return
-    const residentAt = new Map(residents.map((r) => [`${r.spot[0]},${r.spot[1]}`, r.character]))
+    const residentAt = new Map(
+      residents.map((r) => {
+        const [x, y] = wander[r.character.id] ?? r.spot
+        return [`${x},${y}`, r.character] as const
+      }),
+    )
 
     const onKey = (e: KeyboardEvent) => {
       const dir = KEY_DIR[e.key]
@@ -290,7 +323,7 @@ export function TownView({
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
     // residents は characters から導出で毎回同値
-  }, [inputLocked, panelOpen, stageLock, facing, characters, onTapCharacter, onTalkFollower, followers, trail, idle]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [inputLocked, panelOpen, stageLock, wander, facing, characters, onTapCharacter, onTalkFollower, followers, trail, idle]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const openSpec = openProperty === null ? undefined : propertyById(openProperty)
 
@@ -373,12 +406,14 @@ export function TownView({
             </div>
           )}
 
-          {residents.map(({ character: c, spot: [x, y] }) => (
+          {residents.map(({ character: c, spot }) => {
+            const [x, y] = wander[c.id] ?? spot
+            return (
             <button
               key={c.id}
               type="button"
               className="resident"
-              style={{ gridColumn: x + 1, gridRow: y + 1 }}
+              style={{ '--fx': x, '--fy': y } as CSSProperties}
               onClick={() => onTapCharacter(c)}
               aria-label={`${c.name}と話す`}
             >
@@ -390,7 +425,8 @@ export function TownView({
               <span className="char-sprite" style={characterSpriteStyle(c.id)} />
               <span className="resident-name">{c.name}</span>
             </button>
-          ))}
+            )
+          })}
 
           {/* 演出イベントで歩いているキャラ */}
           {Object.entries(stageActors).map(([id, a]) => (

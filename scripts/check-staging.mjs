@@ -12,6 +12,8 @@ import {
   findPath,
   playerCanMove,
   stepToward,
+  wanderStep,
+  WANDER_RADIUS,
 } from '../src/lib/staging.ts';
 
 // --- 1. 経路探索は壁を通らず、隣り合ったタイルだけを繋ぐ ---------------------
@@ -89,6 +91,21 @@ assert.deepEqual(findPath([5, 8], [5, 8], canStand), []);
   assert.ok(st.script.filter((c) => c.cmd === 'spawn').every((c) => c.alert), '頭上に「!」');
   assert.equal(st.script.filter((c) => c.cmd === 'follow').length, 2, '全員が追従列に加わる');
   assert.equal(st.script.at(-1).cmd, 'follow', '最後は追従で終わる');
+}
+
+// --- 8. 住民のうろつきは持ち場の周りだけ、壁には入らない -----------------------
+{
+  const base = [9, 16];
+  let cur = base;
+  for (let i = 0; i < 200; i++) {
+    const next = wanderStep(base, cur, i * 7, canStand);
+    assert.ok(canStand(...next), '壁の中には入らない');
+    assert.ok(distance(base, next) <= WANDER_RADIUS, '持ち場から離れすぎない');
+    assert.ok(distance(cur, next) <= 1, '1歩ずつしか動かない');
+    cur = next;
+  }
+  // 全方向が塞がっていればその場に留まる
+  assert.deepEqual([...wanderStep(base, base, 0, () => false)], base);
 }
 
 console.log('check-staging: OK');
