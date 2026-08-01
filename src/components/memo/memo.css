@@ -77,10 +77,6 @@
   padding-bottom: var(--dg-gap);
 }
 
-.memo-title::before {
-  content: '📓 ';
-}
-
 .memo-figure {
   display: grid;
   place-items: center;

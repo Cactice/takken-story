@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Diagram } from '../diagram/Diagram'
 import { useDotFont } from '../diagram/useDotFont'
 import { characterById } from '../../lib/content'
@@ -27,8 +27,21 @@ export function MemoBook({ memos, onClose }: Props) {
   const [pick, setPick] = useState(0)
   const [answered, setAnswered] = useState(false)
 
+  const panel = useRef<HTMLElement>(null)
+  const picked = useRef<HTMLLIElement>(null)
+  const verdict = useRef<HTMLParagraphElement>(null)
+
   const ev = memos[Math.min(i, memos.length - 1)]
   const choices = ev?.choices ?? []
+
+  // 縦スクロールは矢印に取られているので、いま見せたいところへ自動で送る
+  useEffect(() => {
+    const target = answered ? verdict.current : picked.current
+    target?.scrollIntoView({ block: 'nearest' })
+  }, [pick, answered])
+  useEffect(() => {
+    panel.current?.scrollTo({ top: 0 })
+  }, [i])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -60,7 +73,7 @@ export function MemoBook({ memos, onClose }: Props) {
 
   return (
     <div className="memo-overlay dg" role="dialog" aria-label="ハゲ田のメモ">
-      <article className="memo-panel">
+      <article className="memo-panel" ref={panel}>
         <header className="memo-head">
           {/* 表紙には、その悩みをくれた住民の顔 */}
           <span className="memo-face" style={characterSpriteStyle(ev.characterId)} />
@@ -107,6 +120,7 @@ export function MemoBook({ memos, onClose }: Props) {
               {choices.map((c, n) => (
                 <li
                   key={c}
+                  ref={n === pick ? picked : undefined}
                   className={[
                     'memo-choice',
                     n === pick ? 'is-picked' : '',
@@ -121,9 +135,11 @@ export function MemoBook({ memos, onClose }: Props) {
               ))}
             </ul>
             {answered && (
-              <p className={`memo-verdict ${correct ? 'is-correct' : 'is-wrong'}`}>
-                {correct ? '⭕ 正解だ。' : '❌ はずれ。'}
-                {ev.explanation}
+              <p ref={verdict} className={`memo-verdict ${correct ? 'is-correct' : 'is-wrong'}`}>
+                {/* 解説は上にそのまま載っているので、ここでは正誤と正解だけ言う */}
+                {correct
+                  ? '⭕ 正解だ。この調子で覚えとけ。'
+                  : `❌ はずれ。正解は「${choices[ev.correctChoice]}」だ。上の解説をもう一度読め。`}
               </p>
             )}
           </section>

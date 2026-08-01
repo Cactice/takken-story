@@ -150,7 +150,7 @@ export function HomeInterior({ gender, books, onOpenShelf, onLeave, locked = fal
             return (
               <div
                 key={`${x}-${y}`}
-                className={`home-tile${ch === '.' || ch === '@' ? ' is-floor' : ''}`}
+                className={`home-tile${ch === '.' || ch === '@' ? ' is-floor' : ''}${ch === '#' ? ' is-wall' : ''}`}
                 style={{ gridColumn: x + 1, gridRow: y + 1 }}
               >
                 {t && <span className="home-obj" style={sheetStyle(t.sheet, t.index)} />}
