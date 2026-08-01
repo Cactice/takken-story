@@ -349,13 +349,14 @@ export function checkMap(): string[] {
   return errors
 }
 
-if (import.meta.env?.DEV) {
-  const errors = checkMap()
-  if (errors.length > 0) throw new Error(`マップ定義が不正:\n- ${errors.join('\n- ')}`)
-}
-
 export const HIBARI = BUILDINGS.find((b) => b.id === 'hibari')!
 export const PLAYER_HOME = BUILDINGS.find((b) => b.id === 'player-home')!
 
 /** 開始位置: 自宅前の道 */
 export const START_POS: [number, number] = [3, 13]
+
+if (import.meta.env?.DEV) {
+  const errors = checkMap()
+  if (errors.length > 0) throw new Error(`マップ定義が不正:\n- ${errors.join('\n- ')}`)
+}
+

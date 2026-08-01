@@ -15,7 +15,7 @@ export function TitleScreen({ hasSave, onStart, onContinue }: Props) {
   return (
     <main className="title-screen">
       <h1 className="title-logo">
-        宅建<span className="title-logo-accent">study</span>
+        宅建<span className="title-logo-accent">story</span>
       </h1>
       <p className="title-tagline">〜 街の不動産屋ものがたり 〜</p>
 
