@@ -102,35 +102,68 @@ export function stepToward(from: Pos, to: Pos): Pos {
 }
 
 /* ------------------------------------------------------------------ *
- * 第1世代のオープニング(ハゲ田が自宅まで案内する)
+ * オープニング(自宅 → 職場 → 最初の客)
+ * 家を教わる → 職場を教わる → 初めての客を案内する、を一続きで体験させる。
+ * 座標は map.ts 側から渡す(このモジュールはマップに依存しない)。
  * ------------------------------------------------------------------ */
-// 自宅(ボロ屋)の入口の真下。map.ts の PLAYER_HOME と一致していることは check-staging.mjs で検算する
-const HOME_FRONT: Pos = [2, 17]
-
-export const OPENING: Staging = {
-  id: 'opening-gen1',
-  actors: [{ id: 'tencho-gozo', name: 'ハゲタ' }],
-  script: [
-    { cmd: 'spawn', actor: 'tencho-gozo', at: [3, 12] },
-    { cmd: 'say', actor: 'tencho-gozo', text: '新人! お前が今日から入るやつだな。ついて来い!' },
-    { cmd: 'lead', actor: 'tencho-gozo', to: HOME_FRONT },
-    {
-      cmd: 'say',
-      actor: 'tencho-gozo',
-      text: 'ここがお前の家だ。ボロだが雨は…まあ、たまに漏る。家賃は月5万円、毎月きっちり引かれるからな。',
-    },
-    {
-      cmd: 'say',
-      actor: 'tencho-gozo',
-      text: 'ここを拠点に、村の連中の困りごとを片付けろ。宅建の勉強はそれが一番早い。行け!',
-    },
-  ],
+export interface OpeningPlaces {
+  /** 自宅(ボロ屋)の前 */
+  homeFront: Pos
+  /** ひばり不動産の前 */
+  officeFront: Pos
+  /** 転入者が歩いて入ってくる村の入口(マップ外でもよい) */
+  gate: Pos
 }
 
-/** 転入者が画面外から歩いてきて、そのまま主人公についてくる */
-export function arrivalStaging(members: StageActor[], near: Pos): Staging {
-  // 村の入口(北の道)から歩いてくる
-  const gate: Pos = [12, 0]
+/**
+ * @param members 最初の転入世帯。世帯IDは決め打ちしない(コンテンツが差し替わっても壊れない)
+ */
+export function openingStaging(places: OpeningPlaces, members: StageActor[]): Staging {
+  const boss = 'tencho-gozo'
+  const newcomers = members.length > 0
+  return {
+    id: 'opening-gen1',
+    actors: [{ id: boss, name: 'ハゲタ' }, ...members],
+    script: [
+      { cmd: 'spawn', actor: boss, at: [places.homeFront[0] + 1, places.homeFront[1] - 4] },
+      { cmd: 'say', actor: boss, text: '新人! お前が今日から入るやつだな。ついて来い!' },
+      { cmd: 'lead', actor: boss, to: places.homeFront },
+      {
+        cmd: 'say',
+        actor: boss,
+        text: 'ここがお前の家だ。ボロだが雨は…まあ、たまに漏る。家賃は月5万円、毎月きっちり引かれるからな。',
+      },
+      { cmd: 'say', actor: boss, text: '荷物は置いたな? 次は職場だ。ついて来い!' },
+      { cmd: 'lead', actor: boss, to: places.officeFront },
+      {
+        cmd: 'say',
+        actor: boss,
+        text: 'ここが職場、ひばり不動産だ。村で唯一の不動産屋…つまり、逃げ場はない。',
+      },
+      ...(newcomers
+        ? [
+            ...members.map((m, i): StageCommand => ({
+              cmd: 'spawn',
+              actor: m.id,
+              at: [places.gate[0] + i, places.gate[1]],
+              alert: true,
+            })),
+            { cmd: 'say', actor: boss, text: 'おい、噂をすれば…あれを見ろ。村に越してきたいって連中だ。' } as StageCommand,
+            { cmd: 'walkTo', actor: members[0].id, to: places.officeFront } as StageCommand,
+            ...members.map((m): StageCommand => ({ cmd: 'follow', actor: m.id })),
+            {
+              cmd: 'say',
+              actor: boss,
+              text: 'さっそく客だ。話を聞いて、物件を案内してこい。…それが一番の勉強になる。',
+            } as StageCommand,
+          ]
+        : []),
+    ],
+  }
+}
+
+/** 転入者が画面外から歩いてきて、そのまま主人公についてくる(2組目以降の転入) */
+export function arrivalStaging(members: StageActor[], near: Pos, gate: Pos = [12, 0]): Staging {
   return {
     id: `arrival/${members.map((m) => m.id).join('+')}`,
     actors: members,
@@ -141,8 +174,8 @@ export function arrivalStaging(members: StageActor[], near: Pos): Staging {
         at: [gate[0] + i, gate[1]],
         alert: true,
       })),
-      // ponytail: 歩いてくるのは先頭の1人だけ。残りは同じ場所に湧いて、追従列で後ろに並ぶ。
-      // 全員ぶん歩かせると待ち時間が人数分になるだけで、見た目はほとんど変わらない
+      // ponytail: 歩いてくるのは先頭の1人だけ。残りは追従列で後ろに並ぶので、
+      // 全員ぶん歩かせても待ち時間が人数分になるだけ
       { cmd: 'walkTo', actor: members[0].id, to: near },
       ...members.map((m): StageCommand => ({ cmd: 'follow', actor: m.id })),
     ],

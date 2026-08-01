@@ -1,25 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import type { Character, Gender } from '../../types'
-import { TOWN_SHEET, characterSpriteStyle, playerSpriteStyle, sheetStyle } from '../../lib/sprites'
+import { characterSpriteStyle, playerSpriteStyle, sheetStyle } from '../../lib/sprites'
 import type { Facing } from '../../lib/sprites'
-import {
-  BUILDINGS,
-  DECOR,
-  GROUND,
-  GROUND_TILE,
-  HIBARI,
-  LAND_SIGNS,
-  MAP_COLS,
-  MAP_ROWS,
-  RESIDENT_SPOTS,
-  SPARE_SPOTS,
-  START_POS,
-  T,
-  inBounds,
-  isSolid,
-  propertyIdAt,
-} from '../../lib/map'
+import { ARIKITA } from '../../lib/maps'
+import type { GameMap } from '../../lib/maps'
 import { propertyById } from '../../lib/properties'
 import {
   SCATTER_IDLE_MS,
@@ -35,6 +20,8 @@ import { PropertyPanel } from '../property/PropertyPanel'
 import './town.css'
 
 interface Props {
+  /** 舞台。世代で切り替わる(第1世代=ありきた村 / 第2・4世代=黒会市) */
+  map?: GameMap
   characters: Character[]
   gender: Gender
   /** 相談が控えている住民のID(頭に「!」を表示) */
@@ -65,9 +52,6 @@ interface Props {
 /** 住民が1歩うろつく間隔 */
 const WANDER_MS = 2500
 
-/** 歩けるタイルか(カットシーンの経路探索に渡す) */
-const canStand = (x: number, y: number) => inBounds(x, y) && !isSolid(x, y)
-
 /** カットシーンの1歩ぶんの間隔 */
 const STAGE_STEP_MS = 200
 
@@ -86,6 +70,7 @@ const FACE_DELTA: Record<Facing, [number, number]> = {
 }
 
 export function TownView({
+  map = ARIKITA,
   characters,
   gender,
   alertIds,
@@ -101,13 +86,21 @@ export function TownView({
   onTalkFollower,
   onPropertyViewed,
 }: Props) {
-  const [player, setPlayer] = useState<[number, number]>(START_POS)
+  const inBounds = map.inBounds
+  const isSolid = map.isSolid
+  const canStand = (x: number, y: number) => inBounds(x, y) && !isSolid(x, y)
+  const [player, setPlayer] = useState<[number, number]>([map.start[0], map.start[1]])
+
+  // 舞台が変わったら開始位置へ
+  useEffect(() => {
+    setPlayer([map.start[0], map.start[1]])
+  }, [map])
   const [facing, setFacing] = useState<Facing>('up')
   /** 歩数。1歩ごとに増やして足を踏み替える */
   const [step, setStep] = useState(0)
   const [openProperty, setOpenProperty] = useState<string | null>(null)
   /** 主人公が通ったタイルの履歴(先頭が現在地)。後続はこれを1歩ずれでたどる */
-  const [trail, setTrail] = useState<Pos[]>([START_POS])
+  const [trail, setTrail] = useState<Pos[]>([map.start])
 
   // 1歩動くたびに足跡を伸ばす。同じタイルなら advanceTrail が何もしない
   useEffect(() => {
@@ -136,7 +129,9 @@ export function TownView({
   let spare = 0
   const allResidents = characters.map((c) => ({
     character: c,
-    spot: homeSpots[c.id] ?? RESIDENT_SPOTS[c.id] ?? SPARE_SPOTS[spare++ % SPARE_SPOTS.length],
+    spot: (homeSpots[c.id] ??
+      map.residentSpots[c.id] ??
+      map.spareSpots[spare++ % map.spareSpots.length]) as [number, number],
   }))
 
   /* ---------------- 演出イベント(カットシーン)の再生 ---------------- */
@@ -157,60 +152,66 @@ export function TownView({
 
   const cmd = staging?.script[pc]
 
-  // 1テンポずつ命令を進める。歩行はここで1タイルずつ
+  // 1テンポずつ命令を進める。歩行はここで1タイルずつ。
+  // ref 経由で最新値を読む: 主人公が動くたびにタイマーを張り直すと、
+  // キーを押し続けているあいだNPCが一歩も進めなくなる
+  const stageRef = useRef({ staging, cmd, stageActors, player })
+  stageRef.current = { staging, cmd, stageActors, player }
+
   useEffect(() => {
     if (!staging) return
-    if (cmd === undefined) {
-      onStagingEnd?.()
-      return
-    }
-    if (cmd.cmd === 'say') {
-      setSayLine({ actor: cmd.actor, text: cmd.text })
-      return // スペース待ち
-    }
-    const timer = setTimeout(() => {
-      if (cmd.cmd === 'spawn') {
-        setStageActors((a) => ({ ...a, [cmd.actor]: { pos: cmd.at, alert: cmd.alert } }))
+    const tick = () => {
+      const { cmd: c, stageActors: actors, player: pl } = stageRef.current
+      if (c === undefined) {
+        onStagingEnd?.()
+        return
+      }
+      if (c.cmd === 'say') return // スペース待ち(表示は下の効果が出す)
+      if (c.cmd === 'spawn') {
+        setStageActors((a) => ({ ...a, [c.actor]: { pos: c.at, alert: c.alert } }))
         setPc((n) => n + 1)
         return
       }
-      if (cmd.cmd === 'wait') {
+      if (c.cmd === 'wait' || c.cmd === 'camera') {
+        // ponytail: camera は常に主人公を追う。寄せの演出が要るまでは no-op
         setPc((n) => n + 1)
         return
       }
-      if (cmd.cmd === 'camera') {
-        // ponytail: カメラは常に主人公を追う。寄せの演出が要るまでは no-op
-        setPc((n) => n + 1)
-        return
-      }
-      if (cmd.cmd === 'follow') {
+      if (c.cmd === 'follow') {
         setStageActors((a) => {
-          const { [cmd.actor]: _gone, ...rest } = a
+          const { [c.actor]: _gone, ...rest } = a
           return rest
         })
-        onStageFollow?.(cmd.actor)
+        onStageFollow?.(c.actor)
         setPc((n) => n + 1)
         return
       }
       // walkTo / lead: 1タイルだけ進む
-      const cur = stageActors[cmd.actor]?.pos
-      if (!cur) {
-        setPc((n) => n + 1)
-        return
-      }
-      if (cur[0] === cmd.to[0] && cur[1] === cmd.to[1]) {
+      const cur = actors[c.actor]?.pos
+      if (!cur || (cur[0] === c.to[0] && cur[1] === c.to[1])) {
         setPc((n) => n + 1)
         return
       }
       // 先導中に主人公が離れすぎたら立ち止まって待つ
-      if (cmd.cmd === 'lead' && distance(cur, player) > LEAD_GAP) return
+      if (c.cmd === 'lead' && distance(cur, pl) > LEAD_GAP) return
       const next = inBounds(cur[0], cur[1])
-        ? (findPath(cur, cmd.to, canStand)[0] ?? cmd.to)
-        : stepToward(cur, cmd.to)
-      setStageActors((a) => ({ ...a, [cmd.actor]: { ...a[cmd.actor], pos: next } }))
-    }, STAGE_STEP_MS)
-    return () => clearTimeout(timer)
-  }, [staging, cmd, pc, stageActors, player, onStageFollow, onStagingEnd])
+        ? findPath(cur, c.to, canStand)[0]
+        : stepToward(cur, c.to)
+      // これ以上近づけない(行き止まり)なら、その命令は終わりにする
+      if (!next) {
+        setPc((n) => n + 1)
+        return
+      }
+      setStageActors((a) => ({ ...a, [c.actor]: { ...a[c.actor], pos: next } }))
+    }
+    const id = setInterval(tick, STAGE_STEP_MS)
+    return () => clearInterval(id)
+  }, [stagingId, staging, onStageFollow, onStagingEnd])
+
+  // say は表示だけ(送るのは下のキー処理)
+  useEffect(() => {
+    if (cmd?.cmd === 'say') setSayLine({ actor: cmd.actor, text: cmd.text })
+  }, [cmd])
 
   // セリフはスペースで送る
   useEffect(() => {
@@ -294,7 +295,7 @@ export function TownView({
           return [x, y]
         }
         // 3. 向いている先が建物 or 空き地の看板 → 物件ステータス
-        const propId = propertyIdAt(fx, fy)
+        const propId = map.propertyIdAt(fx, fy)
         if (propId) {
           setOpenProperty(propId)
           return [x, y]
@@ -329,7 +330,7 @@ export function TownView({
 
   return (
     <section className="town" aria-label="町">
-      <div className="town-viewport">
+      <div className="town-viewport" style={{ background: map.outsideColor }}>
         {/* カメラ: 主人公が常に中央。--px/--py でマップ側を逆方向に translate */}
         <div
           className="town-grid"
@@ -337,58 +338,44 @@ export function TownView({
             {
               '--px': player[0],
               '--py': player[1],
-              '--cols': MAP_COLS,
-              '--rows': MAP_ROWS,
+              '--cols': map.cols,
+              '--rows': map.rows,
             } as CSSProperties
           }
         >
-          {GROUND.flatMap((row, y) =>
-            [...row].map((ch, x) => (
+          {map.ground.flatMap((row, y) =>
+            row.map((tile, x) => (
               <div
-                key={`${x}-${y}`}
+                key={`g${x}-${y}`}
                 className="tile"
-                style={{
-                  ...sheetStyle(TOWN_SHEET, GROUND_TILE[ch] ?? T.grass),
-                  gridColumn: x + 1,
-                  gridRow: y + 1,
-                }}
+                style={{ ...sheetStyle(map.sheet, tile), gridColumn: x + 1, gridRow: y + 1 }}
               />
             )),
           )}
 
-          {DECOR.map((d, i) => (
-            <div
-              key={`d${i}`}
-              className="tile obj"
-              style={{ ...sheetStyle(TOWN_SHEET, d.tile), gridColumn: d.x + 1, gridRow: d.y + 1 }}
-            />
-          ))}
-
-          {BUILDINGS.flatMap((b) =>
-            b.cells.flatMap((row, dy) =>
-              row.map((tile, dx) =>
-                tile < 0 ? null : (
-                  <div
-                    key={`${b.id}-${dx}-${dy}`}
-                    className="tile obj"
-                    style={{
-                      ...sheetStyle(TOWN_SHEET, tile),
-                      gridColumn: b.x + dx + 1,
-                      gridRow: b.y + dy + 1,
-                      filter: b.filter,
-                    }}
-                  />
-                ),
+          {map.over.flatMap((row, y) =>
+            row.map((cell, x) =>
+              cell === null ? null : (
+                <div
+                  key={`o${x}-${y}`}
+                  className="tile obj"
+                  style={{
+                    ...sheetStyle(map.sheet, cell.tile),
+                    filter: cell.filter,
+                    gridColumn: x + 1,
+                    gridRow: y + 1,
+                  }}
+                />
               ),
             ),
           )}
 
-          {LAND_SIGNS.map((sign) => (
+          {map.signs.map((sign) => (
             <div
               key={sign.id}
               className="tile obj land-sign"
               style={{
-                ...sheetStyle(TOWN_SHEET, T.sign),
+                ...sheetStyle(map.sheet, map.signTile),
                 gridColumn: sign.x + 1,
                 gridRow: sign.y + 1,
               }}
@@ -399,7 +386,10 @@ export function TownView({
           {companyAlert && (
             <div
               className="building-alert"
-              style={{ gridColumn: HIBARI.x + 2, gridRow: HIBARI.y }}
+              style={{
+                gridColumn: (map.buildings.find((b) => b.id === 'hibari')?.entrance[0] ?? 3) + 1,
+                gridRow: (map.buildings.find((b) => b.id === 'hibari')?.entrance[1] ?? 6) - 1,
+              }}
               aria-label="会社に用事あり"
             >
               !

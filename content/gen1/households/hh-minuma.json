@@ -1,0 +1,13 @@
+{
+  "id": "hh-minuma",
+  "kind": "couple",
+  "label": "見沼さん夫妻",
+  "moveReason": "できたばかりの村に、根を下ろせる土地を求めて越してきた",
+  "topicId": "minpo-chintai",
+  "budget": 8,
+  "order": 1,
+  "memberIds": [
+    "minuma-shigeru",
+    "minuma-haru"
+  ]
+}

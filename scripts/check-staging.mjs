@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 // 演出イベント(カットシーン)の自己チェック。node scripts/check-staging.mjs
 import assert from 'node:assert/strict';
-import { PLAYER_HOME, isSolid, inBounds } from '../src/lib/map.ts';
+import { HIBARI, PLAYER_HOME, isSolid, inBounds } from '../src/lib/map.ts';
 
 const canStand = (x, y) => inBounds(x, y) && !isSolid(x, y);
 import {
   LEAD_GAP,
-  OPENING,
+  openingStaging,
   arrivalStaging,
   distance,
   findPath,
@@ -58,26 +58,42 @@ assert.deepEqual(findPath([5, 8], [5, 8], canStand), []);
   assert.ok(LEAD_GAP > 0);
 }
 
-// --- 6. オープニング: spawn → say → lead(自宅の前)→ say ------------------
+// --- 6. オープニング: 自宅 → 職場 → 最初の客 まで一続き ---------------------
 {
-  const kinds = OPENING.script.map((c) => c.cmd);
+  const homeFront = [PLAYER_HOME.entrance[0], PLAYER_HOME.entrance[1] + 1];
+  const officeFront = [HIBARI.entrance[0], HIBARI.entrance[1] + 1];
+  const members = [
+    { id: 'nc-a', name: 'ハル' },
+    { id: 'nc-b', name: 'シゲ' },
+  ];
+  const op = openingStaging({ homeFront, officeFront, gate: [12, 0] }, members);
+  const kinds = op.script.map((c) => c.cmd);
   assert.equal(kinds[0], 'spawn');
-  assert.ok(kinds.includes('lead'), 'ハゲ田が先導する');
-  const lead = OPENING.script.find((c) => c.cmd === 'lead');
-  assert.deepEqual(
-    [...lead.to],
-    [PLAYER_HOME.entrance[0], PLAYER_HOME.entrance[1] + 1],
-    'OPENING の行き先が自宅の入口前からずれている',
-  );
-  assert.ok(!isSolid(...lead.to), '先導先は歩けるタイル');
-  assert.ok(findPath([3, 13], lead.to, canStand).length > 0);
+  const leads = op.script.filter((c) => c.cmd === 'lead');
+  assert.equal(leads.length, 2, '自宅と職場の2回、先導する');
+  assert.deepEqual([...leads[0].to], homeFront, 'まず自宅へ');
+  assert.deepEqual([...leads[1].to], officeFront, '次に職場へ');
+  for (const l of leads) {
+    assert.ok(canStand(...l.to), '先導先は歩けるタイル');
+    assert.ok(findPath([3, 13], l.to, canStand).length > 0, '先導先まで道がある');
+  }
   assert.ok(
-    OPENING.script.some((c) => c.cmd === 'say' && c.text.includes('5万円')),
+    op.script.some((c) => c.cmd === 'say' && c.text.includes('5万円')),
     '家賃を説明する',
   );
-  for (const c of OPENING.script) {
-    assert.ok(OPENING.actors.some((a) => a.id === c.actor), `登場人物にいない: ${c.actor}`);
+  assert.equal(
+    op.script.filter((c) => c.cmd === 'follow').length,
+    members.length,
+    '最初の客が全員ついてくる',
+  );
+  assert.equal(op.script.at(-1).cmd, 'say', '最後は「案内してこい」で終わる');
+  for (const c of op.script) {
+    if (c.actor === undefined) continue;
+    assert.ok(op.actors.some((a) => a.id === c.actor), `登場人物にいない: ${c.actor}`);
   }
+  // 客がいない世代でも壊れない
+  const solo = openingStaging({ homeFront, officeFront, gate: [12, 0] }, []);
+  assert.ok(solo.script.every((c) => c.cmd !== 'follow'));
 }
 
 // --- 7. 転入者は画面外から歩いてきて、最後に追従列へ加わる -------------------

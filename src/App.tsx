@@ -31,8 +31,9 @@ import type { Follower } from './lib/follower'
 import { propertyById } from './lib/properties'
 import { FollowerTalk } from './components/tour/FollowerTalk'
 import { MemoBook } from './components/memo/MemoBook'
-import { frontOfBuilding } from './lib/map'
-import { OPENING, arrivalStaging } from './lib/staging'
+import { MAP_OF_GENERATION, ARIKITA } from './lib/maps'
+import type { GameMap } from './lib/maps'
+import { arrivalStaging, openingStaging } from './lib/staging'
 import type { Staging } from './lib/staging'
 import { GenerationSelect } from './components/generation/GenerationSelect'
 import { useGameClock } from './hooks/useGameClock'
@@ -61,8 +62,31 @@ import {
 import type { Character, GameState, Gender } from './types'
 import './App.css'
 
-/** 転入者が歩いてきて立ち止まる場所(村のメイン通り) */
-const ARRIVAL_SPOT: [number, number] = [12, 7]
+/** 転入者が村に入ってくる入口(北の端の中央)と、歩いてきて立ち止まる場所 */
+const gateOf = (map: GameMap): [number, number] => [Math.floor(map.cols / 2), 0]
+const arrivalSpotOf = (map: GameMap): [number, number] => [map.start[0], map.start[1]]
+
+/** 建物の入口の前(住民を立たせる場所)。埋まっているタイルは避ける */
+function frontOfBuilding(
+  map: GameMap,
+  id: string,
+  taken: ReadonlySet<string> = new Set(),
+): [number, number] | undefined {
+  const b = map.buildings.find((x) => x.id === id)
+  if (!b) return undefined
+  const [ex, ey] = b.entrance
+  const around: [number, number][] = [
+    [ex, ey + 1],
+    [ex - 1, ey + 1],
+    [ex + 1, ey + 1],
+    [ex - 1, ey],
+    [ex + 1, ey],
+    [ex, ey + 2],
+  ]
+  return around.find(
+    ([x, y]) => map.inBounds(x, y) && !map.isSolid(x, y) && !taken.has(`${x},${y}`),
+  )
+}
 
 /** 後ろに連なるハゲ田のメモの最大数(これ以上は棚に置いてある扱い) */
 const MAX_BOOKS = 6
@@ -257,7 +281,14 @@ export default function App() {
     const hh = households[Math.floor(state.daysElapsed / (3 * DAYS_PER_MONTH)) % households.length]
     if (hh === undefined) return
     setArriving(hh)
-    setStaging(arrivalStaging(hh.members.map((m2) => ({ id: m2.id, name: m2.name })), ARRIVAL_SPOT))
+    const map = MAP_OF_GENERATION[state.generation ?? 1] ?? ARIKITA
+    setStaging(
+      arrivalStaging(
+        hh.members.map((m2) => ({ id: m2.id, name: m2.name })),
+        arrivalSpotOf(map),
+        gateOf(map),
+      ),
+    )
   }, [state, tour, arriving, staging, tourDismissedDay])
 
   const startGame = useCallback(
@@ -278,8 +309,20 @@ export default function App() {
       }
       saveState(fresh)
       setState(fresh)
-      // 開始直後: ハゲ田が「ついて来い!」と自宅まで先導する
-      setStaging(OPENING)
+      // 開始直後: 自宅 → 職場 → 最初の客 まで一続きの演出(これがそのままチュートリアル)。
+      // ponytail: いまは第1世代の演出しか無い。他世代は即プレイ(その世代の演出はデータを足すだけ)
+      const map = MAP_OF_GENERATION[chosenGeneration ?? 1] ?? ARIKITA
+      const home = frontOfBuilding(map, 'player-home')
+      const office = frontOfBuilding(map, 'hibari')
+      if ((chosenGeneration ?? 1) !== 1 || !home || !office) return
+      const first = households[0]
+      if (first) setArriving(first)
+      setStaging(
+        openingStaging(
+          { homeFront: home, officeFront: office, gate: gateOf(map) },
+          (first?.members ?? []).map((m) => ({ id: m.id, name: m.name })),
+        ),
+      )
     },
     [chosenGeneration],
   )
@@ -396,13 +439,14 @@ export default function App() {
     ...Array.from({ length: bookCount }, (_, i) => ({ id: `memo-${i}`, kind: 'book' as const })),
   ]
 
+  const gameMap = MAP_OF_GENERATION[state.generation ?? 1] ?? ARIKITA
   const occupancy = state.occupancy ?? {}
   /** 住民ID → 契約した家の前。空きが無ければ既定の立ち位置に落ちる */
   const homeSpots: Record<string, [number, number]> = {}
   {
     const taken = new Set<string>()
     for (const [charId, propId] of Object.entries(state.residentHomes ?? {})) {
-      const spot = frontOfBuilding(propId, taken)
+      const spot = frontOfBuilding(gameMap, propId, taken)
       if (!spot) continue
       taken.add(`${spot[0]},${spot[1]}`)
       homeSpots[charId] = spot
@@ -500,6 +544,7 @@ export default function App() {
       </header>
 
       <TownView
+        map={gameMap}
         characters={residentCharacters}
         gender={state.gender}
         alertIds={alertIds}

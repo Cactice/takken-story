@@ -43,7 +43,8 @@ export function HpBar({ hp, name }: { hp: number; name: string }) {
 }
 
 export function TourScreen({ state, dispatch, onFinish }: Props) {
-  const overlayOpen = state.phase.kind !== 'map'
+  // 物件を回っている間(map)と、ついてきているだけの間(arriving)はマップが主役
+  const overlayOpen = state.phase.kind !== 'map' && state.phase.kind !== 'arriving'
 
   // 操作は矢印キーとスペースのみ
   useEffect(() => {
