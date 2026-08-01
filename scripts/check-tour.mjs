@@ -113,8 +113,8 @@ const mansion = {
 {
   const h = household([member('m-a', 'A', ['防音'], []), member('m-b', 'B', ['駅近'], [])]);
   const lines = briefingLines(h);
-  assert.match(lines[0], /テスト世帯/);
-  assert.match(lines[1], /越してくる/);
+  assert.ok(lines.some((l) => l.includes('テスト世帯')));
+  assert.ok(lines.some((l) => l.includes('越してくる')), '引越し理由を話す');
   assert.ok(h.members.every((m) => lines.some((l) => l.includes(m.demands))), '全員の要望が出る');
   assert.ok(lines.some((l) => l.includes('世帯で月10万円')), '予算を伝える');
 }
@@ -127,7 +127,10 @@ const mansion = {
   ]);
   let s = initTour(h);
   assert.equal(s.hp, HP_MAX);
-  assert.equal(s.phase.kind, 'briefing');
+  assert.equal(s.phase.kind, 'arriving', '最初は画面外から来て、ついてくるだけ');
+  assert.equal(tourReducer(s, { type: 'tick' }).hp, HP_MAX, '面談前は機嫌が減らない');
+  s = tourReducer(s, { type: 'meet' });
+  assert.equal(s.phase.kind, 'briefing', '話しかけると面談が始まる');
   for (let i = 0; i < briefingLines(h).length; i++) s = tourReducer(s, { type: 'advance' });
   assert.deepEqual(s.memos, [{ topicId: h.topicId, title: `${h.label}の引越し理由` }]);
   assert.equal(s.phase.kind, 'map', '面談が終わるとマップに出る');
@@ -148,7 +151,7 @@ const mansion = {
   );
 
   // 全員が気に入る世帯なら契約候補になり、契約(35条の読み上げ)に進める
-  let ok = initTour(household([member('m-c', 'C', ['防音'], [])]));
+  let ok = tourReducer(initTour(household([member('m-c', 'C', ['防音'], [])])), { type: 'meet' });
   for (let i = 0; i < briefingLines(ok.household).length; i++)
     ok = tourReducer(ok, { type: 'advance' });
   ok = tourReducer(ok, { type: 'inspect', property: mansion });
@@ -167,7 +170,7 @@ const mansion = {
     member('m-a', 'あかり', ['駅近'], []),
     member('m-b', 'ぼたん', [], ['駅近']),
   ]);
-  let s = initTour(h);
+  let s = tourReducer(initTour(h), { type: 'meet' });
   for (let i = 0; i < briefingLines(h).length; i++) s = tourReducer(s, { type: 'advance' });
 
   h.members[0].voice = { style: 'polite', focus: '日当たり' };

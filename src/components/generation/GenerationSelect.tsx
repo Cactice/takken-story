@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { sheetStyle } from '../../lib/sprites'
 import { GENERATIONS } from './generations'
@@ -40,6 +40,13 @@ export function GenerationSelect({ unlocked, initial = 1, onSelect, onBack }: Pr
   /** ロックされた世代を決定したときの振動 */
   const [denied, setDenied] = useState(0)
 
+  const trackRef = useRef<HTMLOListElement>(null)
+
+  // 狭い画面では横スクロールになるので、選択中のカードを常に見えるところへ
+  useEffect(() => {
+    trackRef.current?.children[index]?.scrollIntoView({ inline: 'center', block: 'nearest' })
+  }, [index])
+
   const current: GenerationInfo = GENERATIONS[index]
   const isUnlocked = unlocked.has(current.generation)
 
@@ -71,7 +78,7 @@ export function GenerationSelect({ unlocked, initial = 1, onSelect, onBack }: Pr
         <h1 className="gen-title">世代をえらぶ</h1>
       </header>
 
-      <ol className="gen-track" aria-label="世代の一覧">
+      <ol className="gen-track" aria-label="世代の一覧" ref={trackRef}>
         {GENERATIONS.map((info, i) => {
           const locked = !unlocked.has(info.generation)
           return (

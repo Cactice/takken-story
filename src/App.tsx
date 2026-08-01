@@ -22,6 +22,7 @@ import type {
   HagetaComment,
   HouseholdReaction,
   TourAction,
+  TourHousehold,
   TourMember,
   TourProperty,
   TourState,
@@ -31,6 +32,9 @@ import { propertyById } from './lib/properties'
 import { FollowerTalk } from './components/tour/FollowerTalk'
 import { MemoBook } from './components/memo/MemoBook'
 import { frontOfBuilding } from './lib/map'
+import { OPENING, arrivalStaging } from './lib/staging'
+import type { Staging } from './lib/staging'
+import { GenerationSelect } from './components/generation/GenerationSelect'
 import { useGameClock } from './hooks/useGameClock'
 import { characters, events, households } from './lib/content'
 import { availableConsultations, buildYearSchedule } from './lib/schedule'
@@ -55,6 +59,9 @@ import {
 } from './types'
 import type { Character, GameState, Gender } from './types'
 import './App.css'
+
+/** 転入者が歩いてきて立ち止まる場所(村のメイン通り) */
+const ARRIVAL_SPOT: [number, number] = [12, 7]
 
 /** 後ろに連なるハゲ田のメモの最大数(これ以上は棚に置いてある扱い) */
 const MAX_BOOKS = 6
@@ -134,8 +141,14 @@ export default function App() {
   const [applyDismissedYear, setApplyDismissedYear] = useState(0)
   /** 案内(物件案内)の状態。null = 案内していない */
   const [tour, setTour] = useState<TourState | null>(null)
-  /** 転入世帯の案内を断った日 */
+  /** 転入世帯の案内が済んだ(または断った)日 */
   const [tourDismissedDay, setTourDismissedDay] = useState(-1)
+  /** 再生中の演出イベント(オープニング・転入者の登場) */
+  const [staging, setStaging] = useState<Staging | null>(null)
+  /** 演出で歩いてきている転入世帯(follow でこの世帯の案内が始まる) */
+  const [arriving, setArriving] = useState<TourHousehold | null>(null)
+  /** 世代選択 → 性別選択 の順に出す */
+  const [chosenGeneration, setChosenGeneration] = useState<number | null>(null)
   /** 物件パネルを閉じた直後の物件ID(案内中なら内見/契約を聞く) */
   const [viewedProperty, setViewedProperty] = useState<string | null>(null)
   /** 内見した結果(メンバー全員の反応) */
@@ -196,12 +209,16 @@ export default function App() {
 
   // 試験・面談/35条のオーバーレイ中は時計を止める(マップを歩いている間は進む)
   useGameClock(
-    state !== null && !examDue && (tour === null || tour.phase.kind === 'map'),
+    state !== null &&
+      !examDue &&
+      staging === null &&
+      (tour === null || tour.phase.kind === 'map' || tour.phase.kind === 'arriving'),
     tickDay,
   )
 
   // 客の機嫌は時間で減っていく(マップを回っている間と35条の読み上げ中)
-  const tourRunning = tour !== null && (tour.phase.kind === 'map' || tour.phase.kind === 'disclosure')
+  const tourRunning =
+    tour !== null && (tour.phase.kind === 'map' || tour.phase.kind === 'disclosure')
   useEffect(() => {
     if (!tourRunning) return
     const id = setInterval(() => dispatchTour({ type: 'tick' }), HP_TICK_MS)
@@ -209,12 +226,21 @@ export default function App() {
   }, [tourRunning, dispatchTour])
 
   if (!state || !cal) {
+    // 世代選択 → 性別選択 → ゲーム開始
+    if (chosenGeneration === null)
+      return (
+        <GenerationSelect
+          unlocked={new Set([1])}
+          onSelect={(generation) => setChosenGeneration(generation)}
+        />
+      )
     return (
       <TitleScreen
         hasSave={loadState() !== null}
         onStart={(gender: Gender) => {
           const fresh: GameState = {
             gender,
+            generation: chosenGeneration,
             daysElapsed: 0,
             money: MONEY_START,
             experiencedEvents: [],
@@ -228,6 +254,8 @@ export default function App() {
           }
           saveState(fresh)
           setState(fresh)
+          // 開始直後: ハゲ田が「ついて来い!」と自宅まで先導する
+          setStaging(OPENING)
         }}
         onContinue={() => setState(loadState())}
       />
@@ -278,18 +306,31 @@ export default function App() {
     month === APPLY_DEADLINE_MONTH &&
     !applied &&
     applyDismissedYear !== year
-  // 3ヶ月に1度、会社に転入者が来る
-  // ponytail: 暫定トリガー。マップの会社に「!」が出せるようになったら、そこの入店処理から setTourNewcomer を呼べばよい
+  // 3ヶ月に1度、転入希望者が村にやってくる。
+  // 会社でモーダルを出すのではなく、画面外から歩いてきて勝手についてくる(docs/SYSTEMS.md)
   const offeredHousehold = households[Math.floor(state.daysElapsed / (3 * DAYS_PER_MONTH)) % households.length]
-  const tourPromptOpen =
+  const newcomerDue =
     !examDue &&
     !applyPromptOpen &&
     talkingTo === null &&
     tour === null &&
+    arriving === null &&
+    staging === null &&
     offeredHousehold !== undefined &&
     day === 1 &&
     month % 3 === 1 &&
     tourDismissedDay !== state.daysElapsed
+
+  useEffect(() => {
+    if (!newcomerDue || offeredHousehold === undefined) return
+    setArriving(offeredHousehold)
+    setStaging(
+      arrivalStaging(
+        offeredHousehold.members.map((m) => ({ id: m.id, name: m.name })),
+        ARRIVAL_SPOT,
+      ),
+    )
+  }, [newcomerDue, offeredHousehold])
 
   const examQuestions = state.yearSchedule
     .map((s) => events.find((e) => e.id === s.eventId))
@@ -309,10 +350,15 @@ export default function App() {
   // ponytail: 本は「解決したイベント数」で数える。GameState にメモ一覧を持たせるのは
   // 復習画面(自宅の棚)を作るときでいい。連なりすぎても邪魔なので上限だけ入れてある
   const bookCount = Math.min(state.experiencedEvents.length, MAX_BOOKS)
-  const touringOnMap = tour !== null && tour.phase.kind === 'map'
+  const touringOnMap = tour !== null && (tour.phase.kind === 'map' || tour.phase.kind === 'arriving')
   const followers: Follower[] = [
     ...(touringOnMap && tour
-      ? tour.household.members.map((m) => ({ id: m.id, kind: 'member' as const, name: m.name }))
+      ? tour.household.members.map((m) => ({
+          id: m.id,
+          kind: 'member' as const,
+          name: m.name,
+          alert: tour.phase.kind === 'arriving',
+        }))
       : []),
     ...Array.from({ length: bookCount }, (_, i) => ({ id: `memo-${i}`, kind: 'book' as const })),
   ]
@@ -372,6 +418,8 @@ export default function App() {
   const talkToFollower = (f: Follower) => {
     if (f.kind === 'book') return setMemoPrompt(true)
     if (tour === null) return
+    // 面談前(ついてきているだけ)なら、話しかけると要望のヒアリングが始まる
+    if (tour.phase.kind === 'arriving') return dispatchTour({ type: 'meet' })
     setFollowerTalk(
       tour.household.members.map((member) => ({ member, text: followerLine(tour, member) })),
     )
@@ -419,7 +467,7 @@ export default function App() {
         characters={residentCharacters}
         gender={state.gender}
         alertIds={alertIds}
-        companyAlert={tourPromptOpen}
+        companyAlert={arriving !== null || tour !== null}
         followers={followers}
         occupancy={occupancy}
         homeSpots={homeSpots}
@@ -427,7 +475,6 @@ export default function App() {
           talkingTo !== null ||
           examDue ||
           applyPromptOpen ||
-          tourPromptOpen ||
           tourOverlayOpen ||
           inspectPromptOpen ||
           contractPromptOpen ||
@@ -439,6 +486,18 @@ export default function App() {
           followerTalk !== null
         }
         onTapCharacter={openTalk}
+        staging={staging}
+        onStageFollow={(actorId) => {
+          // 歩いてきた転入者が追従列に加わる。最初の1人で案内(まだ面談前)が始まる
+          if (arriving === null) return
+          setTour((t) => t ?? initTour(arriving))
+          void actorId
+        }}
+        onStagingEnd={() => {
+          setStaging(null)
+          setArriving(null)
+          if (!state.openingDone) update((s) => ({ ...s, openingDone: true }))
+        }}
         onTalkFollower={talkToFollower}
         onPropertyViewed={(id) => setViewedProperty(id)}
       />
@@ -485,17 +544,6 @@ export default function App() {
           options={[
             { label: '応募する', onPick: () => update((s) => ({ ...s, appliedExamYear: year })) },
             { label: '今年は受けない', onPick: () => setApplyDismissedYear(year) },
-          ]}
-        />
-      )}
-
-      {tourPromptOpen && (
-        <PromptOverlay
-          title="🏢 会社に転入者が来ている"
-          body={`ハゲタ「新人、${offeredHousehold.label}(${offeredHousehold.members.length}人)が村に越してくる。\n物件を案内してやれ」`}
-          options={[
-            { label: '案内する', onPick: () => setTour(initTour(offeredHousehold)) },
-            { label: 'あとにする', onPick: () => setTourDismissedDay(state.daysElapsed) },
           ]}
         />
       )}

@@ -102,6 +102,10 @@ export interface GameState {
   occupancy?: Record<string, number>
   /** 住民ID → 契約して住んでいる建物ID。マップの立ち位置に使う */
   residentHomes?: Record<string, string>
+  /** オープニング(ハゲ田が自宅まで案内する演出)を見たか */
+  openingDone?: boolean
+  /** 選んだ世代(いまは第1世代のみ実装) */
+  generation?: number
 }
 
 /** 開始時から村にいる住民(ハゲ田社長のみ) */

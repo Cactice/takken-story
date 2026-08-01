@@ -29,6 +29,8 @@ import {
   trailLength,
 } from '../../lib/follower'
 import type { Follower, Pos } from '../../lib/follower'
+import { LEAD_GAP, distance, findPath, playerCanMove, stepToward } from '../../lib/staging'
+import type { Staging } from '../../lib/staging'
 import { PropertyPanel } from '../property/PropertyPanel'
 import './town.css'
 
@@ -47,12 +49,24 @@ interface Props {
   occupancy?: Readonly<Record<string, number>>
   /** 住民ID → 契約した家の前の立ち位置。無ければ既定の立ち位置 */
   homeSpots?: Readonly<Record<string, [number, number]>>
+  /** 再生中の演出イベント(カットシーン) */
+  staging?: Staging | null
+  /** staging の follow 命令で、そのキャラが追従列に加わった */
+  onStageFollow?: (actorId: string) => void
+  /** staging を最後まで再生し終えた */
+  onStagingEnd?: () => void
   onTapCharacter: (c: Character) => void
   /** 追従キャラに隣接して向いてスペース */
   onTalkFollower?: (f: Follower) => void
   /** 建物・看板の物件パネルを閉じたとき(案内中なら内見するか聞く) */
   onPropertyViewed?: (propertyId: string) => void
 }
+
+/** 歩けるタイルか(カットシーンの経路探索に渡す) */
+const canStand = (x: number, y: number) => inBounds(x, y) && !isSolid(x, y)
+
+/** カットシーンの1歩ぶんの間隔 */
+const STAGE_STEP_MS = 200
 
 const KEY_DIR: Record<string, [number, number, Facing]> = {
   ArrowUp: [0, -1, 'up'],
@@ -77,6 +91,9 @@ export function TownView({
   followers = [],
   occupancy = {},
   homeSpots = {},
+  staging = null,
+  onStageFollow,
+  onStagingEnd,
   onTapCharacter,
   onTalkFollower,
   onPropertyViewed,
@@ -119,10 +136,95 @@ export function TownView({
     spot: homeSpots[c.id] ?? RESIDENT_SPOTS[c.id] ?? SPARE_SPOTS[spare++ % SPARE_SPOTS.length],
   }))
 
+  /* ---------------- 演出イベント(カットシーン)の再生 ---------------- */
+  const [stageActors, setStageActors] = useState<Record<string, { pos: Pos; alert?: boolean }>>({})
+  const [pc, setPc] = useState(0)
+  const [sayLine, setSayLine] = useState<{ actor: string; text: string } | null>(null)
+  const stagingId = staging?.id ?? null
+
+  useEffect(() => {
+    setStageActors({})
+    setPc(0)
+    setSayLine(null)
+  }, [stagingId])
+
+  const cmd = staging?.script[pc]
+
+  // 1テンポずつ命令を進める。歩行はここで1タイルずつ
+  useEffect(() => {
+    if (!staging) return
+    if (cmd === undefined) {
+      onStagingEnd?.()
+      return
+    }
+    if (cmd.cmd === 'say') {
+      setSayLine({ actor: cmd.actor, text: cmd.text })
+      return // スペース待ち
+    }
+    const timer = setTimeout(() => {
+      if (cmd.cmd === 'spawn') {
+        setStageActors((a) => ({ ...a, [cmd.actor]: { pos: cmd.at, alert: cmd.alert } }))
+        setPc((n) => n + 1)
+        return
+      }
+      if (cmd.cmd === 'wait') {
+        setPc((n) => n + 1)
+        return
+      }
+      if (cmd.cmd === 'camera') {
+        // ponytail: カメラは常に主人公を追う。寄せの演出が要るまでは no-op
+        setPc((n) => n + 1)
+        return
+      }
+      if (cmd.cmd === 'follow') {
+        setStageActors((a) => {
+          const { [cmd.actor]: _gone, ...rest } = a
+          return rest
+        })
+        onStageFollow?.(cmd.actor)
+        setPc((n) => n + 1)
+        return
+      }
+      // walkTo / lead: 1タイルだけ進む
+      const cur = stageActors[cmd.actor]?.pos
+      if (!cur) {
+        setPc((n) => n + 1)
+        return
+      }
+      if (cur[0] === cmd.to[0] && cur[1] === cmd.to[1]) {
+        setPc((n) => n + 1)
+        return
+      }
+      // 先導中に主人公が離れすぎたら立ち止まって待つ
+      if (cmd.cmd === 'lead' && distance(cur, player) > LEAD_GAP) return
+      const next = inBounds(cur[0], cur[1])
+        ? (findPath(cur, cmd.to, canStand)[0] ?? cmd.to)
+        : stepToward(cur, cmd.to)
+      setStageActors((a) => ({ ...a, [cmd.actor]: { ...a[cmd.actor], pos: next } }))
+    }, STAGE_STEP_MS)
+    return () => clearTimeout(timer)
+  }, [staging, cmd, pc, stageActors, player, onStageFollow, onStagingEnd])
+
+  // セリフはスペースで送る
+  useEffect(() => {
+    if (!sayLine) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== ' ' && e.key !== 'Enter') return
+      e.preventDefault()
+      setSayLine(null)
+      setPc((n) => n + 1)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [sayLine])
+
+  /** カットシーン中は原則動けない(lead 中だけは主人公が追いかける必要がある) */
+  const stageLock = staging !== null && (sayLine !== null || !playerCanMove(cmd))
+
   const panelOpen = openProperty !== null
 
   useEffect(() => {
-    if (inputLocked || panelOpen) return
+    if (inputLocked || panelOpen || stageLock) return
     const residentAt = new Map(residents.map((r) => [`${r.spot[0]},${r.spot[1]}`, r.character]))
 
     const onKey = (e: KeyboardEvent) => {
@@ -188,7 +290,7 @@ export function TownView({
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
     // residents は characters から導出で毎回同値
-  }, [inputLocked, panelOpen, facing, characters, onTapCharacter, onTalkFollower, followers, trail, idle]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [inputLocked, panelOpen, stageLock, facing, characters, onTapCharacter, onTalkFollower, followers, trail, idle]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const openSpec = openProperty === null ? undefined : propertyById(openProperty)
 
@@ -290,6 +392,26 @@ export function TownView({
             </button>
           ))}
 
+          {/* 演出イベントで歩いているキャラ */}
+          {Object.entries(stageActors).map(([id, a]) => (
+            <div
+              key={`stage-${id}`}
+              className="follower"
+              style={{ '--fx': a.pos[0], '--fy': a.pos[1] } as CSSProperties}
+              aria-label={staging?.actors.find((x) => x.id === id)?.name ?? id}
+            >
+              {a.alert && (
+                <span className="resident-alert" aria-label="用事あり">
+                  !
+                </span>
+              )}
+              <span className="char-sprite" style={characterSpriteStyle(id)} />
+              <span className="resident-name">
+                {staging?.actors.find((x) => x.id === id)?.name ?? id}
+              </span>
+            </div>
+          ))}
+
           {/* 追従キャラ。当たり判定は持たない(主人公も住民もすり抜ける) */}
           {followers.map((f, i) => {
             const [fx, fy] = followerSpots[i]
@@ -300,6 +422,11 @@ export function TownView({
                 style={{ '--fx': fx, '--fy': fy } as CSSProperties}
                 aria-label={f.name ?? 'ハゲ田のメモ'}
               >
+                {f.alert && (
+                  <span className="resident-alert" aria-label="用事あり">
+                    !
+                  </span>
+                )}
                 {f.kind === 'member' ? (
                   <span className="char-sprite" style={characterSpriteStyle(f.id)} />
                 ) : (
@@ -317,6 +444,19 @@ export function TownView({
           </div>
         </div>
       </div>
+
+      {sayLine && (
+        <div className="stage-say" role="status">
+          <span className="char-sprite stage-say-face" style={characterSpriteStyle(sayLine.actor)} />
+          <p>
+            <strong>{staging?.actors.find((x) => x.id === sayLine.actor)?.name ?? ''}</strong>
+            「{sayLine.text}」
+            <span className="tour-next" aria-hidden="true">
+              ▼
+            </span>
+          </p>
+        </div>
+      )}
 
       <p className="town-help">
         矢印キーで移動 / 住民・連れのとなりでスペースで会話 / 建物・看板を向いてスペースで物件情報

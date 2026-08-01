@@ -28,5 +28,11 @@
 - 備考: Google Fonts の unicode-range サブセット分割をそのまま自前ホストしている。
   ブラウザは実際に使った字を含むサブセット(1つ10KB前後)だけを取得する
 
+## Roguelike Modern City (v1.0)
+- 作者: Kenney (https://kenney.nl)
+- 入手元: https://kenney.nl/assets/roguelike-modern-city
+- ライセンス: CC0 1.0 (パブリックドメイン、商用可、帰属表示不要) — 同梱 `city/License.txt` 参照
+- 用途: 第2世代の舞台「黒会市」の都会タイル (`city/tilemap_packed.png`、16x16px、37x28タイル)
+
 タイル番号 → 用途の対応は `src/lib/sprites.ts`、`src/components/town/TownView.tsx`、
 `src/components/diagram/tiles.ts` を参照。図解のデザイン方針は `docs/DESIGN.md`。

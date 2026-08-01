@@ -497,7 +497,9 @@ export function disclosureFor(p: TourProperty): DisclosureItem[] {
  * 「案内中である」という状態と内見の加減点だけを持つ。
  * ------------------------------------------------------------------ */
 export type TourPhase =
-  /** 会社での面談(要望を聞く)。オーバーレイ */
+  /** 画面外から歩いてきて、頭に「!」を付けたまま主人公についてくる。話しかけると面談へ */
+  | { kind: 'arriving' }
+  /** 面談(要望を聞く)。オーバーレイ */
   | { kind: 'briefing'; line: number }
   /** マップ上を連れ回して物件を見せる */
   | { kind: 'map' }
@@ -539,6 +541,8 @@ export type TourAction =
   | { type: 'inspect'; property: TourProperty }
   /** 内見済みの物件で契約に進む */
   | { type: 'contract'; property: TourProperty }
+  /** ついてきた転入者に話しかけた → 面談が始まる */
+  | { type: 'meet' }
 
 const KIND_LABEL: Record<HouseholdKind, string> = {
   single: '単身',
@@ -550,7 +554,8 @@ const KIND_LABEL: Record<HouseholdKind, string> = {
 /** 世帯の面談。世帯名・引越し理由・メンバー1人ずつの要望・世帯予算 */
 export function briefingLines(h: TourHousehold): string[] {
   return [
-    `ハゲタ「新人、今日の転入は${h.label}(${KIND_LABEL[h.kind]}・${h.members.length}人)だ。物件を案内してやれ」`,
+    `${h.label}「あの…この村に越してきたくて。物件を見せてもらえませんか?」`,
+    `ハゲタ「${h.label}(${KIND_LABEL[h.kind]}・${h.members.length}人)か。新人、案内してやれ」`,
     `${h.label}「${h.moveReason}んです」`,
     ...h.members.map((m) => `${m.name}(${m.age}歳)「${m.demands}」`),
     `ハゲタ「予算は世帯で月${h.budget}万円までだ。全員の希望に折り合いをつけろよ」`,
@@ -562,7 +567,7 @@ export function initTour(household: TourHousehold): TourState {
   return {
     household,
     hp: HP_MAX,
-    phase: { kind: 'briefing', line: 0 },
+    phase: { kind: 'arriving' },
     scored: [],
     candidates: [],
     lastVisited: null,
@@ -595,7 +600,11 @@ export function tourReducer(s: TourState, a: TourAction): TourState {
   const ph = s.phase
   if (ph.kind === 'done') return s
 
-  if (a.type === 'tick') return damage(s, HP_DRAIN_PER_TICK)
+  // 面談前(ついてきているだけ)は機嫌が減らない
+  if (a.type === 'tick') return ph.kind === 'arriving' ? s : damage(s, HP_DRAIN_PER_TICK)
+
+  if (a.type === 'meet')
+    return ph.kind === 'arriving' ? { ...s, phase: { kind: 'briefing', line: 0 } } : s
 
   if (a.type === 'inspect') {
     if (ph.kind !== 'map') return s
@@ -644,6 +653,7 @@ export function tourReducer(s: TourState, a: TourAction): TourState {
       }
     }
 
+    case 'arriving':
     case 'map':
       return s
 
@@ -682,6 +692,7 @@ export function contractedProperty(s: TourState): TourProperty {
  */
 export function followerLine(s: TourState, m: TourMember): string {
   const h = s.household
+  if (s.phase.kind === 'arriving') return 'あの、家を探しているんです。話を聞いてもらえますか?'
   if (s.hp <= HP_MAX * 0.4) return 'そろそろ疲れてきました…。今日はあと1、2軒にしませんか'
 
   if (s.lastVisited) {

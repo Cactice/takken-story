@@ -195,3 +195,15 @@
   flex: none;
   width: 9rem;
 }
+
+/* 話者が切り替わるのが分かるように、いま喋っている人を強調する */
+.tour-sprite.is-speaking {
+  transform: scale(1.25);
+  filter: drop-shadow(0 0 0 rgb(0 0 0 / 0)) brightness(1.05);
+}
+
+.tour-turn {
+  margin-left: auto;
+  font-size: 0.7rem;
+  opacity: 0.65;
+}

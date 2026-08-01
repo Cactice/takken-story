@@ -8,8 +8,10 @@
  * 流し込むだけでよい(命令名は docs/SYSTEMS.md の表と同じ)。
  */
 
-import { PLAYER_HOME, inBounds, isSolid } from './map'
 import type { Pos } from './follower'
+
+/** そのタイルに立てるか。マップの都合(map.ts)は呼び出し側から渡す */
+export type CanStand = (x: number, y: number) => boolean
 
 export type StageCommand =
   /** キャラを指定位置(画面外可)に出す。alert で頭上に「!」 */
@@ -56,7 +58,7 @@ export function distance(a: Pos, b: Pos): number {
  * BFSの最短経路(from は含まない)。マップが小さいので素直に全探索でよい。
  * 目的地が塞がっていたら、その隣で一番近いところまで歩く。
  */
-export function findPath(from: Pos, to: Pos): Pos[] {
+export function findPath(from: Pos, to: Pos, canStand: CanStand): Pos[] {
   const key = (x: number, y: number) => `${x},${y}`
   const prev = new Map<string, Pos>()
   const seen = new Set<string>([key(...from)])
@@ -76,8 +78,7 @@ export function findPath(from: Pos, to: Pos): Pos[] {
       const nx = cur[0] + dx
       const ny = cur[1] + dy
       const k = key(nx, ny)
-      // 画面外(マップ外)から歩いてくる演出があるので、マップ外は目的地側だけ許さない
-      if (!inBounds(nx, ny) || isSolid(nx, ny) || seen.has(k)) continue
+      if (!canStand(nx, ny) || seen.has(k)) continue
       seen.add(k)
       prev.set(k, cur)
       queue.push([nx, ny])
@@ -103,7 +104,8 @@ export function stepToward(from: Pos, to: Pos): Pos {
 /* ------------------------------------------------------------------ *
  * 第1世代のオープニング(ハゲ田が自宅まで案内する)
  * ------------------------------------------------------------------ */
-const HOME_FRONT: Pos = [PLAYER_HOME.entrance[0], PLAYER_HOME.entrance[1] + 1]
+// 自宅(ボロ屋)の入口の真下。map.ts の PLAYER_HOME と一致していることは check-staging.mjs で検算する
+const HOME_FRONT: Pos = [2, 17]
 
 export const OPENING: Staging = {
   id: 'opening-gen1',
@@ -139,7 +141,9 @@ export function arrivalStaging(members: StageActor[], near: Pos): Staging {
         at: [gate[0] + i, gate[1]],
         alert: true,
       })),
-      ...members.map((m): StageCommand => ({ cmd: 'walkTo', actor: m.id, to: near })),
+      // ponytail: 歩いてくるのは先頭の1人だけ。残りは同じ場所に湧いて、追従列で後ろに並ぶ。
+      // 全員ぶん歩かせると待ち時間が人数分になるだけで、見た目はほとんど変わらない
+      { cmd: 'walkTo', actor: members[0].id, to: near },
       ...members.map((m): StageCommand => ({ cmd: 'follow', actor: m.id })),
     ],
   }

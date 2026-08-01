@@ -40,13 +40,13 @@ const villageTiles = [
   [g, t, S, S, S, T.sprout, g, T.mushroom],
 ]
 
-/** 都会のサムネイル(ビル + アスファルト + 横断歩道) */
-const cityTiles = (roofTop: number) => [
-  [53, 54, 55, 61, 62, 63, roofTop, roofTop + 1],
-  [90, 91, 92, 98, 99, 100, 87, 88],
-  [127, 128, 129, 135, 136, 137, 124, 125],
+/** 都会のサムネイル(ビル + 歩道 + アスファルト + 横断歩道) */
+const cityTiles = (roof: readonly [number, number]) => [
+  [53, 54, 55, 61, 62, 63, roof[0], roof[1]],
+  [90, 91, 92, 98, 99, 100, roof[0] + 37, roof[1] + 37],
   [308, 309, 311, 304, 305, 307, 300, 301],
-  [741, 741, 838, 827, 838, 838, 741, 741],
+  [741, 440, 741, 741, 440, 741, 741, 985],
+  [714, 714, 827, 827, 714, 714, 714, 714],
 ]
 
 export const GENERATIONS: readonly GenerationInfo[] = [
@@ -72,7 +72,7 @@ export const GENERATIONS: readonly GenerationInfo[] = [
     summary:
       '過疎の村に限界を感じた2代目は、大都会「黒会市」で独立。\n胡散臭いコンサル「海沢」の助言で大金を掴むが、業法のタブーに足を踏み入れる。',
     study: '宅建業法の禁止事項を「やってしまう側」から',
-    thumb: { sheet: CITY_SHEET, tiles: cityTiles(50) },
+    thumb: { sheet: CITY_SHEET, tiles: cityTiles([50, 51]) },
   },
   {
     generation: 3,
@@ -100,7 +100,7 @@ export const GENERATIONS: readonly GenerationInfo[] = [
     summary:
       '2代目がついに欠格事由に該当し免許取り消し。ボロボロの会社を立て直すため、\n4代目は正当な「法令上の制限」を武器に巨大プロジェクトへ挑む。',
     study: '法令上の制限・免許制度(欠格事由)',
-    thumb: { sheet: CITY_SHEET, tiles: cityTiles(37), filter: 'contrast(1.15) saturate(1.1)' },
+    thumb: { sheet: CITY_SHEET, tiles: cityTiles([37, 38]), filter: 'contrast(1.15) saturate(1.1)' },
   },
   {
     generation: 5,

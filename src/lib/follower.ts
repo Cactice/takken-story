@@ -12,6 +12,8 @@ export interface Follower {
   kind: 'member' | 'book'
   /** 話しかけたときの表示名(本は無し) */
   name?: string
+  /** 頭上に「!」を出す(面談前の転入者) */
+  alert?: boolean
 }
 
 /** 足跡の必要な長さ(先頭 = 主人公の現在地 + 後続の人数) */
