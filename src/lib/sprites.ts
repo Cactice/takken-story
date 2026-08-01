@@ -69,7 +69,8 @@ export function characterSpriteStyle(characterId: string): CSSProperties {
 // 主人公: Antifarea 16x18 4方向チャーセット (CC-BY 3.0) — 3列(歩行フレーム)×4行(向き)
 export type Facing = 'up' | 'down' | 'left' | 'right'
 
-const FACING_ROW: Record<Facing, number> = { up: 0, left: 1, down: 2, right: 3 }
+// シートの行順は 上・右・下・左(実画像で確認済み)
+const FACING_ROW: Record<Facing, number> = { up: 0, right: 1, down: 2, left: 3 }
 
 export function playerSpriteStyle(gender: Gender, facing: Facing = 'down'): CSSProperties {
   return {
