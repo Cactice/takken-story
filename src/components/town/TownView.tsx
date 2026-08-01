@@ -60,6 +60,8 @@ export function TownView({
 }: Props) {
   const [player, setPlayer] = useState<[number, number]>(START_POS)
   const [facing, setFacing] = useState<Facing>('up')
+  /** 歩数。1歩ごとに増やして足を踏み替える */
+  const [step, setStep] = useState(0)
   const [openProperty, setOpenProperty] = useState<string | null>(null)
 
   // 住民は悩みに合った建物の前へ。未登録のIDは予備の立ち位置に回す
@@ -85,6 +87,7 @@ export function TownView({
           const ny = y + dir[1]
           if (!inBounds(nx, ny)) return [x, y]
           if (isSolid(nx, ny) || residentAt.has(`${nx},${ny}`)) return [x, y]
+          setStep((s) => s + 1)
           return [nx, ny]
         })
         return
@@ -226,7 +229,7 @@ export function TownView({
           ))}
 
           <div className="player" aria-label="主人公">
-            <span className="char-sprite player-sprite" style={playerSpriteStyle(gender, facing)} />
+            <span className="char-sprite player-sprite" style={playerSpriteStyle(gender, facing, step)} />
           </div>
         </div>
       </div>

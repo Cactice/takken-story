@@ -9,28 +9,24 @@ import {
   contractedProperty,
   disclosureFor,
   hagetaCommentFor,
+  householdReaction,
   initTour,
-  reactionTo,
   tourReducer,
 } from '../../lib/tour'
-import type { Newcomer, TourProperty, TourState } from '../../lib/tour'
+import type { TourHousehold, TourProperty, TourState } from '../../lib/tour'
 import './tour.css'
-
-// content/newcomers/*.json をビルド時に取り込む
-const newcomerModules = import.meta.glob<{ default: Newcomer }>('../../../content/newcomers/*.json', {
-  eager: true,
-})
-export const newcomers: Newcomer[] = Object.values(newcomerModules).map((m) => m.default)
 
 export interface TourResult {
   success: boolean
   /** 成立時の仲介手数料(万円) */
   reward: number
   propertyId: string | null
+  /** 契約成立で村の住民になるメンバー(世帯全員) */
+  residentIds: string[]
 }
 
 interface Props {
-  newcomer: Newcomer
+  household: TourHousehold
   /** 案内して回る物件。将来はマップ上で選んだ物件IDから渡す */
   properties?: TourProperty[]
   /** ハゲタのメモ(学習ポイント)が発生した */
@@ -80,8 +76,8 @@ function HpBar({ hp, name }: { hp: number; name: string }) {
   )
 }
 
-export function TourScreen({ newcomer, properties = DUMMY_PROPERTIES, onMemoEarned, onFinish }: Props) {
-  const [state, dispatch] = useReducer(tourReducer, undefined, () => initTour(newcomer, properties))
+export function TourScreen({ household, properties = DUMMY_PROPERTIES, onMemoEarned, onFinish }: Props) {
+  const [state, dispatch] = useReducer(tourReducer, undefined, () => initTour(household, properties))
 
   // 発行済みメモ数。増えた分だけコールバックを呼ぶ
   const sentMemos = useRef(0)
@@ -120,11 +116,13 @@ export function TourScreen({ newcomer, properties = DUMMY_PROPERTIES, onMemoEarn
     <div className="tour-overlay" role="dialog" aria-label="物件案内">
       <div className="tour-panel">
         <header className="tour-head">
-          <span className="tour-sprite" style={characterSpriteStyle(newcomer.id)} />
+          {household.members.map((m) => (
+            <span key={m.id} className="tour-sprite" style={characterSpriteStyle(m.id)} title={m.name} />
+          ))}
           <span className="tour-name">
-            {newcomer.name}({newcomer.age}歳)
+            {household.label}({household.members.map((m) => m.name).join('・')})
           </span>
-          <HpBar hp={state.hp} name={newcomer.name} />
+          <HpBar hp={state.hp} name={household.label} />
         </header>
 
         <TourBody state={state} onFinish={onFinish} />
@@ -137,10 +135,12 @@ export function TourScreen({ newcomer, properties = DUMMY_PROPERTIES, onMemoEarn
 
 function TourBody({ state, onFinish }: { state: TourState; onFinish: (r: TourResult) => void }) {
   const ph = state.phase
-  const n = state.newcomer
+  const h = state.household
+  /** 世帯の代表(質問や締めのセリフを言う人) */
+  const rep = h.members[0]
 
   if (ph.kind === 'briefing') {
-    const lines = briefingLines(n)
+    const lines = briefingLines(h)
     return (
       <section className="tour-scene">
         <h2 className="tour-title">🏢 ひばり不動産 — 面談</h2>
@@ -154,8 +154,8 @@ function TourBody({ state, onFinish }: { state: TourState; onFinish: (r: TourRes
 
   if (ph.kind === 'visit') {
     const p = state.properties[ph.index]
-    const r = reactionTo(n, p)
-    const comment = hagetaCommentFor(p, n.id)
+    const hr = householdReaction(h, p)
+    const comment = hagetaCommentFor(p, h.id)
     return (
       <section className="tour-scene">
         <h2 className="tour-title">
@@ -163,9 +163,17 @@ function TourBody({ state, onFinish }: { state: TourState; onFinish: (r: TourRes
         </h2>
         <SpecTable p={p} />
         {ph.step !== 'spec' && (
-          <p className={`tour-line tour-reaction is-${r.mood}`}>
-            {MOOD_FACE[r.mood]} {n.name}「{r.line}」
-          </p>
+          <>
+            {/* 内見の反応は世帯全員分を出す */}
+            {hr.each.map(({ member, reaction }) => (
+              <p key={member.id} className={`tour-line tour-reaction is-${reaction.mood}`}>
+                {MOOD_FACE[reaction.mood]} {member.name}「{reaction.line}」
+              </p>
+            ))}
+            {h.members.length > 1 && (
+              <p className={`tour-line tour-reaction is-${hr.mood}`}>{hr.line}</p>
+            )}
+          </>
         )}
         {ph.step === 'hageta' && comment && <p className="tour-line tour-hageta">{comment.text}</p>}
         <span className="tour-next" aria-hidden="true">
@@ -181,11 +189,11 @@ function TourBody({ state, onFinish }: { state: TourState; onFinish: (r: TourRes
         <h2 className="tour-title">📝 どの物件で契約する?</h2>
         <ul className="tour-choices">
           {state.properties.map((p, i) => {
-            const r = reactionTo(n, p)
+            const hr = householdReaction(h, p)
             return (
               <li key={p.id}>
                 <span className={`tour-choice ${i === ph.sel ? 'is-key-selected' : ''}`}>
-                  {MOOD_FACE[r.mood]} {p.name}(月{p.rent}万円)
+                  {hr.each.map((e) => MOOD_FACE[e.reaction.mood]).join('')} {p.name}(月{p.rent}万円)
                 </span>
               </li>
             )
@@ -211,7 +219,7 @@ function TourBody({ state, onFinish }: { state: TourState; onFinish: (r: TourRes
 
         {ph.step !== 'read' && (
           <p className="tour-line tour-reaction">
-            ❓ {n.name}「{item.question.ask}」
+            ❓ {rep.name}「{item.question.ask}」
           </p>
         )}
 
@@ -248,14 +256,20 @@ function TourBody({ state, onFinish }: { state: TourState; onFinish: (r: TourRes
       <h2 className="tour-title">{ph.success ? '🎉 契約成立!' : '💔 契約は流れた…'}</h2>
       <p className="tour-line">
         {ph.success && p
-          ? `${n.name}「${p.name}に決めました! ありがとうございます」\nハゲタ「よくやった。仲介手数料は賃料1ヶ月分、${brokerageFee(p)}万円だ」`
-          : `${n.name}「…すみません、今日は帰ります」\nハゲタ「客の機嫌を切らしたな。要望に合う物件だけ見せろ」`}
+          ? `${rep.name}「${p.name}に決めました! ありがとうございます」\nハゲタ「よくやった。仲介手数料は賃料1ヶ月分、${brokerageFee(p)}万円だ。${h.label}の${h.members.length}人が村の住民になったぞ」`
+          : `${rep.name}「…すみません、今日は帰ります」\nハゲタ「客の機嫌を切らしたな。世帯全員の要望に折り合う物件を見せろ」`}
       </p>
       <button
         type="button"
         className="pixel-btn is-key-selected"
         onClick={() =>
-          onFinish({ success: ph.success, reward: state.reward, propertyId: state.contractedId })
+          onFinish({
+            success: ph.success,
+            reward: state.reward,
+            propertyId: state.contractedId,
+            // 契約成立なら世帯全員が村の住民になる
+            residentIds: ph.success ? h.members.map((m) => m.id) : [],
+          })
         }
       >
         もどる

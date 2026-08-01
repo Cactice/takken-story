@@ -122,24 +122,52 @@ export const DUMMY_PROPERTIES: TourProperty[] = [
 ]
 
 /* ------------------------------------------------------------------ *
- * 転入者
+ * 転入は「世帯」単位(単身・カップル・家族・ルームシェア)
+ * content/gen1/households/*.json + content/gen1/characters/*.json を
+ * 組み立てたもの。JSON の読み込みは lib/content.ts が持つ。
  * ------------------------------------------------------------------ */
-export interface Newcomer {
+export type HouseholdKind = 'single' | 'couple' | 'family' | 'share'
+
+/** 世帯のメンバー1人分の希望 */
+export interface TourMember {
   id: string
   name: string
-  sprite: string
-  personality: string
   age: number
-  /** 引越し理由 */
-  moveReason: string
   /** 要望 */
   demands: string
   likedFeatures: string[]
   dislikedFeatures: string[]
-  /** 家賃の上限(万円/月) */
-  budget: number
+}
+
+export interface TourHousehold {
+  id: string
+  kind: HouseholdKind
+  /** 画面に出す世帯名 */
+  label: string
+  /** 引越し理由 */
+  moveReason: string
   /** 引越し理由に関連する宅建論点 */
   topicId: string
+  /** 世帯合計の家賃上限(万円/月) */
+  budget: number
+  members: TourMember[]
+}
+
+/** content/gen1/characters/*.json の1人を内見メンバーに変換する */
+export function toTourMember(c: {
+  id: string
+  name: string
+  age?: number
+  moveIn?: { demands: string; likedFeatures: string[]; dislikedFeatures: string[] }
+}): TourMember {
+  return {
+    id: c.id,
+    name: c.name,
+    age: c.age ?? 0,
+    demands: c.moveIn?.demands ?? '特に希望はないです',
+    likedFeatures: c.moveIn?.likedFeatures ?? [],
+    dislikedFeatures: c.moveIn?.dislikedFeatures ?? [],
+  }
 }
 
 /* ------------------------------------------------------------------ *
@@ -149,8 +177,10 @@ export const HP_MAX = 100
 /** 時間経過: この間隔で HP_DRAIN_PER_TICK ずつ減る */
 export const HP_TICK_MS = 3000
 export const HP_DRAIN_PER_TICK = 1
-/** 興味のない物件を案内したときの追加ダメージ(1物件1回まで) */
+/** 興味のない物件を案内したときの追加ダメージ(嫌がったメンバー1人につき・1物件1回まで) */
 export const HP_PENALTY_DISLIKE = 12
+/** 世帯全員が気に入った物件を案内したときの回復(メンバー1人につき) */
+export const HP_BONUS_ALL_LIKE = 6
 /** 35条の質問に誤答したときのダメージ */
 export const HP_PENALTY_WRONG = 20
 /** ハゲタが法的解説をする確率 */
@@ -181,10 +211,11 @@ function mentions(p: TourProperty, keyword: string): boolean {
   return haystack.includes(keyword)
 }
 
-export function reactionTo(n: Newcomer, p: TourProperty): Reaction {
-  const hits = n.likedFeatures.filter((f) => mentions(p, f))
-  const misses = n.dislikedFeatures.filter((f) => f !== '家賃が高い' && mentions(p, f))
-  if (p.rent > n.budget) misses.push('家賃が高い')
+/** メンバー1人の反応。予算は世帯合計で判定する */
+export function reactionTo(m: TourMember, p: TourProperty, budget: number): Reaction {
+  const hits = m.likedFeatures.filter((f) => mentions(p, f))
+  const misses = m.dislikedFeatures.filter((f) => f !== '家賃が高い' && mentions(p, f))
+  if (p.rent > budget) misses.push('家賃が高い')
 
   const score = hits.length - misses.length
   const mood: Mood = score > 0 ? 'like' : score < 0 ? 'dislike' : 'neutral'
@@ -200,6 +231,49 @@ export function reactionTo(n: Newcomer, p: TourProperty): Reaction {
           : '悪くはないけど、ピンと来ないですね…。'
 
   return { mood, hits, misses, line }
+}
+
+/** 世帯全員分の反応をまとめたもの */
+export interface HouseholdReaction {
+  /** メンバーごとの反応(household.members と同じ順) */
+  each: { member: TourMember; reaction: Reaction }[]
+  /** 世帯としての総意。割れたら neutral */
+  mood: Mood
+  /** 嫌がったメンバー数(この人数分だけHPが減る) */
+  dislikes: number
+  /** 全員が気に入った */
+  allLike: boolean
+  /** 世帯としての一言(割れたときは折衷の言葉になる) */
+  line: string
+}
+
+export function householdReaction(h: TourHousehold, p: TourProperty): HouseholdReaction {
+  const each = h.members.map((member) => ({ member, reaction: reactionTo(member, p, h.budget) }))
+  const likers = each.filter((e) => e.reaction.mood === 'like')
+  const haters = each.filter((e) => e.reaction.mood === 'dislike')
+  const allLike = likers.length === each.length
+  const mood: Mood =
+    allLike ? 'like' : haters.length > 0 && likers.length === 0 ? 'dislike' : 'neutral'
+
+  const names = (xs: typeof each) => xs.map((e) => e.member.name).join('と')
+  const line =
+    each.length === 1
+      ? each[0].reaction.line
+      : allLike
+        ? `${names(each)}「ここ、みんな気に入りました!」`
+        : likers.length > 0 && haters.length > 0
+          ? `${names(likers)}は乗り気だが、${names(haters)}は渋い顔だ。折り合いをつけたいところ。`
+          : haters.length > 0
+            ? `${names(haters)}「…この家はちょっと」`
+            : '世帯そろって、可もなく不可もなくという顔をしている。'
+
+  return { each, mood, dislikes: haters.length, allLike, line }
+}
+
+/** 1物件あたりのHP増減。全員 like なら人数分プラス、嫌がった人数分だけマイナス */
+export function hpDeltaFor(hr: HouseholdReaction): number {
+  if (hr.allLike) return HP_BONUS_ALL_LIKE * hr.each.length
+  return -HP_PENALTY_DISLIKE * hr.dislikes
 }
 
 /* ------------------------------------------------------------------ *
@@ -361,12 +435,12 @@ export interface EarnedMemo {
 }
 
 export interface TourState {
-  newcomer: Newcomer
+  household: TourHousehold
   properties: TourProperty[]
   hp: number
   phase: TourPhase
-  /** ダメージ済みの物件(同じ物件で二重に減らさない) */
-  penalized: string[]
+  /** 加減点済みの物件(同じ物件で二重に増減させない) */
+  scored: string[]
   contractedId: string | null
   /** 成立時の報酬(万円) */
   reward: number
@@ -382,34 +456,44 @@ export type TourAction =
   /** 時間経過 */
   | { type: 'tick' }
 
-export function briefingLines(n: Newcomer): string[] {
+const KIND_LABEL: Record<HouseholdKind, string> = {
+  single: '単身',
+  couple: 'カップル',
+  family: '家族',
+  share: 'ルームシェア',
+}
+
+/** 世帯の面談。世帯名・引越し理由・メンバー1人ずつの要望・世帯予算 */
+export function briefingLines(h: TourHousehold): string[] {
   return [
-    `ハゲタ「新人、こちらが今日の転入者の${n.name}さんだ。物件を案内してやれ」`,
-    `${n.name}「${n.moveReason}んです」`,
-    `${n.name}「${n.demands}」`,
-    `ハゲタ「予算は月${n.budget}万円までだそうだ。要望に合わん家ばかり見せると機嫌が悪くなるぞ」`,
+    `ハゲタ「新人、今日の転入は${h.label}(${KIND_LABEL[h.kind]}・${h.members.length}人)だ。物件を案内してやれ」`,
+    `${h.label}「${h.moveReason}んです」`,
+    ...h.members.map((m) => `${m.name}(${m.age}歳)「${m.demands}」`),
+    `ハゲタ「予算は世帯で月${h.budget}万円までだ。全員の希望に折り合いをつけろよ」`,
   ]
 }
 
-export function initTour(newcomer: Newcomer, properties: TourProperty[]): TourState {
+export function initTour(household: TourHousehold, properties: TourProperty[]): TourState {
   return {
-    newcomer,
+    household,
     properties,
     hp: HP_MAX,
     phase: { kind: 'briefing', line: 0 },
-    penalized: [],
+    scored: [],
     contractedId: null,
     reward: 0,
     memos: [],
   }
 }
 
-/** HPを減らし、尽きたら契約失敗にする */
-function damage(s: TourState, amount: number): TourState {
-  const hp = Math.max(0, s.hp - amount)
+/** HPを増減し(上限 HP_MAX)、尽きたら契約失敗にする */
+function applyHp(s: TourState, delta: number): TourState {
+  const hp = Math.min(HP_MAX, Math.max(0, s.hp + delta))
   if (hp > 0) return { ...s, hp }
   return { ...s, hp, phase: { kind: 'done', success: false } }
 }
+
+const damage = (s: TourState, amount: number) => applyHp(s, -amount)
 
 function startVisit(s: TourState, index: number): TourState {
   if (index >= s.properties.length) return { ...s, phase: { kind: 'choose', sel: 0 } }
@@ -437,13 +521,13 @@ export function tourReducer(s: TourState, a: TourAction): TourState {
   // advance
   switch (ph.kind) {
     case 'briefing': {
-      const lines = briefingLines(s.newcomer)
+      const lines = briefingLines(s.household)
       if (ph.line + 1 < lines.length) return { ...s, phase: { kind: 'briefing', line: ph.line + 1 } }
       // 引越し理由に紐づくメモを獲得
       return startVisit(
         {
           ...s,
-          memos: [...s.memos, { topicId: s.newcomer.topicId, title: `${s.newcomer.name}さんの引越し理由` }],
+          memos: [...s.memos, { topicId: s.household.topicId, title: `${s.household.label}の引越し理由` }],
         },
         0,
       )
@@ -453,12 +537,12 @@ export function tourReducer(s: TourState, a: TourAction): TourState {
       const p = s.properties[ph.index]
       if (ph.step === 'spec') return { ...s, phase: { ...ph, step: 'reaction' } }
       if (ph.step === 'reaction') {
-        // 興味のない物件はここで追加ダメージ(同じ物件では1回だけ)
-        const r = reactionTo(s.newcomer, p)
-        const hit = r.mood === 'dislike' && !s.penalized.includes(p.id)
-        const next = hit ? damage({ ...s, penalized: [...s.penalized, p.id] }, HP_PENALTY_DISLIKE) : s
+        // 嫌がったメンバーの人数分だけ減り、全員が気に入れば人数分回復(同じ物件では1回だけ)
+        const delta = hpDeltaFor(householdReaction(s.household, p))
+        const first = !s.scored.includes(p.id)
+        const next = first && delta !== 0 ? applyHp({ ...s, scored: [...s.scored, p.id] }, delta) : s
         if (next.phase.kind === 'done') return next
-        const comment = hagetaCommentFor(p, s.newcomer.id)
+        const comment = hagetaCommentFor(p, s.household.id)
         if (!comment) return startVisit(next, ph.index + 1)
         return {
           ...next,

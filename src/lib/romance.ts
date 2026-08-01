@@ -57,7 +57,8 @@ const EXCITEMENT_PER_LIKED = 15
 const EXCITEMENT_PER_DISLIKED = 15
 
 const contentModules = import.meta.glob<{ default: RomanceContent }>(
-  '../../content/romance/*.json',
+  // content/romance/ は将来 content/gen*/romance/ へ移る。どちらでも拾えるようにしておく
+  ['../../content/romance/*.json', '../../content/gen*/romance/*.json'],
   { eager: true },
 )
 

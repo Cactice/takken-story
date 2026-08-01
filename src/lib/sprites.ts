@@ -72,11 +72,19 @@ export type Facing = 'up' | 'down' | 'left' | 'right'
 // シートの行順は 上・右・下・左(実画像で確認済み)
 const FACING_ROW: Record<Facing, number> = { up: 0, right: 1, down: 2, left: 3 }
 
-export function playerSpriteStyle(gender: Gender, facing: Facing = 'down'): CSSProperties {
+/** 歩行フレーム: 0=左足, 1=立ち, 2=右足。歩くたびに 0→1→2→1→… と踏み替える */
+export const WALK_FRAMES = [1, 0, 1, 2] as const
+
+export function playerSpriteStyle(
+  gender: Gender,
+  facing: Facing = 'down',
+  /** 歩数。WALK_FRAMES を巡回して足を踏み替える */
+  step = 0,
+): CSSProperties {
+  const col = WALK_FRAMES[step % WALK_FRAMES.length]
   return {
     backgroundImage: `url(${import.meta.env.BASE_URL}assets/player/${gender}.png)`,
     backgroundSize: '300% 400%',
-    // 中央列 = 立ちポーズ
-    backgroundPosition: `50% ${(FACING_ROW[facing] / 3) * 100}%`,
+    backgroundPosition: `${(col / 2) * 100}% ${(FACING_ROW[facing] / 3) * 100}%`,
   }
 }

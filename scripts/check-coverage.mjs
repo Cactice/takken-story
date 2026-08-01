@@ -42,14 +42,14 @@ const events = GENS.flatMap((g) => walk(`content/gen${g}/events`)).map((path) =>
 const errors = [];
 const seen = new Map();
 for (const { path, data } of events) {
-  const [, genDir, , fieldDir] = path.split('/');
+  const [, genDir] = path.split('/');
   const gen = Number(genDir.replace('gen', ''));
   if (data.id !== basename(path, '.json')) errors.push(`${path}: id "${data.id}" がファイル名と不一致`);
   if (seen.has(data.id)) errors.push(`${path}: id "${data.id}" が ${seen.get(data.id)} と重複`);
   seen.set(data.id, path);
   if (data.generation !== gen) errors.push(`${path}: generation ${data.generation} がフォルダ gen${gen} と不一致`);
+  // 分野はフォルダで分けない(docs/CONTENT_SCHEMA.md)。分野は topicId から導く
   if (!data.topicId) errors.push(`${path}: topicId がない`);
-  else if (fieldOf(data.topicId) !== fieldDir) errors.push(`${path}: topicId "${data.topicId}" は ${fieldOf(data.topicId)}/ に属するはず`);
 }
 
 const topics = parseTopics();

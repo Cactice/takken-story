@@ -5,10 +5,10 @@ import { DialogueBox } from './components/dialogue/DialogueBox'
 import { ExamScreen, passLine } from './components/exam/ExamScreen'
 import type { ExamAnswer } from './components/exam/ExamScreen'
 import { DateMeter } from './components/hud/DateMeter'
-import { TourScreen, newcomers } from './components/tour/TourScreen'
-import type { Newcomer } from './lib/tour'
+import { TourScreen } from './components/tour/TourScreen'
+import type { TourHousehold } from './lib/tour'
 import { useGameClock } from './hooks/useGameClock'
-import { characters, events } from './lib/content'
+import { characters, events, households } from './lib/content'
 import { availableConsultations, buildYearSchedule } from './lib/schedule'
 import { RomanceOverlay } from './components/romance/RomanceOverlay'
 import { romanceContentFor, romanceStateOf, talkOnce } from './lib/romance'
@@ -84,9 +84,9 @@ export default function App() {
   const [talkingTo, setTalkingTo] = useState<Character | null>(null)
   /** 応募ダイアログを「今年は受けない」で閉じた年(未セーブ。リロードで再表示されるだけ) */
   const [applyDismissedYear, setApplyDismissedYear] = useState(0)
-  /** 案内中の転入者 */
-  const [tourNewcomer, setTourNewcomer] = useState<Newcomer | null>(null)
-  /** 転入者の案内を断った日 */
+  /** 案内中の転入世帯 */
+  const [tourHousehold, setTourHousehold] = useState<TourHousehold | null>(null)
+  /** 転入世帯の案内を断った日 */
   const [tourDismissedDay, setTourDismissedDay] = useState(-1)
 
   const update = useCallback((fn: (s: GameState) => GameState) => {
@@ -128,7 +128,7 @@ export default function App() {
     state.lastExamYear < cal.year
 
   // 試験・物件案内の表示中は時計を止める(表示中に月をまたがないように)
-  useGameClock(state !== null && !examDue && tourNewcomer === null, tickDay)
+  useGameClock(state !== null && !examDue && tourHousehold === null, tickDay)
 
   if (!state || !cal) {
     return (
@@ -202,13 +202,13 @@ export default function App() {
     applyDismissedYear !== year
   // 3ヶ月に1度、会社に転入者が来る
   // ponytail: 暫定トリガー。マップの会社に「!」が出せるようになったら、そこの入店処理から setTourNewcomer を呼べばよい
-  const offeredNewcomer = newcomers[Math.floor(state.daysElapsed / (3 * DAYS_PER_MONTH)) % newcomers.length]
+  const offeredHousehold = households[Math.floor(state.daysElapsed / (3 * DAYS_PER_MONTH)) % households.length]
   const tourPromptOpen =
     !examDue &&
     !applyPromptOpen &&
     talkingTo === null &&
-    tourNewcomer === null &&
-    offeredNewcomer !== undefined &&
+    tourHousehold === null &&
+    offeredHousehold !== undefined &&
     day === 1 &&
     month % 3 === 1 &&
     tourDismissedDay !== state.daysElapsed
@@ -258,7 +258,7 @@ export default function App() {
         gender={state.gender}
         alertIds={alertIds}
         inputLocked={
-          talkingTo !== null || examDue || applyPromptOpen || tourPromptOpen || tourNewcomer !== null
+          talkingTo !== null || examDue || applyPromptOpen || tourPromptOpen || tourHousehold !== null
         }
         onTapCharacter={openTalk}
       />
@@ -312,28 +312,31 @@ export default function App() {
       {tourPromptOpen && (
         <PromptOverlay
           title="🏢 会社に転入者が来ている"
-          body={`ハゲタ「新人、${offeredNewcomer.name}さんが村に越してくる。\n物件を案内してやれ」`}
+          body={`ハゲタ「新人、${offeredHousehold.label}(${offeredHousehold.members.length}人)が村に越してくる。\n物件を案内してやれ」`}
           options={[
-            { label: '案内する', onPick: () => setTourNewcomer(offeredNewcomer) },
+            { label: '案内する', onPick: () => setTourHousehold(offeredHousehold) },
             { label: 'あとにする', onPick: () => setTourDismissedDay(state.daysElapsed) },
           ]}
         />
       )}
 
-      {tourNewcomer && (
+      {tourHousehold && (
         <TourScreen
-          key={tourNewcomer.id}
-          newcomer={tourNewcomer}
-          onFinish={({ reward }) => {
-            // 契約成立(報酬あり)= その転入者が村に住み着く
-            if (reward > 0)
-              update((s) => ({
-                ...s,
-                money: s.money + reward,
-                residents: [...(s.residents ?? INITIAL_RESIDENTS), tourNewcomer.id],
-              }))
+          key={tourHousehold.id}
+          household={tourHousehold}
+          onFinish={({ success, reward, residentIds }) => {
+            // 契約成立 = その世帯の全員が村に住み着く
+            if (success)
+              update((s) => {
+                const residents = s.residents ?? INITIAL_RESIDENTS
+                return {
+                  ...s,
+                  money: s.money + reward,
+                  residents: [...residents, ...residentIds.filter((id) => !residents.includes(id))],
+                }
+              })
             setTourDismissedDay(state.daysElapsed)
-            setTourNewcomer(null)
+            setTourHousehold(null)
           }}
         />
       )}

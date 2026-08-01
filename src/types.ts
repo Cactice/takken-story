@@ -7,6 +7,15 @@ export interface Character {
   name: string
   sprite: string
   personality: string
+  age?: number
+  gender?: Gender
+  romanceable?: boolean
+  /** 転入時の希望(世帯で内見するときに使う) */
+  moveIn?: {
+    demands: string
+    likedFeatures: string[]
+    dislikedFeatures: string[]
+  }
 }
 
 export type DiagramType = 'area' | 'land' | 'timeline' | 'parties' | 'money' | 'floorplan'
