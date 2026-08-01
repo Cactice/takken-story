@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Character, GameEvent } from '../../types'
-import { spriteGlyph } from '../../lib/content'
+import { characterSpriteStyle } from '../../lib/sprites'
 import './dialogue.css'
 
 interface Props {
@@ -46,7 +46,7 @@ export function DialogueBox({ character, event, answered, onAnswer, onClose }: P
     <div className="dialogue-overlay" role="dialog" aria-label={`${character.name}との会話`}>
       <div className="dialogue-box">
         <div className="dialogue-portrait">
-          <span className="dialogue-sprite">{spriteGlyph(character)}</span>
+          <span className="dialogue-sprite" style={characterSpriteStyle(character.id)} />
           <span className="dialogue-name">{character.name}</span>
         </div>
 

@@ -30,7 +30,10 @@
 }
 
 .dialogue-sprite {
-  font-size: 3rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
 }
 
 .dialogue-name {

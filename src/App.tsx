@@ -5,6 +5,7 @@ import { DialogueBox } from './components/dialogue/DialogueBox'
 import { useGameClock } from './hooks/useGameClock'
 import { characters, eventsForCharacter } from './lib/content'
 import { loadState, saveState } from './lib/save'
+import { playerSpriteStyle } from './lib/sprites'
 import { ageOf, calendarOf, REWARD_CORRECT } from './types'
 import type { Character, GameState, Gender } from './types'
 import './App.css'
@@ -59,7 +60,7 @@ export default function App() {
     <div className="game">
       <header className="game-header">
         <span className="hud-item">
-          {state.gender === 'male' ? '🧑‍💼' : '👩‍💼'} {ageOf(state)}歳
+          <span className="hud-avatar" style={playerSpriteStyle(state.gender)} /> {ageOf(state)}歳
         </span>
         <span className="hud-item">
           📅 {year}年{month}月
@@ -67,7 +68,12 @@ export default function App() {
         <span className="hud-item hud-money">💰 {state.money.toLocaleString()}円</span>
       </header>
 
-      <TownView characters={characters} onTapCharacter={setTalkingTo} />
+      <TownView
+        characters={characters}
+        gender={state.gender}
+        inputLocked={talkingTo !== null}
+        onTapCharacter={setTalkingTo}
+      />
 
       {talkingTo && (
         <DialogueBox

@@ -65,5 +65,8 @@
 }
 
 .gender-sprite {
-  font-size: 3rem;
+  width: 4rem;
+  height: 4rem;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
 }

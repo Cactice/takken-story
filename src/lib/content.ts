@@ -17,11 +17,6 @@ export const events: GameEvent[] = Object.values(eventModules).map(
   (m) => m.default,
 )
 
-// ponytail: ドット絵アセット未着なので、パス指定のspriteは絵文字にフォールバック
-export function spriteGlyph(c: Character): string {
-  return c.sprite.includes('/') || c.sprite.includes('.') ? '🧑' : c.sprite
-}
-
 export function characterById(id: string): Character | undefined {
   return characters.find((c) => c.id === id)
 }

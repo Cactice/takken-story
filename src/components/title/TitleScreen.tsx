@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Gender } from '../../types'
+import { playerSpriteStyle } from '../../lib/sprites'
 import './title.css'
 
 interface Props {
@@ -26,7 +27,7 @@ export function TitleScreen({ hasSave, onStart, onContinue }: Props) {
             className={`gender-card ${gender === 'male' ? 'is-selected' : ''}`}
             onClick={() => setGender('male')}
           >
-            <span className="gender-sprite">🧑‍💼</span>
+            <span className="gender-sprite" style={playerSpriteStyle('male')} />
             おとこのこ
           </button>
           <button
@@ -34,7 +35,7 @@ export function TitleScreen({ hasSave, onStart, onContinue }: Props) {
             className={`gender-card ${gender === 'female' ? 'is-selected' : ''}`}
             onClick={() => setGender('female')}
           >
-            <span className="gender-sprite">👩‍💼</span>
+            <span className="gender-sprite" style={playerSpriteStyle('female')} />
             おんなのこ
           </button>
         </div>
