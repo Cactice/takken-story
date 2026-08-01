@@ -72,6 +72,45 @@ export interface MapBuilding {
   floors?: number
 }
 
+/** 季節。1年=4分なので1分ごとに切り替わる(docs/GAME_DESIGN.md「時間設計(確定)」) */
+export type Season = 'spring' | 'summer' | 'autumn' | 'winter'
+
+export const SEASONS: readonly Season[] = ['spring', 'summer', 'autumn', 'winter']
+
+export const SEASON_LABEL: Readonly<Record<Season, string>> = {
+  spring: '春',
+  summer: '夏',
+  autumn: '秋',
+  winter: '冬',
+}
+
+/** 月(1〜12) → 季節。3〜5月=春, 6〜8月=夏, 9〜11月=秋, 12〜2月=冬 */
+export function seasonOfMonth(month: number): Season {
+  return SEASONS[Math.floor((((month - 3) % 12) + 12) % 12 / 3)]
+}
+
+/**
+ * 季節ごとの見た目。差分だけ書く。
+ * - sheet: 冬だけタイルシートごと雪版に差し替える(scripts/make-winter-tiles.py で生成)
+ * - swap:  元のタイル番号 → その季節のタイル番号(例: 緑の木 → 紅葉した木)
+ * - decor: その季節だけ出る小物(落ち葉・雪だるまなど)
+ * - filter: マップ全体の色調
+ */
+export interface SeasonSkin {
+  sheet?: Sheet
+  swap?: Readonly<Record<number, number>>
+  decor?: readonly MapDecor[]
+  filter?: string
+}
+
+/** ある季節の描画用レイヤー。TownView はこれをそのまま描けばよい */
+export interface SeasonLayer {
+  sheet: Sheet
+  ground: readonly (readonly number[])[]
+  over: readonly (readonly (OverCell | null)[])[]
+  filter?: string
+}
+
 /** 屋上の給水槽・室外機など。建物を描いたあとに重ねる */
 export interface MapDecor {
   x: number
@@ -117,6 +156,8 @@ export interface MapSpec {
   signs: readonly MapSign[]
   /** 屋上のディテールなど、建物の上に重ねる小物 */
   decor?: readonly MapDecor[]
+  /** 季節ごとの見た目の差分。書かない季節は基本の見た目のまま */
+  seasons?: Partial<Record<Season, SeasonSkin>>
   /** 住民ID → 立ち位置 */
   residentSpots: Readonly<Record<string, readonly [number, number]>>
   /** residentSpots に無い住民の予備の立ち位置 */
@@ -144,6 +185,8 @@ export interface GameMap {
   signs: readonly MapSign[]
   /** 建物が落とす影のマス。半透明の黒を重ねるだけでよい */
   shadows: readonly (readonly [number, number])[]
+  /** 季節ごとの描画レイヤー。TownView は現在の季節のものを描く */
+  layers: Readonly<Record<Season, SeasonLayer>>
   residentSpots: Readonly<Record<string, readonly [number, number]>>
   spareSpots: readonly (readonly [number, number])[]
   start: readonly [number, number]
@@ -283,12 +326,44 @@ export function defineMap(spec: MapSpec): GameMap {
     rows,
     ground,
     over,
+    layers: seasonLayers(spec.sheet, ground, over, spec.seasons),
     buildings: placed,
     shadows,
     isSolid: (x, y) => solid.has(key(x, y)),
     inBounds: (x, y) => x >= 0 && y >= 0 && x < cols && y < rows,
     propertyIdAt: (x, y) => propertyAt.get(key(x, y)),
   }
+}
+
+/**
+ * 季節ごとのレイヤーを作る。差分(SeasonSkin)が無い季節は基本レイヤーを共有する。
+ * 25x25 が4枚でも数KBなので、切り替えのたびに作り直さず先に4枚作っておく。
+ */
+export function seasonLayers(
+  sheet: Sheet,
+  ground: readonly (readonly number[])[],
+  over: readonly (readonly (OverCell | null)[])[],
+  seasons: Partial<Record<Season, SeasonSkin>> = {},
+): Record<Season, SeasonLayer> {
+  const base: SeasonLayer = { sheet, ground, over }
+  const out = {} as Record<Season, SeasonLayer>
+  for (const season of SEASONS) {
+    const skin = seasons[season]
+    if (!skin) {
+      out[season] = base
+      continue
+    }
+    const swap = skin.swap ?? {}
+    const g = ground.map((row) => row.map((t) => swap[t] ?? t))
+    const o = over.map((row) => row.map((c) => (c === null ? null : { ...c, tile: swap[c.tile] ?? c.tile })))
+    for (const d of skin.decor ?? []) {
+      const under = o[d.y]?.[d.x]
+      if (under) g[d.y][d.x] = under.tile
+      if (o[d.y]) o[d.y][d.x] = { tile: d.tile, filter: d.filter }
+    }
+    out[season] = { sheet: skin.sheet ?? sheet, ground: g, over: o, filter: skin.filter }
+  }
+  return out
 }
 
 /** 到達できるマスを開始位置から塗る */

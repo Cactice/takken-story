@@ -34,5 +34,11 @@
 - ライセンス: CC0 1.0 (パブリックドメイン、商用可、帰属表示不要) — 同梱 `city/License.txt` 参照
 - 用途: 第2世代の舞台「黒会市」の都会タイル (`city/tilemap_packed.png`、16x16px、37x28タイル)
 
+## 冬(雪)版タイル ― 上記2つからの派生
+- `tiny-town/tilemap_winter.png` と `city/tilemap_winter.png` は、上記 Kenney (CC0) のシートを
+  `scripts/make-winter-tiles.py` で機械的に色変換して作った派生物。タイル番号は元シートと同一。
+- ライセンス: 元が CC0 のため派生物も自由に利用可。
+- 用途: 季節が冬のあいだ、参照するシートをこちらに差し替える(`src/lib/maps/types.ts` の SeasonSkin.sheet)
+
 タイル番号 → 用途の対応は `src/lib/sprites.ts`、`src/components/town/TownView.tsx`、
 `src/components/diagram/tiles.ts` を参照。図解のデザイン方針は `docs/DESIGN.md`。

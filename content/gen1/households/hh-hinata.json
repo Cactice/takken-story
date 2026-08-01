@@ -1,11 +1,12 @@
 {
   "id": "hh-hinata",
   "kind": "single",
-  "label": "メープル",
+  "label": "桜井さん",
   "moveReason": "パン屋で修行しながら、いつか自分の店を出すために村へ来た",
   "topicId": "hourei-yoto",
   "budget": 5,
   "memberIds": [
     "hinata"
-  ]
+  ],
+  "order": 5
 }

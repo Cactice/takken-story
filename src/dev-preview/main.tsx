@@ -4,17 +4,18 @@
 import { createRoot } from 'react-dom/client'
 import type { CSSProperties } from 'react'
 import { GenerationSelect } from '../components/generation/GenerationSelect'
-import { MAPS } from '../lib/maps'
-import type { GameMap } from '../lib/maps'
+import { MAPS, SEASONS, SEASON_LABEL } from '../lib/maps'
+import type { GameMap, Season } from '../lib/maps'
 import { sheetStyle } from '../lib/sprites'
 import '../index.css'
 
 /** マップ全景。TownView にこの GameMap を繋ぐときの参照実装でもある */
-function MapPreview({ map }: { map: GameMap }) {
+function MapPreview({ map, season }: { map: GameMap; season: Season }) {
+  const layer = map.layers[season]
   return (
     <div style={{ padding: '1rem', background: map.outsideColor, minHeight: '100dvh' }}>
       <h1 style={{ color: '#fff', fontSize: '1rem', marginBottom: '0.5rem' }}>
-        {map.name} ({map.cols}x{map.rows}) 建物{map.buildings.length}棟
+        {map.name} ({map.cols}x{map.rows}) 建物{map.buildings.length}棟 / {SEASON_LABEL[season]}
       </h1>
       <div
         style={
@@ -26,24 +27,25 @@ function MapPreview({ map }: { map: GameMap }) {
             width: 'max-content',
             imageRendering: 'pixelated',
             border: '4px solid #000',
+            filter: layer.filter,
           } as CSSProperties
         }
       >
-        {map.ground.flatMap((row, y) =>
+        {layer.ground.flatMap((row, y) =>
           row.map((tile, x) => (
             <div
               key={`g${x}-${y}`}
-              style={{ ...sheetStyle(map.sheet, tile), gridColumn: x + 1, gridRow: y + 1 }}
+              style={{ ...sheetStyle(layer.sheet, tile), gridColumn: x + 1, gridRow: y + 1 }}
             />
           )),
         )}
-        {map.over.flatMap((row, y) =>
+        {layer.over.flatMap((row, y) =>
           row.map((cell, x) =>
             cell === null ? null : (
               <div
                 key={`o${x}-${y}`}
                 style={{
-                  ...sheetStyle(map.sheet, cell.tile),
+                  ...sheetStyle(layer.sheet, cell.tile),
                   filter: cell.filter,
                   gridColumn: x + 1,
                   gridRow: y + 1,
@@ -69,7 +71,7 @@ function MapPreview({ map }: { map: GameMap }) {
           <div
             key={s.id}
             style={{
-              ...sheetStyle(map.sheet, map.signTile),
+              ...sheetStyle(layer.sheet, map.signTile),
               gridColumn: s.x + 1,
               gridRow: s.y + 1,
               zIndex: 3,
@@ -118,7 +120,10 @@ const unlocked = new Set((params.get('unlocked') ?? '1,2').split(',').map(Number
 
 createRoot(document.getElementById('root')!).render(
   view === 'map' ? (
-    <MapPreview map={MAPS[params.get('id') ?? 'kurokai']} />
+    <MapPreview
+      map={MAPS[params.get('id') ?? 'kurokai']}
+      season={(params.get('season') as Season) ?? SEASONS[0]}
+    />
   ) : (
     <GenerationSelect unlocked={unlocked} onSelect={(g) => console.log('select', g)} />
   ),

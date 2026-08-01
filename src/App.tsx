@@ -303,7 +303,11 @@ export default function App() {
         generation: chosenGeneration ?? 1,
         daysElapsed: 0,
         money: MONEY_START,
-        experiencedEvents: [],
+        experiencedEvents: Array.from(
+          { length: Number(new URLSearchParams(window.location.search).get('memos')) || 0 },
+          (_, i) => ({ eventId: events[i]?.id ?? '', year: START_YEAR }),
+        ).filter((x) => x.eventId !== ''), // TEMP-DEBUG
+
         scheduleYear: START_YEAR,
         yearSchedule: buildYearSchedule(events, new Set(), []),
         retryEventIds: [],

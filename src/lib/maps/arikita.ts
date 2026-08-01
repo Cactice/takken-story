@@ -19,7 +19,40 @@ import {
   T,
 } from '../map'
 import { TOWN_SHEET } from '../sprites'
-import type { GameMap, OverCell, PlacedBuilding } from './types.ts'
+import type { Sheet } from '../sprites'
+import { seasonLayers } from './types.ts'
+import type { GameMap, OverCell, PlacedBuilding, Season, SeasonSkin } from './types.ts'
+
+/** 雪が積もった版のタイルシート(scripts/make-winter-tiles.py で生成) */
+export const TOWN_WINTER_SHEET: Sheet = {
+  ...TOWN_SHEET,
+  url: `${import.meta.env?.BASE_URL ?? '/'}assets/tiny-town/tilemap_winter.png`,
+}
+
+/**
+ * 村の季節。農村なので変化は大きく。
+ * 木(緑27/橙28)・草むら・花・苗を入れ替え、冬はシートごと雪版にする。
+ */
+const SEASONS_ARIKITA: Partial<Record<Season, SeasonSkin>> = {
+  // 春: 枯れ色の木が芽吹き、草むらに花が咲く
+  spring: { swap: { [T.treeOrange]: T.treeGreen, [T.grassTuft]: T.flowers }, filter: 'saturate(1.06) brightness(1.05)' },
+  // 夏: 濃い緑。草むらは伸びて茂みに
+  summer: {
+    swap: { [T.treeOrange]: T.treeGreen, [T.grassTuft]: T.bush, [T.flowers]: T.grassTuft },
+    filter: 'saturate(1.3) contrast(1.04)',
+  },
+  // 秋: 全部紅葉。花は散り、茂みにきのこ
+  autumn: {
+    swap: { [T.treeGreen]: T.treeOrange, [T.flowers]: T.grassTuft, [T.bush]: T.mushroom },
+    filter: 'sepia(0.18) saturate(1.25) hue-rotate(-12deg)',
+  },
+  // 冬: 雪。タイルシートごと差し替えるので一目で分かる
+  winter: {
+    sheet: TOWN_WINTER_SHEET,
+    swap: { [T.flowers]: T.grassTuft, [T.sprout]: T.grassTuft },
+    filter: 'contrast(0.96)',
+  },
+}
 
 const key = (x: number, y: number) => `${x},${y}`
 
@@ -73,6 +106,7 @@ function build(): GameMap {
     rows: MAP_ROWS,
     ground,
     over,
+    layers: seasonLayers(TOWN_SHEET, ground, over, SEASONS_ARIKITA),
     buildings,
     // 村は平屋ばかりなので影は落とさない
     shadows: [],

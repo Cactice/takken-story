@@ -17,12 +17,33 @@
 
 import type { Sheet } from '../sprites'
 import { assertMap, defineMap } from './types.ts'
-import type { BuildingStyle, GameMap, Legend, MapSpec } from './types.ts'
+import type { BuildingStyle, GameMap, Legend, MapSpec, Season, SeasonSkin } from './types.ts'
 
 export const CITY_SHEET: Sheet = {
   url: `${import.meta.env?.BASE_URL ?? '/'}assets/city/tilemap_packed.png`,
   cols: 37,
   rows: 28,
+}
+
+/** 雪が積もった版(街路樹と土だけ白くした控えめ版。scripts/make-winter-tiles.py で生成) */
+export const CITY_WINTER_SHEET: Sheet = {
+  ...CITY_SHEET,
+  url: `${import.meta.env?.BASE_URL ?? '/'}assets/city/tilemap_winter.png`,
+}
+
+/** 街路樹 */
+const TREE_GREEN = 440
+const TREE_AUTUMN = 402
+
+/**
+ * 都会の季節。アスファルトは変わらないので変化は控えめ。
+ * 変わるのは街路樹と、冬の積雪(シート差し替え)くらい。
+ */
+const SEASONS_KUROKAI: Partial<Record<Season, SeasonSkin>> = {
+  spring: { filter: 'saturate(1.05) brightness(1.03)' },
+  summer: { filter: 'saturate(1.18) contrast(1.03)' },
+  autumn: { swap: { [TREE_GREEN]: TREE_AUTUMN }, filter: 'sepia(0.14) saturate(1.15) hue-rotate(-10deg)' },
+  winter: { sheet: CITY_WINTER_SHEET, filter: 'brightness(1.02) saturate(0.92)' },
 }
 
 /** 屋上 [奥, 手前] × [左, 中, 右] */
@@ -81,7 +102,7 @@ const LEGEND: Legend = {
   広: { label: '広場のコンクリート', ground: 890 },
   空: { label: '更地(空き地)', ground: 892 },
   // ── 装飾(通行不可) ──
-  木: { label: '街路樹', ground: 741, over: 440, solid: true },
+  木: { label: '街路樹', ground: 741, over: TREE_GREEN, solid: true },
   灯: { label: '街灯', ground: 741, over: 668, solid: true },
   信: { label: '信号機', ground: 741, over: 557, solid: true },
   販: { label: '自動販売機', ground: 741, over: 985, solid: true },
@@ -173,6 +194,7 @@ const SPEC: MapSpec = {
     { x: 2, y: 9, tile: ROOFTOP[0] },
     { x: 7, y: 18, tile: ROOFTOP[1] },
   ],
+  seasons: SEASONS_KUROKAI,
   signs: [
     { id: 'kurokai-vacant-east', x: 23, y: 22 },
     { id: 'kurokai-parking', x: 6, y: 23 },

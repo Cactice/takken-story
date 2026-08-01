@@ -5,6 +5,11 @@
   "moveReason": "都会の暮らしに区切りをつけ、子どもを土のある村で育てたくて家族三人で移ってきた。見沼家の畑を挟んだ隣に土地を買う",
   "topicId": "hourei-kenpei",
   "budget": 10,
-  "memberIds": ["suzuki-takeo", "suzuki-nao", "suzuki-sora"],
-  "note": "第3世代の見沼家 vs 鈴木家の権利争いは、この転入から始まる。境界を口約束で済ませたことが後の火種になる"
+  "memberIds": [
+    "suzuki-takeo",
+    "suzuki-nao",
+    "suzuki-sora"
+  ],
+  "note": "第3世代の見沼家 vs 鈴木家の権利争いは、この転入から始まる。境界を口約束で済ませたことが後の火種になる",
+  "order": 9
 }

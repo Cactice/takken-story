@@ -1,11 +1,12 @@
 {
   "id": "hh-tanaka",
   "kind": "single",
-  "label": "ポッポさん",
+  "label": "田中さん",
   "moveReason": "先祖から継いだ畑の近くに住み替えたくなった",
   "topicId": "hourei-kokudo",
   "budget": 4,
   "memberIds": [
     "tanaka"
-  ]
+  ],
+  "order": 4
 }

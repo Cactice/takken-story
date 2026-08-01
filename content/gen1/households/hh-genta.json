@@ -1,11 +1,12 @@
 {
   "id": "hh-genta",
   "kind": "single",
-  "label": "ブルーノ",
+  "label": "工藤さん",
   "moveReason": "工務店の作業場ごと引っ越せる土地を探して村に来た",
   "topicId": "hourei-kenchiku-kakunin",
   "budget": 6,
   "memberIds": [
     "kr-genta"
-  ]
+  ],
+  "order": 3
 }
