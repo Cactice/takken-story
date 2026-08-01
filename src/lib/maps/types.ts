@@ -11,14 +11,24 @@
 
 import type { Sheet } from '../sprites'
 
-/** 屋根+壁の9スライス定義。矩形の位置から自動でタイルを選ぶ */
+/**
+ * 建物の見た目。矩形の縦の並びから自動でタイルを選ぶ。
+ *
+ *   1行目  roofTop     屋上(奥)
+ *   2行目  roofBottom  屋上(手前・パラペット)
+ *   3行目〜 floor      上の階。1行 = 1階。窓の格子が階数分刻まれる
+ *   最下行  wall       1階(入口はここ)
+ *
+ * つまり **階数 = 矩形の高さ - 2**。checkMap() が MapBuilding.floors と突き合わせる。
+ * 高層ビルは矩形を縦に伸ばすだけで階数が増える。
+ */
 export interface BuildingStyle {
-  /** 屋根 上段 [左, 中, 右] */
+  /** 屋上 奥 [左, 中, 右] */
   roofTop: readonly [number, number, number]
-  /** 屋根 中段 [左, 中, 右]。高い建物はここを繰り返す */
-  roofMid: readonly [number, number, number]
-  /** 屋根 下段 [左, 中, 右] */
+  /** 屋上 手前 [左, 中, 右] */
   roofBottom: readonly [number, number, number]
+  /** 2階以上の壁。1行 = 1階 [左, 中, 右] */
+  floor: readonly [number, number, number]
   /** 1階の壁(最下段)。[左, 中, 右] */
   wall: readonly [number, number, number]
   /** 入口タイル(最下段の入口座標に置く) */
@@ -26,6 +36,9 @@ export interface BuildingStyle {
   /** 経年・傷みの表現(CSS filter) */
   filter?: string
 }
+
+/** 建物が地面に落とす影。高いほど遠くまで伸びる */
+export const shadowLength = (floors: number): number => Math.min(4, Math.floor(floors / 3))
 
 export interface TileDef {
   /** 説明(凡例の可読性のため。コードでは使わない) */
@@ -52,6 +65,31 @@ export interface MapBuilding {
   name: string
   /** 入口タイルの絶対座標。この矩形の最下段に置くこと */
   entrance: readonly [number, number]
+  /**
+   * 階数。物件データ(容積率の話に出てくる階数)と一致させること。
+   * 見た目の階数(矩形の高さ - 2)と食い違うと checkMap() が落ちる。
+   */
+  floors?: number
+}
+
+/** 屋上の給水槽・室外機など。建物を描いたあとに重ねる */
+export interface MapDecor {
+  x: number
+  y: number
+  tile: number
+  filter?: string
+}
+
+/** コンパイル後の建物。占有している矩形が付く */
+export interface PlacedBuilding extends MapBuilding {
+  rect: Rect
+}
+
+export interface Rect {
+  x0: number
+  y0: number
+  x1: number
+  y1: number
 }
 
 /** 空き地・農地の看板。スペースで土地の情報を見る */
@@ -77,6 +115,8 @@ export interface MapSpec {
   grid: readonly string[]
   buildings: readonly MapBuilding[]
   signs: readonly MapSign[]
+  /** 屋上のディテールなど、建物の上に重ねる小物 */
+  decor?: readonly MapDecor[]
   /** 住民ID → 立ち位置 */
   residentSpots: Readonly<Record<string, readonly [number, number]>>
   /** residentSpots に無い住民の予備の立ち位置 */
@@ -100,8 +140,10 @@ export interface GameMap {
   ground: readonly (readonly number[])[]
   /** [y][x] の重ねタイル(null = 何も無い) */
   over: readonly (readonly (OverCell | null)[])[]
-  buildings: readonly MapBuilding[]
+  buildings: readonly PlacedBuilding[]
   signs: readonly MapSign[]
+  /** 建物が落とす影のマス。半透明の黒を重ねるだけでよい */
+  shadows: readonly (readonly [number, number])[]
   residentSpots: Readonly<Record<string, readonly [number, number]>>
   spareSpots: readonly (readonly [number, number])[]
   start: readonly [number, number]
@@ -153,14 +195,14 @@ function buildingTile(
   s: BuildingStyle,
   x: number,
   y: number,
-  r: { x0: number; y0: number; x1: number; y1: number },
+  r: Rect,
   isDoor: boolean,
 ): { tile: number; ground?: number } {
   const col = x === r.x0 ? 0 : x === r.x1 ? 2 : 1
   if (y === r.y1) return isDoor ? { tile: s.door, ground: s.wall[col] } : { tile: s.wall[col] }
   if (y === r.y0) return { tile: s.roofTop[col] }
-  if (y === r.y1 - 1) return { tile: s.roofBottom[col] }
-  return { tile: s.roofMid[col] }
+  if (y === r.y0 + 1) return { tile: s.roofBottom[col] }
+  return { tile: s.floor[col] }
 }
 
 /** 手書きの MapSpec を描画用の GameMap に展開する */
@@ -188,12 +230,15 @@ export function defineMap(spec: MapSpec): GameMap {
 
   const doors = new Set(spec.buildings.map((b) => key(b.entrance[0], b.entrance[1])))
   const propertyAt = new Map<string, string>()
-  for (const r of buildingRects(grid, spec.legend)) {
+  const placed: PlacedBuilding[] = []
+  const rects = buildingRects(grid, spec.legend)
+  for (const r of rects) {
     const style = spec.legend[r.ch].building!
     const filter = spec.legend[r.ch].filter ?? style.filter
     const owner = spec.buildings.find(
       (b) => b.entrance[0] >= r.x0 && b.entrance[0] <= r.x1 && b.entrance[1] >= r.y0 && b.entrance[1] <= r.y1,
     )
+    if (owner) placed.push({ ...owner, rect: { x0: r.x0, y0: r.y0, x1: r.x1, y1: r.y1 } })
     for (let y = r.y0; y <= r.y1; y++) {
       for (let x = r.x0; x <= r.x1; x++) {
         const cell = buildingTile(style, x, y, r, doors.has(key(x, y)))
@@ -207,6 +252,30 @@ export function defineMap(spec: MapSpec): GameMap {
     solid.add(key(s.x, s.y))
     propertyAt.set(key(s.x, s.y), s.id)
   }
+  // 屋上の小物。建物のタイルを地面に下ろして、その上に重ねる(小物の背景は透明なので)
+  for (const d of spec.decor ?? []) {
+    const under = over[d.y]?.[d.x]
+    if (under) ground[d.y][d.x] = under.tile
+    if (over[d.y]) over[d.y][d.x] = { tile: d.tile, filter: d.filter }
+  }
+
+  // 影。建物の高さぶんだけ東へ伸ばす(太陽は西)。他の建物の上には落とさない
+  const isBuilding = new Set<string>()
+  for (const r of rects) {
+    for (let y = r.y0; y <= r.y1; y++) for (let x = r.x0; x <= r.x1; x++) isBuilding.add(key(x, y))
+  }
+  const shadows: [number, number][] = []
+  for (const r of rects) {
+    // 高さ = 矩形の段数 - 2(屋上2段)。背景のビルも同じ規則で影を落とす
+    const len = shadowLength(r.y1 - r.y0 - 1)
+    for (let y = r.y0; y <= r.y1 + 1; y++) {
+      for (let i = 1; i <= len; i++) {
+        const x = r.x1 + i
+        if (x >= cols || y >= rows || isBuilding.has(key(x, y))) continue
+        shadows.push([x, y])
+      }
+    }
+  }
 
   return {
     ...spec,
@@ -214,6 +283,8 @@ export function defineMap(spec: MapSpec): GameMap {
     rows,
     ground,
     over,
+    buildings: placed,
+    shadows,
     isSolid: (x, y) => solid.has(key(x, y)),
     inBounds: (x, y) => x >= 0 && y >= 0 && x < cols && y < rows,
     propertyIdAt: (x, y) => propertyAt.get(key(x, y)),
@@ -273,6 +344,12 @@ export function checkMap(map: GameMap, spec?: MapSpec): string[] {
 
   for (const b of map.buildings) {
     const [x, y] = b.entrance
+    // 見た目の階数(屋上2段を除いた壁の段数)と物件データの階数を突き合わせる
+    const drawn = b.rect.y1 - b.rect.y0 - 1
+    if (drawn < 1) errors.push(`${b.name} は縦3マス以上必要(屋上2段 + 1階)`)
+    if (b.floors !== undefined && b.floors !== drawn)
+      errors.push(`${b.name} の階数が合わない: データ ${b.floors}階 / 見た目 ${drawn}階`)
+    if (y !== b.rect.y1) errors.push(`${b.name} の入口 (${x},${y}) が最下段(1階)にない`)
     if (!map.isSolid(x, y)) errors.push(`${b.name} の入口 (${x},${y}) が建物の外にある`)
     if (map.propertyIdAt(x, y) !== b.id) errors.push(`${b.name} の入口 (${x},${y}) がこの建物の矩形の中に無い`)
     if (!adjacent(x, y)) errors.push(`${b.name} の入口 (${x},${y}) に辿り着けない`)

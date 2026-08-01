@@ -19,7 +19,7 @@ import {
   T,
 } from '../map'
 import { TOWN_SHEET } from '../sprites'
-import type { GameMap, MapBuilding, OverCell } from './types.ts'
+import type { GameMap, OverCell, PlacedBuilding } from './types.ts'
 
 const key = (x: number, y: number) => `${x},${y}`
 
@@ -52,10 +52,16 @@ function build(): GameMap {
     propertyAt.set(key(s.x, s.y), s.id)
   }
 
-  const buildings: MapBuilding[] = BUILDINGS.map((b) => ({
+  const buildings: PlacedBuilding[] = BUILDINGS.map((b) => ({
     id: b.id,
     name: b.id,
     entrance: b.entrance,
+    rect: {
+      x0: b.x,
+      y0: b.y,
+      x1: b.x + Math.max(...b.cells.map((row) => row.length)) - 1,
+      y1: b.y + b.cells.length - 1,
+    },
   }))
 
   return {
@@ -68,6 +74,8 @@ function build(): GameMap {
     ground,
     over,
     buildings,
+    // 村は平屋ばかりなので影は落とさない
+    shadows: [],
     signs: LAND_SIGNS.map((s) => ({ ...s })),
     residentSpots: RESIDENT_SPOTS,
     spareSpots: SPARE_SPOTS,

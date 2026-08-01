@@ -59,6 +59,13 @@ export interface GameEvent {
   thanksLine?: string
   /** 解決済みの住民に再度話しかけたときのセリフ */
   resolvedLine?: string
+  /**
+   * 解決すると手に入る「ハゲ田のメモ」の見出しと要点(docs/CONTENT_SCHEMA.md)。
+   * メモはイベントを参照するだけなので、ここに書くのは題と要約だけ。無ければ title で代用する
+   */
+  memo?: { title: string; summary?: string }
+  /** 根拠条文(例: 「宅建業法 第35条」)。content/reference/ の条文に対応する */
+  source?: string
 }
 
 /** 体験済み相談(体験した年つき) */

@@ -53,6 +53,18 @@ function MapPreview({ map }: { map: GameMap }) {
             ),
           ),
         )}
+        {map.shadows.map(([x, y]) => (
+          <div
+            key={`s${x}-${y}`}
+            style={{
+              gridColumn: x + 1,
+              gridRow: y + 1,
+              background: 'rgb(24 28 48 / 0.3)',
+              zIndex: 2,
+              pointerEvents: 'none',
+            }}
+          />
+        ))}
         {map.signs.map((s) => (
           <div
             key={s.id}
@@ -60,7 +72,7 @@ function MapPreview({ map }: { map: GameMap }) {
               ...sheetStyle(map.sheet, map.signTile),
               gridColumn: s.x + 1,
               gridRow: s.y + 1,
-              zIndex: 2,
+              zIndex: 3,
             }}
           />
         ))}
@@ -70,7 +82,7 @@ function MapPreview({ map }: { map: GameMap }) {
             style={{
               gridColumn: b.entrance[0] + 1,
               gridRow: b.entrance[1] + 1,
-              zIndex: 3,
+              zIndex: 4,
               display: 'grid',
               placeItems: 'center',
               color: '#ff3',

@@ -25,15 +25,23 @@ export const CITY_SHEET: Sheet = {
   rows: 28,
 }
 
-/** 屋根の9スライス(上段/中段/下段) */
+/** 屋上 [奥, 手前] × [左, 中, 右] */
 const ROOF = {
-  grey: [[50, 51, 52], [87, 88, 89], [124, 125, 126]],
-  white: [[53, 54, 55], [90, 91, 92], [127, 128, 129]],
-  tan: [[61, 62, 63], [98, 99, 100], [135, 136, 137]],
-  brick: [[37, 38, 39], [74, 75, 76], [111, 112, 113]],
+  grey: [[50, 51, 52], [124, 125, 126]],
+  white: [[53, 54, 55], [127, 128, 129]],
+  tan: [[61, 62, 63], [135, 136, 137]],
+  brick: [[37, 38, 39], [111, 112, 113]],
 } as const
 
-/** 1階の壁 [左, 中, 右] */
+/** 2階以上の壁。1行=1階。階の境に庇が入るので、積むと階数が数えられる */
+const FLOOR = {
+  brick: [259, 260, 262],
+  grey: [263, 264, 266],
+  tan: [267, 268, 270],
+  glass: [271, 272, 274],
+} as const
+
+/** 1階の壁(足元に基礎が入る) [左, 中, 右] */
 const WALL = {
   brick: [296, 297, 299],
   grey: [300, 301, 303],
@@ -44,15 +52,19 @@ const WALL = {
 /** 入口 */
 const DOOR = { glass: 732, shop: 658 } as const
 
+/** 屋上の小物(給水槽・室外機)。透明背景なので屋根の上に重ねる */
+const ROOFTOP = [543, 544, 545, 546] as const
+
 const style = (
-  roof: readonly (readonly [number, number, number] | readonly number[])[],
+  roof: readonly (readonly number[])[],
+  floor: readonly number[],
   wall: readonly number[],
   door: number,
   filter?: string,
 ): BuildingStyle => ({
   roofTop: roof[0] as [number, number, number],
-  roofMid: roof[1] as [number, number, number],
-  roofBottom: roof[2] as [number, number, number],
+  roofBottom: roof[1] as [number, number, number],
+  floor: floor as [number, number, number],
   wall: wall as [number, number, number],
   door,
   filter,
@@ -75,38 +87,55 @@ const LEGEND: Legend = {
   販: { label: '自動販売機', ground: 741, over: 985, solid: true },
   箱: { label: 'ゴミ箱', ground: 741, over: 532, solid: true },
   // ── 建物 ──
-  駅: { label: '黒会駅', building: style(ROOF.grey, WALL.grey, DOOR.glass) },
-  ビ: { label: 'オフィスビル', building: style(ROOF.white, WALL.glass, DOOR.glass) },
-  マ: { label: 'タワーマンション', building: style(ROOF.tan, WALL.tan, DOOR.shop) },
-  雑: { label: '雑居ビル', building: style(ROOF.brick, WALL.brick, DOOR.shop, 'brightness(0.92)') },
-  コ: { label: 'コンビニ', building: style(ROOF.white, WALL.glass, DOOR.shop) },
-  店: { label: 'テナント店舗', building: style(ROOF.tan, WALL.brick, DOOR.shop) },
-  社: { label: '黒会不動産(事務所)', building: style(ROOF.white, WALL.glass, DOOR.shop) },
-  倉: { label: '倉庫', building: style(ROOF.grey, WALL.grey, DOOR.glass, 'brightness(0.85)') },
+  駅: { label: '黒会駅', building: style(ROOF.brick, FLOOR.brick, WALL.brick, DOOR.glass) },
+  ビ: { label: 'オフィスビル', building: style(ROOF.white, FLOOR.grey, WALL.glass, DOOR.glass) },
+  マ: { label: 'タワーマンション', building: style(ROOF.tan, FLOOR.tan, WALL.tan, DOOR.shop) },
+  雑: {
+    label: '雑居ビル',
+    building: style(ROOF.brick, FLOOR.brick, WALL.brick, DOOR.shop, 'brightness(0.92)'),
+  },
+  コ: { label: 'コンビニ', building: style(ROOF.white, FLOOR.grey, WALL.glass, DOOR.shop) },
+  店: { label: 'テナント店舗', building: style(ROOF.tan, FLOOR.brick, WALL.brick, DOOR.shop) },
+  社: { label: '黒会不動産(事務所)', building: style(ROOF.white, FLOOR.grey, WALL.glass, DOOR.shop) },
+  倉: {
+    label: '倉庫',
+    building: style(ROOF.grey, FLOOR.grey, WALL.grey, DOOR.glass, 'brightness(0.85)'),
+  },
+  // 入口を持たない背景のビル群。少し暗く沈めて奥行きを出す
+  オ: {
+    label: '背景の高層ビル',
+    building: style(ROOF.grey, FLOOR.grey, WALL.grey, DOOR.glass, 'brightness(0.86) saturate(0.9)'),
+  },
 }
 
-// 25列 x 20行。ありきた村と同じ広さ。
+// 25列 x 25行。奥に背景の高層ビル、手前に中低層 —— 縦の段数でスカイラインを作る。
+// **階数 = 矩形の高さ - 2**(屋上2段)。BUILDINGS の floors と checkMap() が突き合わせる。
 const GRID = [
-  '駅駅駅駅駅駅雑雑雑歩歩路央歩ビビビビ歩ママママ歩歩',
-  '駅駅駅駅駅駅雑雑雑歩歩路央歩ビビビビ歩ママママ歩歩',
-  '駅駅駅駅駅駅雑雑雑歩歩路央歩ビビビビ歩ママママ歩歩',
-  '駅駅駅駅駅駅雑雑雑歩歩路央歩ビビビビ歩ママママ歩歩',
-  '駅駅駅駅駅駅雑雑雑歩歩路央歩ビビビビ歩ママママ歩歩',
-  '木歩歩歩歩歩歩歩歩木歩路央歩木歩歩歩歩歩歩歩歩歩木',
-  'ビビビビ歩ママママ歩歩路央歩コココ歩店店店歩倉倉倉',
-  'ビビビビ歩ママママ歩歩路央歩コココ歩店店店歩倉倉倉',
-  'ビビビビ歩ママママ歩歩路央歩コココ歩店店店歩倉倉倉',
-  '歩歩灯歩歩歩歩歩歩歩信断断歩販歩歩歩歩歩歩灯歩歩歩',
+  'オオオオ歩歩歩歩歩歩歩路央歩ビビビビ歩歩歩歩オオオ',
+  'オオオオ歩マママママ歩路央歩ビビビビ歩歩歩歩オオオ',
+  'オオオオ歩マママママ歩路央歩ビビビビ歩歩歩歩オオオ',
+  'オオオオ歩マママママ歩路央歩ビビビビ歩マママオオオ',
+  'オオオオ歩マママママ歩路央歩ビビビビ歩マママオオオ',
+  'オオオオ歩マママママ歩路央歩ビビビビ歩マママオオオ',
+  'オオオオ歩マママママ歩路央歩ビビビビ歩マママオオオ',
+  'オオオオ歩マママママ歩路央歩ビビビビ歩マママオオオ',
+  '駅駅駅駅歩マママママ歩路央歩ビビビビ歩マママオオオ',
+  '駅駅駅駅歩マママママ歩路央歩ビビビビ歩マママオオオ',
+  '駅駅駅駅歩マママママ歩路央歩ビビビビ歩マママコココ',
+  '駅駅駅駅歩マママママ歩路央歩ビビビビ歩マママコココ',
+  '駅駅駅駅歩マママママ歩路央歩ビビビビ歩マママコココ',
+  '歩歩歩木歩歩歩歩灯歩信断断歩歩歩歩木歩歩歩歩販歩歩',
   '路路路路路路路路路横路路路路横路路路路路路路路路路',
   '線線線線線線線線線横線路路線横線線線線線線線線線線',
-  '歩歩歩箱歩歩歩歩歩歩歩断断信歩歩歩歩木歩歩歩歩歩歩',
-  '社社社社歩雑雑雑雑歩歩路央歩店店店歩雑雑雑歩空空空',
-  '社社社社歩雑雑雑雑歩歩路央歩店店店歩雑雑雑歩空空空',
-  '社社社社歩雑雑雑雑歩歩路央歩店店店歩雑雑雑歩空空空',
-  '広広広広広広広広広広歩路央歩広広広広広広広広空空空',
-  '広木広広灯広広販広広歩路央歩広木広広灯広広広空空空',
-  '広広広箱広広広広広広歩路央歩広広広広広広広広空空空',
-  '広広広広広広広広広広歩路央歩広広広広広広広広空空空',
+  '歩歩灯歩歩歩木歩販歩歩断断信歩歩箱歩歩歩木歩歩歩歩',
+  '広社社社社広雑雑雑雑広路央広店店店広倉倉倉広空空空',
+  '広社社社社広雑雑雑雑広路央広店店店広倉倉倉広空空空',
+  '広社社社社広雑雑雑雑広路央広店店店広倉倉倉広空空空',
+  '広社社社社広雑雑雑雑広路央広広広広広広広広広空空空',
+  '広広広広広広雑雑雑雑広路央広広広広広広広広広空空空',
+  '広木広広広広広広広広広路央広広木広広広灯広広空空空',
+  '広広広広灯広広広箱広広路央広広広広広広広販広空空空',
+  '広広広広広広広広広広広路央広広広広広広広広広空空空',
 ]
 
 const SPEC: MapSpec = {
@@ -118,36 +147,44 @@ const SPEC: MapSpec = {
   legend: LEGEND,
   grid: GRID,
   buildings: [
-    // ── 駅前ブロック(北) ──
-    { id: 'kurokai-station', name: '黒会駅', entrance: [2, 4] },
-    { id: 'kurokai-zakkyo-n', name: '北口雑居ビル', entrance: [7, 4] },
-    { id: 'kurokai-tower-office', name: '黒会セントラルタワー', entrance: [15, 4] },
-    { id: 'kurokai-tower-mansion', name: 'スカイレジデンス黒会', entrance: [20, 4] },
-    // ── 大通り沿い(北) ──
-    { id: 'kurokai-office-w', name: '西口オフィスビル', entrance: [1, 8] },
-    { id: 'kurokai-mansion-w', name: 'パークマンション黒会', entrance: [6, 8] },
-    { id: 'kurokai-konbini', name: 'コンビニ黒会駅南店', entrance: [15, 8] },
-    { id: 'kurokai-shop-n', name: '大通りテナント', entrance: [19, 8] },
-    { id: 'kurokai-souko', name: '東倉庫', entrance: [23, 8] },
-    // ── 大通り沿い(南) ──
-    { id: 'kurokai-agency', name: '黒会不動産(事務所)', entrance: [1, 15] },
-    { id: 'kurokai-zakkyo-s', name: '南口雑居ビル', entrance: [6, 15] },
-    { id: 'kurokai-shop-s', name: '南商店', entrance: [15, 15] },
-    { id: 'kurokai-zakkyo-e', name: '東雑居ビル', entrance: [19, 15] },
+    // ── 駅前ブロック(北)。奥に背景の高層ビル、手前に中低層 ──
+    { id: 'kurokai-station', name: '黒会駅', entrance: [1, 12], floors: 3 },
+    { id: 'kurokai-mansion-w', name: 'パークマンション黒会', entrance: [6, 12], floors: 10 },
+    { id: 'kurokai-tower-office', name: '黒会セントラルタワー', entrance: [15, 12], floors: 11 },
+    { id: 'kurokai-tower-mansion', name: 'スカイレジデンス黒会', entrance: [20, 12], floors: 8 },
+    { id: 'kurokai-konbini', name: 'コンビニ黒会駅前店', entrance: [23, 12], floors: 1 },
+    // ── 南ブロック ──
+    { id: 'kurokai-agency', name: '黒会不動産(事務所)', entrance: [2, 20], floors: 2 },
+    { id: 'kurokai-zakkyo-s', name: '南口雑居ビル', entrance: [7, 21], floors: 3 },
+    { id: 'kurokai-shop-s', name: '南商店', entrance: [15, 19], floors: 1 },
+    { id: 'kurokai-souko', name: '東倉庫', entrance: [19, 19], floors: 1 },
+  ],
+  // 屋上の給水槽・室外機。上から見えるのは屋上なので、ここで高さの実感を足す
+  decor: [
+    { x: 15, y: 0, tile: ROOFTOP[0] },
+    { x: 16, y: 1, tile: ROOFTOP[1] },
+    { x: 6, y: 2, tile: ROOFTOP[2] },
+    { x: 8, y: 2, tile: ROOFTOP[3] },
+    { x: 20, y: 4, tile: ROOFTOP[0] },
+    { x: 1, y: 1, tile: ROOFTOP[1] },
+    { x: 2, y: 0, tile: ROOFTOP[3] },
+    { x: 23, y: 1, tile: ROOFTOP[2] },
+    { x: 2, y: 9, tile: ROOFTOP[0] },
+    { x: 7, y: 18, tile: ROOFTOP[1] },
   ],
   signs: [
-    { id: 'kurokai-vacant-east', x: 23, y: 17 },
-    { id: 'kurokai-parking', x: 9, y: 17 },
+    { id: 'kurokai-vacant-east', x: 23, y: 22 },
+    { id: 'kurokai-parking', x: 6, y: 23 },
   ],
   // 第2世代の住民が増えたらここに足す(IDは content 側と合わせる)
   residentSpots: {
-    umizawa: [2, 16], // 海沢 → 事務所の前
+    umizawa: [3, 21], // 海沢 → 事務所の前
   },
   spareSpots: [
-    [5, 16], [7, 16], [4, 12], [8, 12], [16, 16], [20, 16],
-    [3, 9], [15, 5], [5, 5], [17, 12],
+    [5, 21], [7, 22], [15, 20], [19, 20], [17, 21], [1, 21],
+    [4, 13], [4, 5], [18, 8], [10, 5],
   ],
-  start: [5, 17],
+  start: [3, 22],
   signTile: 283,
   outsideColor: '#3f4650',
 }

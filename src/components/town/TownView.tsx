@@ -370,6 +370,11 @@ export function TownView({
             ),
           )}
 
+          {/* 建物が落とす影 */}
+          {(map.shadows ?? []).map(([x, y]) => (
+            <div key={`s${x}-${y}`} className="tile map-shadow" style={{ gridColumn: x + 1, gridRow: y + 1 }} />
+          ))}
+
           {map.signs.map((sign) => (
             <div
               key={sign.id}

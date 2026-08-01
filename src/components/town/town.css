@@ -204,3 +204,10 @@
   height: 2rem;
   flex: none;
 }
+
+/* 建物が落とす影(GameMap.shadows) */
+.map-shadow {
+  background: rgb(0 0 0 / 0.18);
+  z-index: 0;
+  pointer-events: none;
+}
