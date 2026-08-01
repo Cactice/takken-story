@@ -36,13 +36,14 @@ import { OPENING, arrivalStaging } from './lib/staging'
 import type { Staging } from './lib/staging'
 import { GenerationSelect } from './components/generation/GenerationSelect'
 import { useGameClock } from './hooks/useGameClock'
-import { characters, events, households } from './lib/content'
+import { characters, events, households, loadGeneration } from './lib/content'
 import { availableConsultations, buildYearSchedule } from './lib/schedule'
 import { RomanceOverlay } from './components/romance/RomanceOverlay'
 import { romanceContentFor, romanceStateOf, talkOnce } from './lib/romance'
 import type { RomanceState } from './lib/romance'
-import { loadState, saveState } from './lib/save'
+import { saveState } from './lib/save'
 import { playerSpriteStyle } from './lib/sprites'
+import { smallTalkFor } from './lib/smalltalk'
 import {
   APPLY_DEADLINE_MONTH,
   DAYS_PER_MONTH,
@@ -134,6 +135,24 @@ function PromptOverlay({ title, body, options }: { title: string; body: string; 
   )
 }
 
+/**
+ * URLクエリで選択画面をスキップする(デバッグ用)。
+ * 例: ?generation=1&gender=boy  → 世代選択と性別選択を飛ばして開始
+ * gender は boy/girl / male/female / 男/女 を受ける
+ */
+function debugParams(): { generation: number | null; gender: Gender | null } {
+  const q = new URLSearchParams(window.location.search)
+  const g = Number(q.get('generation'))
+  const raw = (q.get('gender') ?? '').toLowerCase()
+  const gender: Gender | null =
+    raw === 'boy' || raw === 'male' || raw === '男'
+      ? 'male'
+      : raw === 'girl' || raw === 'female' || raw === '女'
+        ? 'female'
+        : null
+  return { generation: g >= 1 && g <= 5 ? g : null, gender }
+}
+
 export default function App() {
   const [state, setState] = useState<GameState | null>(null)
   const [talkingTo, setTalkingTo] = useState<Character | null>(null)
@@ -148,7 +167,11 @@ export default function App() {
   /** 演出で歩いてきている転入世帯(follow でこの世帯の案内が始まる) */
   const [arriving, setArriving] = useState<TourHousehold | null>(null)
   /** 世代選択 → 性別選択 の順に出す */
-  const [chosenGeneration, setChosenGeneration] = useState<number | null>(null)
+  const debug = debugParams()
+  const [chosenGeneration, setChosenGeneration] = useState<number | null>(() => {
+    if (debug.generation !== null) loadGeneration(debug.generation)
+    return debug.generation
+  })
   /** 物件パネルを閉じた直後の物件ID(案内中なら内見/契約を聞く) */
   const [viewedProperty, setViewedProperty] = useState<string | null>(null)
   /** 内見した結果(メンバー全員の反応) */
@@ -225,41 +248,62 @@ export default function App() {
     return () => clearInterval(id)
   }, [tourRunning, dispatchTour])
 
+  // 3ヶ月に1度、転入希望者が村にやってくる。
+  // 会社でモーダルを出すのではなく、画面外から歩いてきて勝手についてくる(docs/SYSTEMS.md)
+  useEffect(() => {
+    if (state === null || tour !== null || arriving !== null || staging !== null) return
+    const { month: m, day: d } = calendarOf(state)
+    if (d !== 1 || m % 3 !== 1 || tourDismissedDay === state.daysElapsed) return
+    const hh = households[Math.floor(state.daysElapsed / (3 * DAYS_PER_MONTH)) % households.length]
+    if (hh === undefined) return
+    setArriving(hh)
+    setStaging(arrivalStaging(hh.members.map((m2) => ({ id: m2.id, name: m2.name })), ARRIVAL_SPOT))
+  }, [state, tour, arriving, staging, tourDismissedDay])
+
+  const startGame = useCallback(
+    (gender: Gender) => {
+      const fresh: GameState = {
+        gender,
+        generation: chosenGeneration ?? 1,
+        daysElapsed: 0,
+        money: MONEY_START,
+        experiencedEvents: [],
+        scheduleYear: START_YEAR,
+        yearSchedule: buildYearSchedule(events, new Set(), []),
+        retryEventIds: [],
+        appliedExamYear: 0,
+        lastExamYear: 0,
+        examResults: [],
+        residents: INITIAL_RESIDENTS,
+      }
+      saveState(fresh)
+      setState(fresh)
+      // 開始直後: ハゲ田が「ついて来い!」と自宅まで先導する
+      setStaging(OPENING)
+    },
+    [chosenGeneration],
+  )
+
+  // デバッグ: ?gender= が指定されていれば性別選択を飛ばして開始
+  useEffect(() => {
+    if (state === null && chosenGeneration !== null && debug.gender !== null) startGame(debug.gender)
+  }, [state, chosenGeneration, debug.gender, startGame])
+
   if (!state || !cal) {
     // 世代選択 → 性別選択 → ゲーム開始
     if (chosenGeneration === null)
       return (
         <GenerationSelect
-          unlocked={new Set([1])}
-          onSelect={(generation) => setChosenGeneration(generation)}
+          // ponytail: 当面は全世代を解放(デバッグ用)。
+          // 本来の解放条件に戻すときは「クリア済み世代+1」の Set をここで作る
+          unlocked={new Set([1, 2, 3, 4, 5])}
+          onSelect={(generation) => {
+            loadGeneration(generation)
+            setChosenGeneration(generation)
+          }}
         />
       )
-    return (
-      <TitleScreen
-        hasSave={loadState() !== null}
-        onStart={(gender: Gender) => {
-          const fresh: GameState = {
-            gender,
-            generation: chosenGeneration,
-            daysElapsed: 0,
-            money: MONEY_START,
-            experiencedEvents: [],
-            scheduleYear: START_YEAR,
-            yearSchedule: buildYearSchedule(events, new Set(), []),
-            retryEventIds: [],
-            appliedExamYear: 0,
-            lastExamYear: 0,
-            examResults: [],
-            residents: INITIAL_RESIDENTS,
-          }
-          saveState(fresh)
-          setState(fresh)
-          // 開始直後: ハゲ田が「ついて来い!」と自宅まで先導する
-          setStaging(OPENING)
-        }}
-        onContinue={() => setState(loadState())}
-      />
-    )
+    return <TitleScreen onStart={startGame} />
   }
 
   const { year, month, day } = calendarOf(state)
@@ -306,45 +350,34 @@ export default function App() {
     month === APPLY_DEADLINE_MONTH &&
     !applied &&
     applyDismissedYear !== year
-  // 3ヶ月に1度、転入希望者が村にやってくる。
-  // 会社でモーダルを出すのではなく、画面外から歩いてきて勝手についてくる(docs/SYSTEMS.md)
-  const offeredHousehold = households[Math.floor(state.daysElapsed / (3 * DAYS_PER_MONTH)) % households.length]
-  const newcomerDue =
-    !examDue &&
-    !applyPromptOpen &&
-    talkingTo === null &&
-    tour === null &&
-    arriving === null &&
-    staging === null &&
-    offeredHousehold !== undefined &&
-    day === 1 &&
-    month % 3 === 1 &&
-    tourDismissedDay !== state.daysElapsed
-
-  useEffect(() => {
-    if (!newcomerDue || offeredHousehold === undefined) return
-    setArriving(offeredHousehold)
-    setStaging(
-      arrivalStaging(
-        offeredHousehold.members.map((m) => ({ id: m.id, name: m.name })),
-        ARRIVAL_SPOT,
-      ),
-    )
-  }, [newcomerDue, offeredHousehold])
-
   const examQuestions = state.yearSchedule
     .map((s) => events.find((e) => e.id === s.eventId))
     .filter((e) => e !== undefined)
   const experiencedIds = new Set(state.experiencedEvents.map((e) => e.eventId))
 
-  // 相談がないときは、その住民と最後に解決した論点の「あのときはありがとう」を話す
-  const solvedLine =
+  // 相談がないときの雑談。引っ越したて → 解決済みのお礼 → 時期の話 → ふだんの雑談
+  const resolvedLine =
     talkingTo === null || pendingEvent !== null
       ? undefined
       : [...state.experiencedEvents]
           .reverse()
           .map((x) => events.find((e) => e.id === x.eventId))
           .find((e) => e !== undefined && e.characterId === talkingTo.id)?.resolvedLine
+
+  const movedInDay = talkingTo ? state.residentSince?.[talkingTo.id] : undefined
+  const homeId = talkingTo ? state.residentHomes?.[talkingTo.id] : undefined
+  const solvedLine =
+    talkingTo === null || pendingEvent !== null
+      ? undefined
+      : smallTalkFor(talkingTo, {
+          daysSinceMoveIn: movedInDay === undefined ? undefined : state.daysElapsed - movedInDay,
+          homeName: homeId ? propertyById(homeId)?.name : undefined,
+          home: homeId ? propertyById(homeId) : undefined,
+          month,
+          resolvedLine,
+          // 話しかけるたび・日が変わるたびに変わる種(同じ文が連続しない)
+          seed: state.daysElapsed + (state.romance?.[talkingTo.id]?.affection ?? 0),
+        })
 
   /* ---------------- 追従とマップ上の内見 ---------------- */
   // ponytail: 本は「解決したイベント数」で数える。GameState にメモ一覧を持たせるのは
@@ -376,10 +409,13 @@ export default function App() {
     }
   }
 
-  const tourOverlayOpen = tour !== null && tour.phase.kind !== 'map'
+  const tourOverlayOpen =
+    tour !== null && tour.phase.kind !== 'map' && tour.phase.kind !== 'arriving'
   const viewedSpec = viewedProperty === null ? undefined : propertyById(viewedProperty)
   const viewedTourProperty =
-    touringOnMap && viewedSpec !== undefined ? toTourProperty(viewedSpec) : null
+    touringOnMap && tour?.phase.kind === 'map' && viewedSpec !== undefined
+      ? toTourProperty(viewedSpec)
+      : null
   const alreadyInspected =
     tour !== null && viewedTourProperty !== null && isInspected(tour, viewedTourProperty.id)
   const isFavourite =
@@ -568,6 +604,10 @@ export default function App() {
                   residentHomes: propertyId
                     ? { ...homes, ...Object.fromEntries(residentIds.map((id) => [id, propertyId])) }
                     : homes,
+                  residentSince: {
+                    ...(s.residentSince ?? {}),
+                    ...Object.fromEntries(residentIds.map((id) => [id, s.daysElapsed])),
+                  },
                 }
               })
             setTourDismissedDay(state.daysElapsed)
