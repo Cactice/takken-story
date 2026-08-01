@@ -119,7 +119,8 @@ export interface GameState {
 }
 
 /** 開始時から村にいる住民(ハゲ田社長のみ) */
-export const INITIAL_RESIDENTS = ['tencho-gozo', 'minuma-shigeru', 'minuma-haru']
+// 村は出来立てで住民ゼロ。いるのはハゲ田社長と主人公だけ
+export const INITIAL_RESIDENTS = ['tencho-gozo']
 
 export const START_AGE = 15
 export const START_YEAR = 1
