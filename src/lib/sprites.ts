@@ -9,13 +9,13 @@ export interface Sheet {
 }
 
 export const TOWN_SHEET: Sheet = {
-  url: '/assets/tiny-town/tilemap_packed.png',
+  url: `${import.meta.env.BASE_URL}assets/tiny-town/tilemap_packed.png`,
   cols: 12,
   rows: 11,
 }
 
 export const CHAR_SHEET: Sheet = {
-  url: '/assets/tiny-dungeon/tilemap_packed.png',
+  url: `${import.meta.env.BASE_URL}assets/tiny-dungeon/tilemap_packed.png`,
   cols: 12,
   rows: 11,
 }
