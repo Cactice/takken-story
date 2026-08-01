@@ -1,0 +1,74 @@
+.town {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  overflow: hidden;
+}
+
+.town-grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(2.5rem, 5rem));
+  grid-auto-rows: minmax(2.5rem, 5rem);
+  border: 4px solid var(--color-ink);
+  image-rendering: pixelated;
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile-grass {
+  background:
+    repeating-conic-gradient(var(--color-grass) 0% 25%, var(--color-grass-alt) 0% 50%)
+    0 0 / 16px 16px;
+}
+
+.tile-road {
+  background: var(--color-road);
+  box-shadow: inset 0 0 0 2px var(--color-road-edge);
+}
+
+.tile-house {
+  background:
+    repeating-conic-gradient(var(--color-grass) 0% 25%, var(--color-grass-alt) 0% 50%)
+    0 0 / 16px 16px;
+}
+
+.tile-emoji {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+}
+
+.resident {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  z-index: 1;
+  font: inherit;
+  transition: transform var(--duration-fast);
+}
+
+.resident:hover,
+.resident:focus-visible {
+  transform: scale(1.15);
+}
+
+.resident-sprite {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  filter: drop-shadow(2px 2px 0 rgb(0 0 0 / 0.3));
+}
+
+.resident-name {
+  font-size: 0.65rem;
+  background: rgb(255 255 255 / 0.85);
+  border-radius: 4px;
+  padding: 0 0.25rem;
+  white-space: nowrap;
+}
