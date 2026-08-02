@@ -28,6 +28,8 @@ interface Props {
   gender: Gender
   /** 相談が控えている住民のID(頭に「!」を表示) */
   alertIds: ReadonlySet<string>
+  /** 恋愛で「家を見に行きたい」が出ている相手。強制ではないので♥で示す */
+  heartIds: ReadonlySet<string>
   /** 会話中は移動・決定キーを無効化 */
   inputLocked: boolean
   /** 会社(禿鷹不動産)の頭上に「!」を出す(新しい転入者のサイン) */
@@ -86,6 +88,7 @@ export function TownView({
   characters,
   gender,
   alertIds,
+  heartIds,
   inputLocked,
   companyAlert = false,
   followers = [],
@@ -500,6 +503,11 @@ export function TownView({
               {alertIds.has(c.id) && (
                 <span className="resident-alert" aria-label="相談あり">
                   !
+                </span>
+              )}
+              {heartIds.has(c.id) && (
+                <span className="resident-alert heart" aria-label="誘われている">
+                  ♥
                 </span>
               )}
               <span className="char-sprite" style={characterSpriteStyle(c.id)} />

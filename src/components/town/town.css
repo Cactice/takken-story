@@ -360,3 +360,10 @@
   top: 50%;
   translate: 0 -50%;
 }
+
+/* 恋愛の合図。相談の「!」と区別がつくように色を変える */
+.resident-alert.heart {
+  background: #d94a6a;
+  border-color: #7a2138;
+  color: #fff;
+}

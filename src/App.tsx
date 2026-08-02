@@ -52,7 +52,7 @@ import { useGameClock } from './hooks/useGameClock'
 import { characters, eventForTopic, events, households, loadGeneration } from './lib/content'
 import { availableConsultations, buildYearSchedule } from './lib/schedule'
 import { RomanceOverlay } from './components/romance/RomanceOverlay'
-import { romanceContentFor, romanceStateOf, talkOnce } from './lib/romance'
+import { romanceContentFor, romanceStateOf, talkOnce, wantsHouseVisit } from './lib/romance'
 import type { RomanceState } from './lib/romance'
 import { saveState } from './lib/save'
 import { playerSpriteStyle } from './lib/sprites'
@@ -574,6 +574,16 @@ export default function App() {
   )
   // 転出する住民にも「!」を出す(話しかけると引っ越す理由を聞ける)
   if (movingOut) alertIds.add(movingOut.characterId)
+  // 恋愛は強制ではないので「!」ではなく「♥」。相談が無いときだけ出す
+  const heartIds = new Set(
+    residentCharacters
+      .filter((c) => !alertIds.has(c.id))
+      .filter((c) => {
+        const content = romanceContentFor(c.id, state.gender)
+        return content !== null && wantsHouseVisit(content, romanceStateOf(state.romance, c.id))
+      })
+      .map((c) => c.id),
+  )
 
   /* ---------------- 転出イベント ---------------- */
   const leavingCharacter =
@@ -895,6 +905,7 @@ export default function App() {
         characters={residentCharacters}
         gender={state.gender}
         alertIds={alertIds}
+        heartIds={heartIds}
         companyAlert={arriving !== null || tour !== null || examPending}
         followers={followers}
         occupancy={occupancy}
