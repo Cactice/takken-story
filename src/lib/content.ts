@@ -52,11 +52,30 @@ function withFullName(c: Character): Character {
   return full ? { ...c, name: full } : c
 }
 
+/**
+ * その世代での年齢に合わせて人物像を差し替える。
+ * 8歳の鈴木ソラと68歳の鈴木ソラは同じ人だが、同じ喋り方はしない。
+ */
+export function atAge(c: Character, age: number | undefined): Character {
+  if (age === undefined || !c.byAge?.length) return c
+  // 一番大きい from から見ていって、最初に届いているものを使う
+  const v = [...c.byAge].sort((a, b) => b.from - a.from).find((x) => age >= x.from)
+  if (!v) return c
+  const { from: _from, ...over } = v
+  return { ...c, ...over, age }
+}
+
+/** いま遊んでいる世代での年齢(agesByGeneration があればそちら) */
+function ageInGeneration(c: Character): number | undefined {
+  return c.agesByGeneration?.[String(GENERATION)] ?? c.age
+}
+
 // 人物は appearsIn で拾う。第4世代の人が第5世代にも出る、というのが普通にあるため
 export const characters: Character[] = Object.values(characterModules)
   .map((m) => m.default)
   .filter((c) => (c.appearsIn ?? [c.generation]).includes(GENERATION))
   .map(withFullName)
+  .map((c) => atAge(c, ageInGeneration(c)))
 // 発生時期の順に並べる。上から読めば物語になる
 export const events: GameEvent[] = ofGeneration(eventModules).sort(
   (a, b) => (a.year ?? 99) - (b.year ?? 99) || (a.month ?? 99) - (b.month ?? 99),

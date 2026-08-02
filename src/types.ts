@@ -2,6 +2,18 @@ import type { RomanceState } from './lib/romance'
 
 export type Gender = 'male' | 'female'
 
+/** 年齢で差し替える分。Character の一部だけを上書きする */
+export interface AgeVariant {
+  /** この年齢以上になったら、この項目を使う */
+  from: number
+  personality?: string
+  job?: string
+  catchphrase?: string
+  motive?: string
+  weakness?: string
+  smallTalk?: Character['smallTalk']
+}
+
 export interface Character {
   id: string
   /** 表示名。content 側の苗字+名前から組み立てる(白石オリビア のように) */
@@ -12,6 +24,15 @@ export interface Character {
   givenName?: string
   sprite: string
   personality: string
+  /**
+   * 年齢で差し替わる人物像。**年齢が `from` 以上**のうち一番大きいものが採用され、
+   * 書かれた項目だけが上書きされる(書かなければ元のまま)。
+   * 基準の値は第1登場時のものを書いておき、歳を取ってから変わるところだけをここに足す。
+   * 17歳の水瀬リオンと77歳の水瀬リオンが同じ口をきかないようにするためのもの。
+   */
+  byAge?: AgeVariant[]
+  /** その世代ごとの年齢。キーは "1"〜"5" */
+  agesByGeneration?: Record<string, number>
   /** JSONの置き場所の世代 */
   generation?: number
   /** 実際に登場する世代。第4世代の人が第5世代にも出る、というのがある */
