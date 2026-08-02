@@ -7,7 +7,6 @@
   "generation": 3,
   "appearsIn": [
     3,
-    4,
     5
   ],
   "age": 24,
@@ -29,6 +28,11 @@
       "characterId": "minuma-sae",
       "kind": "ally",
       "note": "同世代。家の因縁を越えて協力する"
+    },
+    {
+      "characterId": "suzuki-riku2",
+      "kind": "grandchild",
+      "note": "孫。同じ名を継がせ、登記簿の読み方を教えた"
     }
   ],
   "smallTalk": {
