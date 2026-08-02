@@ -39,7 +39,7 @@ export interface PropertySpec {
 export const PROPERTIES: readonly PropertySpec[] = [
   {
     id: 'hibari',
-    name: 'ひばり不動産',
+    name: '禿鷹不動産',
     kind: 'building',
     category: '店舗(事務所)',
     structure: '木造',

@@ -248,7 +248,7 @@ export default function App() {
   const [insideHome, setInsideHome] = useState(false)
   /** 自宅の本棚を開いて復習中 */
   const [shelfOpen, setShelfOpen] = useState(false)
-  /** 会社(ひばり不動産)の中にいるか。ここが試験会場 */
+  /** 会社(禿鷹不動産)の中にいるか。ここが試験会場 */
   const [insideOffice, setInsideOffice] = useState(false)
   /** 会社でハゲ田に話しかけたときの一言 */
   const [bossTalk, setBossTalk] = useState<string | null>(null)
@@ -334,7 +334,7 @@ export default function App() {
 
   const cal = state ? calendarOf(state) : null
   /**
-   * 試験は割り込まない。試験日を過ぎたら「会場(ひばり不動産)へ行けば受けられる」状態になり、
+   * 試験は割り込まない。試験日を過ぎたら「会場(禿鷹不動産)へ行けば受けられる」状態になり、
    * プレイヤーが自分で会社に入って受験する(docs/SYSTEMS.md「試験は会場へ行って受ける」)
    */
   const examPending =
@@ -747,7 +747,7 @@ export default function App() {
     )
   }
 
-  /** 中に入れる建物: 自宅と会社(ひばり不動産) */
+  /** 中に入れる建物: 自宅と会社(禿鷹不動産) */
   const enterableIds = new Set([homePropertyIdOf(state), 'hibari'])
 
   /** いま案内できる空き物件(会社の物件ボードに貼ってある) */
@@ -802,7 +802,7 @@ export default function App() {
         )}
         {examPending && (
           <span className="hud-item hud-exam is-today">
-            📝 {applied ? '試験日! ひばり不動産へ行こう' : '試験日(未応募)'}
+            📝 {applied ? '試験日! 禿鷹不動産へ行こう' : '試験日(未応募)'}
           </span>
         )}
         <span className="hud-item hud-date">
@@ -1030,7 +1030,7 @@ export default function App() {
 
       {shelfOpen && <MemoBook memos={shelfEvents} onClose={() => setShelfOpen(false)} />}
 
-      {/* 会社(ひばり不動産)の中。試験会場であり、物件ボードで空き物件を確認できる */}
+      {/* 会社(禿鷹不動産)の中。試験会場であり、物件ボードで空き物件を確認できる */}
       {insideOffice && (
         <OfficeInterior
           gender={state.gender}

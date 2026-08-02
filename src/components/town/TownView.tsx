@@ -30,7 +30,7 @@ interface Props {
   alertIds: ReadonlySet<string>
   /** 会話中は移動・決定キーを無効化 */
   inputLocked: boolean
-  /** 会社(ひばり不動産)の頭上に「!」を出す(新しい転入者のサイン) */
+  /** 会社(禿鷹不動産)の頭上に「!」を出す(新しい転入者のサイン) */
   companyAlert?: boolean
   /** 主人公のすぐ後ろを一列でついてくるもの(案内中の世帯・ハゲ田のメモ) */
   followers?: readonly Follower[]

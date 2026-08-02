@@ -117,7 +117,7 @@ const so = T.wallStoneOpening
 
 export const BUILDINGS: readonly Building[] = [
   // ── 北ブロック(メイン通り沿い・南向き) ──
-  // ひばり不動産(店舗)。赤い切妻屋根+ショーウィンドウ、通りで一番目立つ
+  // 禿鷹不動産(店舗)。赤い切妻屋根+ショーウィンドウ、通りで一番目立つ
   B('hibari', 2, 4, [
     [T.roofRedL, T.roofRedM, T.roofRedR],
     [T.roofRedLowL, T.roofRedLowM, T.roofRedLowR],
@@ -236,7 +236,7 @@ export const DECOR: readonly Decor[] = [
 
 /** 住民ID → 立ち位置。悩みの種になる建物の前に立たせる */
 export const RESIDENT_SPOTS: Record<string, [number, number]> = {
-  'tencho-gozo': [4, 7], // ハゲタ社長 → ひばり不動産の前
+  'tencho-gozo': [4, 7], // ハゲタ社長 → 禿鷹不動産の前
   koji: [8, 7], // チップ(区分所有・マンション購入) → ありきたハイツの前
   misaki: [13, 7], // オリビア(クリニック移転・自宅売却) → 診療所の前
   hinata: [17, 7], // メープル(店舗の建替え・2号店) → サクライベーカリーの前

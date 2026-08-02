@@ -12,7 +12,7 @@ const SAMPLES: { note: string; spec: DiagramInput }[] = [
   },
   {
     note: '売主・買主・仲介の三者',
-    spec: { type: 'parties', labels: ['売主', '買主', 'ひばり不動産'] },
+    spec: { type: 'parties', labels: ['売主', '買主', '禿鷹不動産'] },
   },
   {
     note: '法定相続分の割合',

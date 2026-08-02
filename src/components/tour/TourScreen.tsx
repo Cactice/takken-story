@@ -111,7 +111,7 @@ function TourBody({ state, onFinish }: { state: TourState; onFinish: (r: TourRes
     const lines = briefingLines(h)
     return (
       <section className="tour-scene">
-        <h2 className="tour-title">🏢 ひばり不動産 — 面談</h2>
+        <h2 className="tour-title">🏢 禿鷹不動産 — 面談</h2>
         <p className="tour-line">{lines[ph.line]}</p>
         <span className="tour-next" aria-hidden="true">
           ▼

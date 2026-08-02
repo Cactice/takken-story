@@ -18,8 +18,10 @@ export interface TourProperty {
   floors: number
   /** 築年数 */
   ageYears: number
-  /** 専有面積(平米) */
+  /** 専有面積 or 延床面積(平米) */
   area: number
+  /** 敷地面積(平米)。建蔽率・容積率の計算に使うのは**こちら**(延床ではない) */
+  landArea: number
   /** 用途地域 */
   zoning: string
   /** 建蔽率(%) */
@@ -68,6 +70,8 @@ export function toTourProperty(p: PropertySpec): TourProperty {
     floors: Math.max(1, num(p.floors, 1)),
     ageYears: num(p.age, 0),
     area: num(p.kind === 'land' ? p.landArea : p.area, num(p.landArea, 0)),
+    // 敷地面積。土地なら landArea そのもの、建物で landArea が無ければ延床で代用する
+    landArea: num(p.landArea, num(p.kind === 'land' ? p.landArea : p.area, 0)),
     zoning: p.zoning,
     buildingCoverage: num(p.coverage, 60),
     floorAreaRatio: num(p.floorAreaRatio, 200),

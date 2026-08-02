@@ -136,7 +136,11 @@ export function reactToProperty(
   const pool =
     delta > 0 ? content.reactions.good : delta < 0 ? content.reactions.bad : content.reactions.neutral
   const feature = delta > 0 ? liked[0] : delta < 0 ? disliked[0] : ''
-  const line = pool[seed % pool.length].replace('{feature}', feature)
+  // どこが良かった(悪かった)のかが伝わるよう、特徴を差し込める文を優先して選ぶ。
+  // content 側に {feature} の無い文しか無ければ、そのまま使う
+  const slots = pool.filter((t) => t.includes('{feature}'))
+  const usable = feature !== '' && slots.length > 0 ? slots : pool
+  const line = usable[seed % usable.length].replace('{feature}', feature)
   return { delta, line, liked, disliked }
 }
 

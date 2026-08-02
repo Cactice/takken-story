@@ -111,7 +111,7 @@ export function stepToward(from: Pos, to: Pos): Pos {
 export interface OpeningPlaces {
   /** 自宅(ボロ屋)の前 */
   homeFront: Pos
-  /** ひばり不動産の前 */
+  /** 禿鷹不動産の前 */
   officeFront: Pos
   /** 転入者が歩いて入ってくる村の入口(マップ外でもよい) */
   gate: Pos
@@ -151,7 +151,7 @@ export function openingStaging(places: OpeningPlaces, members: StageActor[]): St
       {
         cmd: 'say',
         actor: boss,
-        text: 'ここが職場、ひばり不動産だ。村で唯一の不動産屋…つまり、逃げ場はない。',
+        text: 'ここが職場、禿鷹不動産だ。村で唯一の不動産屋…つまり、逃げ場はない。',
       },
       ...(newcomers
         ? [

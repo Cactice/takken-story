@@ -26,7 +26,7 @@ interface Step {
   memo?: boolean
 }
 
-const BOSS_NAME = 'ハゲタ社長'
+const BOSS_NAME = '禿鷹社長'
 const DEFAULT_SMALL_TALK = 'こんにちは!今日はいい天気だねえ。'
 
 /** データ中の「ハゲタ「…」」はハゲタの発言として表示する */

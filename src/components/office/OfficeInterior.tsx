@@ -12,7 +12,7 @@ import type { Gender } from '../../types'
 import './office.css'
 
 /**
- * ひばり不動産(会社)の中。docs/SYSTEMS.md「建物に入る」。
+ * 禿鷹不動産(会社)の中。docs/SYSTEMS.md「建物に入る」。
  * ここは試験会場でもあり、転入者との面談の場でもある。
  * 作りは自宅(components/home/HomeInterior)と同じ: 矢印で歩き、向いてスペース。
  */
@@ -129,7 +129,7 @@ export function OfficeInterior({ gender, listings, onTalkBoss, onLeave, locked =
   }, [facing, pos, locked, onTalkBoss, onLeave])
 
   return (
-    <section className="office" aria-label="ひばり不動産の中">
+    <section className="office" aria-label="禿鷹不動産の中">
       <div className="office-room" style={{ '--cols': COLS, '--rows': ROWS } as CSSProperties}>
         {ROOM.flatMap((row, y) =>
           [...row].map((ch, x) => {
