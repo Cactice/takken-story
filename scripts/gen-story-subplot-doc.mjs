@@ -63,6 +63,8 @@ const out = [
 - 本筋のあらすじ … [story-all.md](story-all.md)
 - 家ごとのイベント一覧 … [events-by-household.md](events-by-household.md)
 - 暦: 第1世代の主人公は1000年生まれ。1世代=30年
+- 主人公の家系は**主家**。ゲーム内で主人公は「あなた」で、名前は画面に出ない。
+  各代の名前(アオ・カケル・シノブ・ツトム・ノゾミ)はドキュメント上の識別子である。
 `,
   `\n---\n\n# 本筋\n`,
 ]
@@ -94,7 +96,10 @@ for (const name of names) {
 
   out.push(`## ${fam} ｜ 第${gens.join('・')}世代`)
   out.push('')
-  for (const b of h.movement ?? []) out.push(`> **${b.type}**(${b.who}) ${b.note ?? ''}`)
+  ;(h.movement ?? []).forEach((b, i) => {
+    if (i) out.push('>')
+    out.push(`> **${b.type}**(${b.who}) ${b.note ?? ''}`)
+  })
   if (h.movement?.length) out.push('')
   if (h.story) {
     out.push(h.story)

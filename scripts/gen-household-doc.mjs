@@ -153,7 +153,9 @@ for (const [name, cfg] of Object.entries(plan.households)) {
 for (const h of houses.values()) {
   h.rows.sort((a, b) => a.gen - b.gen || Number(a.planned) - Number(b.planned) || a.title.localeCompare(b.title, 'ja'));
   h.members.sort((a, b) => a.generation - b.generation || a.id.localeCompare(b.id));
-  h.gens = [...new Set(h.rows.map((r) => r.gen))].sort();
+  // イベントを持たない家(主人公家系など)は、移動の枝の登場世代を使う
+  const fromBranches = (plan.households[h.name]?.movement ?? []).flatMap(branchGens);
+  h.gens = [...new Set(h.rows.length ? h.rows.map((r) => r.gen) : fromBranches)].sort();
   h.done = h.rows.filter((r) => !r.planned).length;
   h.todo = h.rows.filter((r) => r.planned).length;
   h.cfg = plan.households[h.name] ?? {};
