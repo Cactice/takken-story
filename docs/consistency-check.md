@@ -83,7 +83,7 @@
 |---|---|---|---|
 | `ev03-sakurai-maple-menkyo` | パン屋の二階を貸したい | 免許が要る/要らないの線引き | **なし**(隣町の学生が借りた、で終わる) |
 | `ev08-kishiwada-gaston-koteishisan` | 売ったのに来た納税通知 | ガストンが二重取りしようとする | ほぼなし。人物像の補強のみ |
-| `ev-gyoho-eigyo-hosho` / `ev-gyoho-hosho-kyokai` | 供託 / 保証協会 | 金額の計算 | **なし**(黒瀬テッコーの紹介にはなる) |
+| `ev-gyoho-eigyo-hosho` / `ev-gyoho-hosho-kyokai` | 供託 / 保証協会 | 金額の計算 | **なし**(黒瀬テツコの紹介にはなる) |
 | `ev-gyoho-hoshu` | 両方から一ヶ月ずつ | 白石ジョージの他社が報酬を取りすぎ | **なし** |
 | `ev-kubun-shoyu` | ペット禁止の総会 | 規約変更の決議要件 | 葉山オージの犬。以後この犬は出てこない |
 | `ev-minpo-furikou` / `ev-gyoho-37jo` | 引渡し日が来ない / 契約後の書面 | 葉山夫妻の被害 | 弱い(「はじめての家の記念」のみ) |
