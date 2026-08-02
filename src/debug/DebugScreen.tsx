@@ -24,6 +24,12 @@ import './debug.css'
 
 type Tab = 'events' | 'characters'
 
+/**
+ * 暦は主一の生年1000年が基準。各世代の主人公は世代開始年に15歳。
+ * 1000 / 1030 / 1060 / 1090 / 1120年生まれ
+ */
+const PLAYER_BIRTH: Record<number, number> = { 1: 1000, 2: 1030, 3: 1060, 4: 1090, 5: 1120 }
+
 interface Filters {
   generation: string
   kind: string
@@ -294,7 +300,11 @@ function Player({ event }: { event: DebugEvent }) {
           <dt>世代</dt>
           <dd>第{event.generation}世代</dd>
           <dt>時期</dt>
-          <dd>{event.year ? `${event.year}年目 ${event.month ?? 1}月` : '—'}</dd>
+          <dd>
+            {event.year
+              ? `${event.year}年${event.month ?? 1}月(主人公 ${event.year - PLAYER_BIRTH[event.generation]}歳)`
+              : '—'}
+          </dd>
           <dt>種類</dt>
           <dd>{KIND_LABEL[event.kind] ?? event.kind}</dd>
           <dt>分野</dt>
