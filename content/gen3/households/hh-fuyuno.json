@@ -1,0 +1,13 @@
+{
+  "id": "hh-fuyuno",
+  "kind": "couple",
+  "label": "冬野さん夫妻",
+  "moveReason": "前に住んでいた新しい町で、借りていた家を期間満了で引き払わされた。二度と期限で追い出されない家がほしくて、ありきた村へ移ってきた",
+  "topicId": "gyoho-juyojiko",
+  "budget": 900,
+  "order": 1,
+  "memberIds": [
+    "fuyuno-so",
+    "fuyuno-akari"
+  ]
+}

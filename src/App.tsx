@@ -399,7 +399,7 @@ export default function App() {
     }))
     if (rent > 0) {
       const id = Date.now() + Math.random()
-      setMoneyFlashes((f) => [...f, { id, amount: -rent, label: `家賃(${home?.name ?? '自宅'})` }])
+      setMoneyFlashes((f) => [...f, { id, amount: -rent, label: `家賃 ${home?.name ?? '自宅'}` }])
       setTimeout(() => setMoneyFlashes((f) => f.filter((x) => x.id !== id)), 2200)
     }
   }, [state, update])
@@ -721,7 +721,9 @@ export default function App() {
    * 案内中は入れない — 客を待たせて自分の家に帰るのは不自然だし、機嫌が減るだけで得もない
    */
   const enterBuilding = (id: string) => {
-    if (tour !== null) return setBlockedEnter(true)
+    // 案内が始まっていれば入れない。まだ話を聞いていない(ついてきているだけ)なら入れる
+    // — そうしないと、面談前の転入者を連れたまま試験会場に入れなくなる
+    if (tour !== null && tour.phase.kind !== 'arriving') return setBlockedEnter(true)
     if (id === 'hibari') return setInsideOffice(true)
     if (id === homePropertyIdOf(state)) return enterHome()
   }

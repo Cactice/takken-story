@@ -25,9 +25,9 @@ import './office.css'
 const ROOM = [
   '##########',
   '#W#BBBB#W#',
-  '#..d....d#',
   '#........#',
-  '#.cpc....#',
+  '#..d..cpc#',
+  '#........#',
   '####@#####',
 ] as const
 
@@ -53,7 +53,7 @@ const isFloor = (x: number, y: number): boolean => at(x, y) === '.' || at(x, y) 
 /** 出入口の1つ上。外から入ってきた直後の立ち位置 */
 const START: [number, number] = [4, 4]
 
-/** ハゲ田社長は自分の机の後ろに立っている */
+/** ハゲ田社長は自分の机([3,3])の後ろに立っている */
 const BOSS: [number, number] = [3, 2]
 
 const KEY_DIR: Record<string, [number, number, Facing]> = {
