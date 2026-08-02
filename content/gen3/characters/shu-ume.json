@@ -1,8 +1,8 @@
 {
-  "id": "shu-obaachan",
-  "name": "主おばあちゃん",
-  "givenName": "おばあちゃん",
-  "sprite": "sprites/shu-obaachan.png",
+  "id": "shu-ume",
+  "name": "主ウメ",
+  "givenName": "ウメ",
+  "sprite": "sprites/shu-ume.png",
   "generation": 3,
   "appearsIn": [
     3
