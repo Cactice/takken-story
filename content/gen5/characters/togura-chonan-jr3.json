@@ -17,6 +17,11 @@
   "catchphrase": "…村って、増えることがあるんですねぽ。",
   "relations": [
     {
+      "characterId": "togura-chonan-jr2",
+      "kind": "parent",
+      "note": "母。第4世代で白夜村へ移った人。道が先にできている街に感心して家族ごと移った"
+    },
+    {
       "characterId": "umizawa-lily",
       "kind": "mentor",
       "note": "白夜村の設計者。数字の使い方を教わった"
