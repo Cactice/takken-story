@@ -7,6 +7,7 @@
     "kenri"
   ],
   "title": "仮登記の席取り",
+  "summary": "祖父が亡くなる三日前に打たれた仮登記が、登記簿から見つかる",
   "stage": 2,
   "unlock": {
     "minAssets": 800,
