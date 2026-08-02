@@ -396,7 +396,9 @@ function Quiz({ event }: { event: DebugEvent }) {
   return (
     <section className="dbg-quiz">
       <h2>試験問題</h2>
-      <p className="dbg-quiz-q">{event.title ?? event.topicId}</p>
+      <p className="dbg-quiz-q">
+        {event.question ?? splitLine(event.dialogue.at(-1) ?? '').text}
+      </p>
       <ol className="dbg-choices">
         {event.choices.map((c, i) => {
           const state =

@@ -111,3 +111,9 @@
   opacity: 0.55;
   text-align: right;
 }
+
+/* 試験当日は会話を読み返せない。問題文だけで答えられるようにする */
+.exam-stem {
+  font-weight: bold;
+  line-height: 1.9;
+}

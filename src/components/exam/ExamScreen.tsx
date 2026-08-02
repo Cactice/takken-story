@@ -133,9 +133,11 @@ export function ExamScreen({ year, firstYear, questions, experiencedIds, onFinis
               )}
             </p>
             <div className="exam-question">
-              {questions[index].dialogue.map((line, i) => (
-                <p key={i}>{line}</p>
-              ))}
+              {questions[index].question ? (
+                <p className="exam-stem">{questions[index].question}</p>
+              ) : (
+                questions[index].dialogue.map((line, i) => <p key={i}>{line}</p>)
+              )}
             </div>
             <div className="exam-choices">
               {questions[index].choices.map((c, i) => (

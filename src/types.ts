@@ -64,7 +64,9 @@ export interface DiagramSpec {
 }
 
 export interface GameEvent {
-  /** 発生時期。世代内の何年目・何月に起きるか。上から読むと物語になる */
+  /** 試験当日にこれだけ読んで答えられる問題文。会話を読んでいなくても成立させる */
+  question?: string
+  /** 発生時期。主一の生年1000年を基準にした絶対年と月 */
   year?: number
   month?: number
   id: string
@@ -175,8 +177,8 @@ export const INITIAL_RESIDENTS = ['hageta-hageta', 'shiraishi-olivia', 'minase-r
  * この家は「埋まっている」= 案内できない。転出イベントで空きに戻る。
  */
 export const INITIAL_HOMES: Readonly<Record<string, string>> = {
-  misaki: 'clinic',
-  ren: 'flower',
+  'shiraishi-olivia': 'clinic',
+  'minase-rion': 'flower',
   'oribe-silvia': 'kimono',
 }
 
