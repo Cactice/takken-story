@@ -35,7 +35,12 @@ export interface DebugCharacter extends Character {
 }
 
 const eventModules = import.meta.glob<{ default: DebugEvent }>(
-  ['../../content/gen*/events/*.json', '../../content/gen*/events/*/*.json'],
+  [
+    '../../content/gen*/events/*.json',
+    '../../content/gen*/events/*/*.json',
+    // 恋愛は events の外(独自の進行を持つ)。デバッグでは同じ一覧で読めたほうがいい
+    '../../content/gen*/romance/*.json',
+  ],
   { eager: true },
 )
 const characterModules = import.meta.glob<{ default: DebugCharacter }>(
@@ -65,16 +70,11 @@ export const ALL_CHARACTERS: DebugCharacter[] = Object.values(characterModules)
   .sort((a, b) => a.generation - b.generation || a.id.localeCompare(b.id))
 
 export const KIND_LABEL: Record<string, string> = {
-  trouble: '悩み相談',
   newcomer: '転入',
-  work: '会社の仕事',
-  business: '会社の制度',
-  village: '村の出来事',
-  dispute: '揉め事',
+  farewell: '転出',
   life: '人生',
-  farewell: '別れ',
+  trouble: '悩み',
   romance: '恋愛',
-  season: '時勢',
 }
 
 export const CATEGORY_LABEL: Record<string, string> = {

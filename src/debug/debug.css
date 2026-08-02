@@ -615,3 +615,41 @@
   font-variant-numeric: tabular-nums;
   opacity: 0.75;
 }
+
+/* 会話を一覧で読む */
+.dbg-script {
+  margin-top: 14px;
+}
+
+.dbg-lines {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.dbg-lines li {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 10px;
+  padding: 7px 9px;
+  border-left: 4px solid var(--ink);
+  background: var(--paper);
+  font-size: 0.86rem;
+  line-height: 1.7;
+}
+
+.dbg-lines li.note {
+  grid-template-columns: 1fr;
+  border-left-color: transparent;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.dbg-who {
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

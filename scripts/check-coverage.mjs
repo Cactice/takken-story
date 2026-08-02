@@ -34,7 +34,7 @@ function walk(dir) {
 
 const GENS = [1, 2, 3, 4, 5];
 const STAGE = { 1: 'ありきた村(基礎)', 2: '黒会市(誘惑)', 3: 'ありきた村(サスペンス)', 4: '黒会市(再建)', 5: '村+市+白夜村(総力戦)' };
-const KINDS = ['trouble', 'newcomer', 'work', 'business', 'village', 'dispute', 'life', 'farewell', 'romance', 'season'];
+const KINDS = ['newcomer', 'farewell', 'life', 'trouble'];
 const events = GENS.flatMap((g) => walk(`content/gen${g}/events`)).map((path) => ({
   path,
   data: JSON.parse(readFileSync(path, 'utf8')),

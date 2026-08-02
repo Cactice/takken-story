@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
-import { DialogueBox } from '../components/dialogue/DialogueBox'
 import { Diagram } from '../components/diagram/Diagram'
 import { characterSpriteStyle } from '../lib/sprites'
 import {
@@ -18,7 +17,6 @@ import {
   familyGroupOf,
   haystack,
   relationLabel,
-  speakerCharacter,
   spouseOf,
 } from './data'
 import type { DebugCharacter, DebugEvent } from './data'
@@ -280,29 +278,14 @@ function EventList({ events, selected, onPick }: EventListProps) {
   )
 }
 
+/** セリフ「本文」を話者と中身に割る。話者名が無い行(ト書き)はそのまま出す */
+function splitLine(line: string): { who?: string; text: string } {
+  const m = line.match(/^(.+?)「([\s\S]*)」\s*$/)
+  return m ? { who: m[1], text: m[2] } : { text: line }
+}
+
+/** イベントを一覧で読む。上から下までスクロールすれば、その回の話が全部読める */
 function Player({ event }: { event: DebugEvent }) {
-  const [done, setDone] = useState(false)
-  /** 再生をやり直すたびに変える。DialogueBox の内部インデックスを初期化するための key */
-  const [take, setTake] = useState(0)
-  /**
-   * DialogueBox は最後まで進むと onComplete → onClose を続けて呼ぶ。
-   * onClose(✕・Escape)で頭から再生し直したいが、完走した直後だけは何もしない。
-   */
-  const doneRef = useRef(false)
-
-  const replay = () => {
-    doneRef.current = false
-    setDone(false)
-    setTake((n) => n + 1)
-  }
-
-  // イベントを選び直したら頭から
-  useEffect(() => {
-    doneRef.current = false
-    setDone(false)
-    setTake((n) => n + 1)
-  }, [event])
-
   return (
     <>
       <div className="dbg-meta">
@@ -310,6 +293,8 @@ function Player({ event }: { event: DebugEvent }) {
         <dl>
           <dt>世代</dt>
           <dd>第{event.generation}世代</dd>
+          <dt>時期</dt>
+          <dd>{event.year ? `${event.year}年目 ${event.month ?? 1}月` : '—'}</dd>
           <dt>種類</dt>
           <dd>{KIND_LABEL[event.kind] ?? event.kind}</dd>
           <dt>分野</dt>
@@ -320,29 +305,56 @@ function Player({ event }: { event: DebugEvent }) {
           <dd>{castOf(event).map(characterName).join('、')}</dd>
         </dl>
         <p className="dbg-summary">{event.summary}</p>
-        <button type="button" className="dbg-btn" onClick={replay}>
-          ↻ 最初から再生
-        </button>
       </div>
 
-      {/* ponytail: DialogueBox は書き換えず、overlay の position だけ CSS でペイン内に納める */}
-      <div className="dbg-inline-dialogue">
-        <DialogueBox
-          key={`${event.id}-${take}`}
-          character={speakerCharacter(event)}
-          event={event}
-          gender="male"
-          onComplete={() => {
-            doneRef.current = true
-            setDone(true)
-          }}
-          onClose={() => {
-            if (!doneRef.current) replay()
-          }}
-        />
-      </div>
+      <section className="dbg-script">
+        <h2>会話</h2>
+        <ol className="dbg-lines">
+          {event.dialogue.map((line, i) => {
+            const { who, text } = splitLine(line)
+            return (
+              <li key={`${event.id}-d${i}`} className={who ? '' : 'note'}>
+                {who && <b className="dbg-who">{who}</b>}
+                <span>{text}</span>
+              </li>
+            )
+          })}
+        </ol>
+      </section>
 
-      {done && <Quiz key={event.id} event={event} />}
+      <Quiz key={event.id} event={event} />
+
+      {(event.playerLines?.length || event.thanksLine || event.resolvedLine) && (
+        <section className="dbg-script">
+          <h2>解いたあと</h2>
+          <ol className="dbg-lines">
+            {(event.playerLines ?? []).map((l, i) => (
+              <li key={`${event.id}-p${i}`}>
+                <b className="dbg-who">あなた</b>
+                <span>{l}</span>
+              </li>
+            ))}
+            {event.thanksLine && (
+              <li>
+                {(() => {
+                  const { who, text } = splitLine(event.thanksLine)
+                  return (
+                    <>
+                      {who && <b className="dbg-who">{who}</b>}
+                      <span>{text}</span>
+                    </>
+                  )
+                })()}
+              </li>
+            )}
+            {event.resolvedLine && (
+              <li className="note">
+                <span>のちに — {splitLine(event.resolvedLine).text}</span>
+              </li>
+            )}
+          </ol>
+        </section>
+      )}
     </>
   )
 }
