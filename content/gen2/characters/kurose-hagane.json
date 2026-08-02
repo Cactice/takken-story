@@ -1,9 +1,9 @@
 {
-  "id": "kurose-rei",
-  "name": "黒瀬レイ",
+  "id": "kurose-hagane",
+  "name": "黒瀬ハガネ",
   "familyName": "黒瀬",
-  "givenName": "レイ",
-  "sprite": "sprites/kurose-rei.png",
+  "givenName": "ハガネ",
+  "sprite": "sprites/kurose-hagane.png",
   "generation": 2,
   "appearsIn": [
     2
@@ -24,10 +24,10 @@
     {
       "characterId": "anzai-rumi-mei",
       "kind": "friend",
-      "note": "事務員のメイを気にかけている"
+      "note": "事務員のホチキを気にかけている"
     },
     {
-      "characterId": "kurose-tetsu",
+      "characterId": "kurose-tekko",
       "kind": "family-like",
       "note": "同じ黒瀬家の年長者。協会に勤めている"
     }
@@ -41,7 +41,7 @@
     "default": [
       "勝ち負けの話じゃないの。免許の話をしてるの。何度でも言うわよ",
       "カイルのやり口は全部知ってる。知ってるからこそ、止められないと悔しいの",
-      "メイちゃんは真っ直ぐすぎるの。ああいう子が最初に潰れるから、見てるのよ",
+      "ホチキちゃんは真っ直ぐすぎるの。ああいう子が最初に潰れるから、見てるのよ",
       "正しいことを言うと数字が落ちるの。社内での私の立場、たぶんあなたが思うより悪いわ",
       "嘘で家を売る店を、この街から一軒でも減らす。それだけのために営業やってるの"
     ],

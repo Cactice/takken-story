@@ -1,9 +1,9 @@
 {
-  "id": "kurose-genichi",
-  "name": "黒瀬ゲンイチ",
+  "id": "kurose-kabuto",
+  "name": "黒瀬カブト",
   "familyName": "黒瀬",
-  "givenName": "ゲンイチ",
-  "sprite": "sprites/kurose-genichi.png",
+  "givenName": "カブト",
+  "sprite": "sprites/kurose-kabuto.png",
   "generation": 5,
   "appearsIn": [
     4,
@@ -23,7 +23,7 @@
       "note": "白夜村側の実質的な代理人"
     },
     {
-      "characterId": "kurose-rui",
+      "characterId": "kurose-bolt",
       "kind": "sibling",
       "note": "八歳上の姉。物流の動線を設計している"
     }

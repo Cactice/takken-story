@@ -5,7 +5,7 @@
 //    `src/lib/map.ts` からの import を
 //    `map.isSolid / map.inBounds / map.propertyIdAt / map.residentSpots /
 //     map.spareSpots / map.start / map.cols / map.rows / map.signTile` に置き換える。
-//    絵は季節ごとのレイヤーから取る:
+//    絵は季節ごとのハガネヤーから取る:
 //      const layer = map.layers[season]
 //      layer.ground[y][x] / layer.over[y][x] / layer.sheet / layer.filter
 //    描画順は 地面 → 影(map.shadows に半透明の黒) → 重ね物 → 看板 → 人。

@@ -1,9 +1,9 @@
 {
-  "id": "minuma-shigeru",
-  "name": "見沼シゲル",
+  "id": "minuma-tanezo",
+  "name": "見沼タネゾウ",
   "familyName": "見沼",
-  "givenName": "シゲル",
-  "sprite": "sprites/minuma-shigeru.png",
+  "givenName": "タネゾウ",
+  "sprite": "sprites/minuma-tanezo.png",
   "generation": 1,
   "appearsIn": [
     1
@@ -33,7 +33,7 @@
       "note": "あとから畑を挟んだ隣に来た家。境界は握手で決めた"
     },
     {
-      "characterId": "minuma-haru",
+      "characterId": "minuma-minori",
       "kind": "spouse",
       "note": "配偶者"
     }

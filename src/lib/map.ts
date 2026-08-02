@@ -50,7 +50,7 @@ export const T = {
 } as const
 
 /**
- * 地面レイヤー
+ * 地面ハガネヤー
  * G=草 t=草むら f=花 P=道 D=荒れ地(空き地) F=土(畑)
  */
 export const GROUND: readonly string[] = [

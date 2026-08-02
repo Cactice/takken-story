@@ -1,0 +1,35 @@
+{
+  "id": "hayama-himeka",
+  "name": "葉山ヒメカ",
+  "familyName": "葉山",
+  "givenName": "ヒメカ",
+  "sprite": "sprites/hayama-himeka.png",
+  "generation": 4,
+  "appearsIn": [
+    4
+  ],
+  "age": 25,
+  "gender": "female",
+  "romanceable": true,
+  "personality": "25歳。葉山コーシャクの娘で、葉山家の三代目。子役から続けて、いまは名前を出せば通じる俳優になっている。上品でふざけがちで優しいのは家ぜんぶの性質で、「うちね、王家の血筋なんですよ」と現場でも言っては笑われている。人前に出る力が血筋のせいなのか本人の資質なのかは、本人にも分からない。家の金は祖父の代から株で回っているので、稼ぐために出ているわけではない。",
+  "motive": "住み心地だけで住む場所を選びたい。仕事の都合で選びたくない。",
+  "weakness": "顔が知られているせいで内見に行けない。人に見に行ってもらうしかない。",
+  "catchphrase": "本当なんですけどねえ。",
+  "relations": [
+    {
+      "characterId": "hayama-koshaku",
+      "kind": "parent",
+      "note": "父。株で暮らしている"
+    },
+    {
+      "characterId": "hayama-oji",
+      "kind": "grandparent",
+      "note": "祖父。同じ話を同じ順番で心配する人"
+    }
+  ],
+  "job": "俳優",
+  "birthYear": 1080,
+  "agesByGeneration": {
+    "4": 25
+  }
+}

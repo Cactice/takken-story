@@ -17,7 +17,7 @@
   "catchphrase": "前の街ではこうだったんですが。",
   "relations": [
     {
-      "characterId": "hayama-ko",
+      "characterId": "hayama-oji",
       "kind": "neighbor",
       "note": "同じマンションになれば隣人"
     },

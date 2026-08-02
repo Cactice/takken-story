@@ -106,7 +106,7 @@ export interface SeasonSkin {
   filter?: string
 }
 
-/** ある季節の描画用レイヤー。TownView はこれをそのまま描けばよい */
+/** ある季節の描画用ハガネヤー。TownView はこれをそのまま描けばよい */
 export interface SeasonLayer {
   sheet: Sheet
   ground: readonly (readonly number[])[]
@@ -188,7 +188,7 @@ export interface GameMap {
   signs: readonly MapSign[]
   /** 建物が落とす影のマス。半透明の黒を重ねるだけでよい */
   shadows: readonly (readonly [number, number])[]
-  /** 季節ごとの描画レイヤー。TownView は現在の季節のものを描く */
+  /** 季節ごとの描画ハガネヤー。TownView は現在の季節のものを描く */
   layers: Readonly<Record<Season, SeasonLayer>>
   residentSpots: Readonly<Record<string, readonly [number, number]>>
   spareSpots: readonly (readonly [number, number])[]
@@ -339,7 +339,7 @@ export function defineMap(spec: MapSpec): GameMap {
 }
 
 /**
- * 季節ごとのレイヤーを作る。差分(SeasonSkin)が無い季節は基本レイヤーを共有する。
+ * 季節ごとのハガネヤーを作る。差分(SeasonSkin)が無い季節は基本ハガネヤーを共有する。
  * 25x25 が4枚でも数KBなので、切り替えのたびに作り直さず先に4枚作っておく。
  */
 export function seasonLayers(

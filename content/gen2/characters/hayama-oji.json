@@ -1,9 +1,9 @@
 {
-  "id": "hayama-ko",
-  "name": "葉山コウ",
+  "id": "hayama-oji",
+  "name": "葉山オージ",
   "familyName": "葉山",
   "givenName": "コウ",
-  "sprite": "sprites/hayama-ko.png",
+  "sprite": "sprites/hayama-oji.png",
   "generation": 2,
   "appearsIn": [
     2
@@ -22,7 +22,7 @@
       "note": "マンションの理事長"
     },
     {
-      "characterId": "hayama-mina",
+      "characterId": "hayama-tiara",
       "kind": "spouse",
       "note": "配偶者"
     }

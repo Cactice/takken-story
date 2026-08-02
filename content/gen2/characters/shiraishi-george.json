@@ -17,7 +17,7 @@
   "catchphrase": "…では、丁寧に話し合うしかありませんな。",
   "relations": [
     {
-      "characterId": "hayama-ko",
+      "characterId": "hayama-oji",
       "kind": "neighbor",
       "note": "同じマンションの住人"
     },

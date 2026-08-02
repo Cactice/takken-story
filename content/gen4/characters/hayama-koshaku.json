@@ -1,9 +1,9 @@
 {
-  "id": "hayama-haruto",
-  "name": "葉山ハルト",
+  "id": "hayama-koshaku",
+  "name": "葉山コーシャク",
   "familyName": "葉山",
-  "givenName": "ハルト",
-  "sprite": "sprites/hayama-ko.png",
+  "givenName": "コーシャク",
+  "sprite": "sprites/hayama-oji.png",
   "generation": 4,
   "appearsIn": [
     4
@@ -11,18 +11,18 @@
   "age": 58,
   "gender": "male",
   "romanceable": false,
-  "personality": "58歳。葉山コウとミナの息子。両親が六十年前に買ったマンションで育ち、今もその街に住んでいる。父と同じく株の売買で暮らし、働いている様子がないのに金がある。父ゆずりで押しに弱いが、父と違って「不安なら人に聞く」を先に覚えた。娘のノエルが人前に出る仕事を選んだのを、面白がって見ている。",
+  "personality": "58歳。葉山オージとティアラの息子。両親が六十年前に買ったマンションで育ち、今もその街に住んでいる。父と同じく株の売買で暮らし、働いている様子がないのに金がある。父ゆずりで押しに弱いが、父と違って「不安なら人に聞く」を先に覚えた。娘のヒメカが人前に出る仕事を選んだのを、面白がって見ている。",
   "motive": "息子に、自分の父がしたのと同じことをしてやること。",
   "weakness": "自分のことになると途端に決められない。",
   "catchphrase": "…父も、同じことを聞いたそうです。",
   "relations": [
     {
-      "characterId": "hayama-ko",
+      "characterId": "hayama-oji",
       "kind": "parent",
       "note": "父。コウの慎重さを笑いながら受け継いでいる"
     },
     {
-      "characterId": "hayama-noel",
+      "characterId": "hayama-himeka",
       "kind": "child",
       "note": "娘。人前に出る仕事を選んだ"
     },

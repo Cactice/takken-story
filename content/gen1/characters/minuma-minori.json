@@ -1,9 +1,9 @@
 {
-  "id": "minuma-haru",
-  "name": "見沼ハル",
+  "id": "minuma-minori",
+  "name": "見沼ミノリ",
   "familyName": "見沼",
   "givenName": "ハル",
-  "sprite": "sprites/minuma-haru.png",
+  "sprite": "sprites/minuma-minori.png",
   "generation": 1,
   "appearsIn": [
     1
@@ -12,7 +12,7 @@
   "gender": "female",
   "family": "見沼家",
   "romanceable": false,
-  "personality": "36歳。シゲルの妻。人の話を集めるのが生きがいなのに、集める相手がまだ村にいない。「あらあら」が口癖。誰が誰にいつ何を貸したかを全部覚えていて、その記憶は六十年後に一族の証言として効いてくる。",
+  "personality": "36歳。タネゾウの妻。人の話を集めるのが生きがいなのに、集める相手がまだ村にいない。「あらあら」が口癖。誰が誰にいつ何を貸したかを全部覚えていて、その記憶は六十年後に一族の証言として効いてくる。",
   "motive": "村に人を増やして、噂話のできる相手を作る。",
   "weakness": "口が軽い。悪気なく漏らした一言が、家どうしの溝を広げる。",
   "catchphrase": "あらあら、聞いた? ……って、聞く相手がおらんのだったわ。",
@@ -23,7 +23,7 @@
       "note": "あとから来た隣の奥さん。話しかけたいのに三十秒で切り上げられる"
     },
     {
-      "characterId": "minuma-shigeru",
+      "characterId": "minuma-tanezo",
       "kind": "spouse",
       "note": "配偶者"
     }

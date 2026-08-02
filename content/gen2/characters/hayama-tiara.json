@@ -1,9 +1,9 @@
 {
-  "id": "hayama-mina",
-  "name": "葉山ミナ",
+  "id": "hayama-tiara",
+  "name": "葉山ティアラ",
   "familyName": "葉山",
-  "givenName": "ミナ",
-  "sprite": "sprites/hayama-mina.png",
+  "givenName": "ティアラ",
+  "sprite": "sprites/hayama-tiara.png",
   "generation": 2,
   "appearsIn": [
     2
@@ -17,7 +17,7 @@
   "catchphrase": "そこ、もう一度読ませてください。",
   "relations": [
     {
-      "characterId": "hayama-ko",
+      "characterId": "hayama-oji",
       "kind": "spouse",
       "note": "配偶者"
     }

@@ -1,9 +1,9 @@
 {
-  "id": "minuma-sae",
-  "name": "見沼サエ",
+  "id": "minuma-wakaba",
+  "name": "見沼ワカバ",
   "familyName": "見沼",
-  "givenName": "サエ",
-  "sprite": "sprites/minuma-sae.png",
+  "givenName": "ワカバ",
+  "sprite": "sprites/minuma-wakaba.png",
   "generation": 3,
   "appearsIn": [
     3,
@@ -12,15 +12,15 @@
   "age": 26,
   "gender": "female",
   "family": "見沼家",
-  "descendantOf": "minuma-kaoru",
+  "descendantOf": "minuma-nukabe",
   "romanceable": false,
-  "personality": "26歳。カオルの娘。都会の大学を出て村に戻ってきた。父の「昔からこうだ」に一つずつ根拠を求める。第5世代では村の再生の中心人物として、鈴木家と手を組む。",
+  "personality": "26歳。ヌカベエの娘。都会の大学を出て村に戻ってきた。父の「昔からこうだ」に一つずつ根拠を求める。第5世代では村の再生の中心人物として、鈴木家と手を組む。",
   "motive": "村を、感情ではなく事実で残す。",
   "weakness": "父を否定しきれない。争いの当事者になると声が震える。",
   "catchphrase": "ねえお父さん、それ、確かめたの?",
   "relations": [
     {
-      "characterId": "minuma-kaoru",
+      "characterId": "minuma-nukabe",
       "kind": "parent",
       "note": "父"
     },
