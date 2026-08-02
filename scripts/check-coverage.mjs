@@ -33,6 +33,8 @@ function walk(dir) {
 }
 
 const GENS = [1, 2, 3, 4, 5];
+// 主人公の各代。名前が画面に出ないのでキャラJSONを持たないが、cast には入る
+const PLAYER_IDS = new Set(['shu-1', 'shu-2', 'shu-3', 'shu-4', 'shu-5']);
 const STAGE = { 1: 'ありきた村(基礎)', 2: '黒会市(誘惑)', 3: 'ありきた村(サスペンス)', 4: '黒会市(再建)', 5: '村+市+白夜村(総力戦)' };
 const KINDS = ['newcomer', 'farewell', 'life', 'trouble'];
 const events = GENS.flatMap((g) => walk(`content/gen${g}/events`)).map((path) => ({
@@ -82,6 +84,7 @@ for (const [id, c] of characters) {
 for (const { path, data } of events) {
   for (const id of data.cast ?? []) {
     const c = characters.get(id);
+    if (PLAYER_IDS.has(id)) continue; // 主人公の各代。キャラJSONを持たない
     if (!c) errors.push(`${path}: cast の "${id}" が characters に存在しない`);
     else if (!c.gens.has(data.generation))
       errors.push(`${path}: cast の "${id}" は第${[...c.gens].join('/')}世代の人物。gen${data.generation} のイベントで参照している`);
