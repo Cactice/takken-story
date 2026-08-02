@@ -479,8 +479,6 @@ function CharacterDetail({ character: c, onPickCharacter, onPickEvent }: Charact
         <dt>配偶者</dt>
         <dd>{spouse || '—'}</dd>
       </dl>
-      <p className="dbg-summary">{c.personality}</p>
-
       {family && family.members.length > 1 && (
         <>
           <h3>{family.name}(生年順)</h3>
@@ -508,6 +506,13 @@ function CharacterDetail({ character: c, onPickCharacter, onPickEvent }: Charact
               {p}
             </p>
           ))}
+        </>
+      )}
+
+      {c.personality && (
+        <>
+          <h3>{c.name}の物語</h3>
+          <p className="dbg-story">{c.personality}</p>
         </>
       )}
 
