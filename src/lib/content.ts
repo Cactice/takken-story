@@ -46,7 +46,13 @@ function ofGeneration<T>(modules: Record<string, { default: T }>): T[] {
     .map(([, m]) => m.default)
 }
 
-export const characters: Character[] = ofGeneration(characterModules)
+/** 表示名はフルネーム(白石オリビア のように苗字+名前) */
+function withFullName(c: Character): Character {
+  const full = [c.familyName, c.givenName].filter(Boolean).join('')
+  return full ? { ...c, name: full } : c
+}
+
+export const characters: Character[] = ofGeneration(characterModules).map(withFullName)
 export const events: GameEvent[] = ofGeneration(eventModules)
 
 export function characterById(id: string): Character | undefined {
@@ -79,7 +85,7 @@ export const households: TourHousehold[] = householdsOfGeneration()
 /** 世代を切り替える(選択画面から呼ぶ)。配列の中身を入れ替える */
 export function loadGeneration(generation: number): void {
   GENERATION = generation
-  characters.splice(0, characters.length, ...ofGeneration(characterModules))
+  characters.splice(0, characters.length, ...ofGeneration(characterModules).map(withFullName))
   events.splice(0, events.length, ...ofGeneration(eventModules))
   households.splice(0, households.length, ...householdsOfGeneration())
 }

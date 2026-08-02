@@ -4,7 +4,12 @@ export type Gender = 'male' | 'female'
 
 export interface Character {
   id: string
+  /** 表示名。content 側の苗字+名前から組み立てる(白石オリビア のように) */
   name: string
+  /** 苗字(漢字) */
+  familyName?: string
+  /** 名前(カタカナ) */
+  givenName?: string
   sprite: string
   personality: string
   age?: number

@@ -58,12 +58,23 @@ export function TourScreen({ state, dispatch, onFinish }: Props) {
         dispatch({ type: 'move', delta: 1 })
       } else if (e.key === ' ' || e.key === 'Enter') {
         e.preventDefault()
+        // done は reducer に進む先がないので、ここでツアーを閉じる
+        if (state.phase.kind === 'done') {
+          const h = state.household
+          onFinish({
+            success: state.phase.success,
+            reward: state.reward,
+            propertyId: state.contracted?.id ?? null,
+            residentIds: state.phase.success ? h.members.map((m) => m.id) : [],
+          })
+          return
+        }
         dispatch({ type: 'advance' })
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [overlayOpen, dispatch])
+  }, [overlayOpen, dispatch, state, onFinish])
 
   // 物件を回っている間はマップが主役。オーバーレイは出さない
   if (!overlayOpen) return null

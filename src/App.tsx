@@ -37,6 +37,7 @@ import type { GameMap } from './lib/maps'
 import { arrivalStaging, openingStaging } from './lib/staging'
 import type { Staging } from './lib/staging'
 import { GenerationSelect } from './components/generation/GenerationSelect'
+import { seasonOfMonth } from './lib/maps'
 import { useGameClock } from './hooks/useGameClock'
 import { characters, events, households, loadGeneration } from './lib/content'
 import { availableConsultations, buildYearSchedule } from './lib/schedule'
@@ -565,6 +566,7 @@ export default function App() {
       </header>
 
       <TownView
+        season={seasonOfMonth(month)}
         map={gameMap}
         characters={residentCharacters}
         gender={state.gender}

@@ -4,7 +4,7 @@ import type { Character, Gender } from '../../types'
 import { characterSpriteStyle, playerSpriteStyle, sheetStyle } from '../../lib/sprites'
 import type { Facing } from '../../lib/sprites'
 import { ARIKITA } from '../../lib/maps'
-import type { GameMap } from '../../lib/maps'
+import type { GameMap, Season } from '../../lib/maps'
 import { propertyById } from '../../lib/properties'
 import {
   SCATTER_IDLE_MS,
@@ -22,6 +22,8 @@ import './town.css'
 interface Props {
   /** 舞台。世代で切り替わる(第1世代=ありきた村 / 第2・4世代=黒会市) */
   map?: GameMap
+  /** 季節。地面と重ね物のタイルが差し替わる(冬は雪) */
+  season?: Season
   characters: Character[]
   gender: Gender
   /** 相談が控えている住民のID(頭に「!」を表示) */
@@ -71,6 +73,7 @@ const FACE_DELTA: Record<Facing, [number, number]> = {
 
 export function TownView({
   map = ARIKITA,
+  season = 'spring',
   characters,
   gender,
   alertIds,
@@ -86,6 +89,8 @@ export function TownView({
   onTalkFollower,
   onPropertyViewed,
 }: Props) {
+  // 季節ごとに地面と重ね物のタイルが差し替わる(冬は雪のシート)
+  const layer = map.layers?.[season] ?? map
   const inBounds = map.inBounds
   const isSolid = map.isSolid
   const canStand = (x: number, y: number) => inBounds(x, y) && !isSolid(x, y)
@@ -343,24 +348,24 @@ export function TownView({
             } as CSSProperties
           }
         >
-          {map.ground.flatMap((row, y) =>
+          {layer.ground.flatMap((row, y) =>
             row.map((tile, x) => (
               <div
                 key={`g${x}-${y}`}
                 className="tile"
-                style={{ ...sheetStyle(map.sheet, tile), gridColumn: x + 1, gridRow: y + 1 }}
+                style={{ ...sheetStyle(layer.sheet, tile), gridColumn: x + 1, gridRow: y + 1 }}
               />
             )),
           )}
 
-          {map.over.flatMap((row, y) =>
+          {layer.over.flatMap((row, y) =>
             row.map((cell, x) =>
               cell === null ? null : (
                 <div
                   key={`o${x}-${y}`}
                   className="tile obj"
                   style={{
-                    ...sheetStyle(map.sheet, cell.tile),
+                    ...sheetStyle(layer.sheet, cell.tile),
                     filter: cell.filter,
                     gridColumn: x + 1,
                     gridRow: y + 1,
@@ -380,7 +385,7 @@ export function TownView({
               key={sign.id}
               className="tile obj land-sign"
               style={{
-                ...sheetStyle(map.sheet, map.signTile),
+                ...sheetStyle(layer.sheet, map.signTile),
                 gridColumn: sign.x + 1,
                 gridRow: sign.y + 1,
               }}
