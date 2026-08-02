@@ -27,6 +27,11 @@
       "characterId": "minuma-shigeru",
       "kind": "neighbor",
       "note": "「見沼のおじいちゃん」。裏山で会うと叱られるが嫌いではない"
+    },
+    {
+      "characterId": "suzuki-riku",
+      "kind": "child",
+      "note": "息子。測量士になった"
     }
   ],
   "moveIn": {
