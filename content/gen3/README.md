@@ -21,7 +21,7 @@
 | 1 遺されたもの | `ev-minpo-souzoku` / `ev-minpo-tanpo` | 相続 / 契約不適合(告知) |
 | 2 預かったまま、動かない紙 | `ev-gyoho-baikai-kakoikomi` / `ev-toki-ho` | 媒介契約(囲い込み) / 仮登記 |
 | 3 書いてない境界 | `ev-minpo-bukken-hendo` / `ev-shakuchi-hanaya` / `ev-gyoho-juyojiko-byakuya` | 物権変動 / 借地 / 35条 |
-| 4 年を数える | `ev-minpo-jiko` / `ev-shakka-panya` / `ev-minpo-kyoyu` | 取得時効 / 借家 / 共有 |
+| 4 年を数える | `ev-minpo-jiko` / `ev-shakka-panya` | 取得時効 / 借家 |
 | 5 地面の下 | `ev-hourei-moridokisei` / `ev-minpo-dairi` / `ev-zei-touroku` | 盛土 / 無権代理 / 登録免許税 |
 
 **転出が主軸**(`farewell` 3件)。出ていく人に理由を聞くと、それがそのまま論点であり、
