@@ -1,6 +1,6 @@
 {
   "id": "iinkai-kurose",
-  "name": "ゲンイチ",
+  "name": "黒瀬ゲンイチ",
   "familyName": "黒瀬",
   "givenName": "ゲンイチ",
   "sprite": "sprites/iinkai-kurose.png",
@@ -44,5 +44,6 @@
   "agesByGeneration": {
     "4": 33,
     "5": 63
-  }
+  },
+  "job": "新幹線誘致委員会 委員長"
 }

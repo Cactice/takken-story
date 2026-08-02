@@ -1,6 +1,6 @@
 {
   "id": "kk-hayama-haruto",
-  "name": "ハルト",
+  "name": "葉山ハルト",
   "familyName": "葉山",
   "givenName": "ハルト",
   "sprite": "sprites/kk-hayama.png",
@@ -36,5 +36,6 @@
   "birthYear": 1047,
   "agesByGeneration": {
     "4": 58
-  }
+  },
+  "job": "会社員"
 }

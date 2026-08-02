@@ -1,6 +1,6 @@
 {
   "id": "fuyuno-so",
-  "name": "ソウ",
+  "name": "冬野ソウ",
   "familyName": "冬野",
   "givenName": "ソウ",
   "sprite": "sprites/fuyuno-so.png",
@@ -18,14 +18,14 @@
   "catchphrase": "悪いことは、何もしていないんですよ。",
   "relations": [
     {
-      "characterId": "fuyuno-akari",
-      "kind": "spouse",
-      "note": "妻"
-    },
-    {
       "characterId": "hageta-goro",
       "kind": "client",
       "note": "村で最初に頭を下げてくれた相手"
+    },
+    {
+      "characterId": "fuyuno-akari",
+      "kind": "spouse",
+      "note": "配偶者"
     }
   ],
   "moveIn": {
@@ -86,5 +86,6 @@
   "birthYear": 1040,
   "agesByGeneration": {
     "3": 35
-  }
+  },
+  "job": "会社員"
 }

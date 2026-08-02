@@ -1,6 +1,6 @@
 {
   "id": "kk-tsuzuki",
-  "name": "レイ",
+  "name": "都築レイ",
   "familyName": "都築",
   "givenName": "レイ",
   "sprite": "sprites/kk-tsuzuki.png",
@@ -61,5 +61,6 @@
   "birthYear": 1011,
   "agesByGeneration": {
     "2": 34
-  }
+  },
+  "job": "不動産営業(老舗)"
 }

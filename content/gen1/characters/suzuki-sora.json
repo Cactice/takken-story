@@ -1,6 +1,6 @@
 {
   "id": "suzuki-sora",
-  "name": "ソラ",
+  "name": "鈴木ソラ",
   "familyName": "鈴木",
   "givenName": "ソラ",
   "sprite": "sprites/suzuki-sora.png",
@@ -91,5 +91,6 @@
   "agesByGeneration": {
     "1": 8,
     "3": 68
-  }
+  },
+  "job": "(第1世代は小学生)"
 }

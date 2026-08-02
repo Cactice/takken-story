@@ -1,7 +1,7 @@
 {
   "id": "kk-todoroki",
-  "name": "ゴンザ",
-  "familyName": "轟",
+  "name": "安西ゴンザ",
+  "familyName": "安西",
   "givenName": "ゴンザ",
   "sprite": "sprites/kk-todoroki.png",
   "generation": 4,
@@ -48,5 +48,6 @@
   "birthYear": 1045,
   "agesByGeneration": {
     "4": 60
-  }
+  },
+  "job": "建設会社 社長"
 }

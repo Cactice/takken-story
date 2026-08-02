@@ -1,6 +1,6 @@
 {
   "id": "minuma-kaoru",
-  "name": "カオル",
+  "name": "見沼カオル",
   "familyName": "見沼",
   "givenName": "カオル",
   "sprite": "sprites/minuma-kaoru.png",
@@ -50,5 +50,6 @@
   "birthYear": 1017,
   "agesByGeneration": {
     "3": 58
-  }
+  },
+  "job": "見沼家当主・地主"
 }

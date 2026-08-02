@@ -1,6 +1,6 @@
 {
   "id": "kk-yano",
-  "name": "ハジメ",
+  "name": "矢野ハジメ",
   "familyName": "矢野",
   "givenName": "ハジメ",
   "sprite": "sprites/kk-yano.png",
@@ -44,5 +44,6 @@
   "agesByGeneration": {
     "4": 35,
     "5": 65
-  }
+  },
+  "job": "黒会市役所 都市計画課"
 }

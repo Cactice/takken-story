@@ -1,6 +1,6 @@
 {
   "id": "misaki",
-  "name": "オリビア",
+  "name": "白石オリビア",
   "familyName": "白石",
   "givenName": "オリビア",
   "sprite": "sprites/misaki.png",
@@ -82,5 +82,6 @@
   "birthYear": 981,
   "agesByGeneration": {
     "1": 34
-  }
+  },
+  "job": "内科医(村の診療所)"
 }

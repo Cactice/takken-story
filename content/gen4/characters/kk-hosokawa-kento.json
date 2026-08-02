@@ -1,6 +1,6 @@
 {
   "id": "kk-hosokawa-kento",
-  "name": "ケント",
+  "name": "細川ケント",
   "familyName": "細川",
   "givenName": "ケント",
   "sprite": "sprites/kk-hosokawa.png",
@@ -36,5 +36,6 @@
   "birthYear": 1053,
   "agesByGeneration": {
     "4": 52
-  }
+  },
+  "job": "管理組合 理事長"
 }

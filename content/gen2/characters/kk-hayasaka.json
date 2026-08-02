@@ -1,7 +1,7 @@
 {
   "id": "kk-hayasaka",
-  "name": "アオイ",
-  "familyName": "早坂",
+  "name": "都倉アオイ",
+  "familyName": "都倉",
   "givenName": "アオイ",
   "sprite": "sprites/kk-hayasaka.png",
   "generation": 2,
@@ -55,5 +55,6 @@
   "birthYear": 1020,
   "agesByGeneration": {
     "2": 25
-  }
+  },
+  "job": "デザイン会社 共同創業"
 }

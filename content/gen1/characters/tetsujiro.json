@@ -1,6 +1,6 @@
 {
   "id": "tetsujiro",
-  "name": "ガストン",
+  "name": "岸和田ガストン",
   "familyName": "岸和田",
   "givenName": "ガストン",
   "sprite": "sprites/tetsujiro.png",
@@ -82,5 +82,6 @@
   "birthYear": 943,
   "agesByGeneration": {
     "1": 72
-  }
+  },
+  "job": "アパート大家"
 }

@@ -1,7 +1,7 @@
 {
   "id": "byakuya-sena",
-  "name": "セナ",
-  "familyName": "瀬名",
+  "name": "都倉セナ",
+  "familyName": "都倉",
   "givenName": "セナ",
   "sprite": "sprites/byakuya-sena.png",
   "generation": 5,
@@ -49,5 +49,6 @@
   "birthYear": 1105,
   "agesByGeneration": {
     "5": 30
-  }
+  },
+  "job": "白夜村 広報 → 芸能人・発信者"
 }

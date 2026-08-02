@@ -1,6 +1,6 @@
 {
   "id": "anzai",
-  "name": "ルミ",
+  "name": "安西ルミ",
   "familyName": "安西",
   "givenName": "ルミ",
   "sprite": "sprites/anzai.png",
@@ -47,5 +47,6 @@
   "birthYear": 1031,
   "agesByGeneration": {
     "3": 44
-  }
+  },
+  "job": "弁護士"
 }

@@ -1,6 +1,6 @@
 {
   "id": "minuma-shigeru",
-  "name": "シゲル",
+  "name": "見沼シゲル",
   "familyName": "見沼",
   "givenName": "シゲル",
   "sprite": "sprites/minuma-shigeru.png",
@@ -18,11 +18,6 @@
   "catchphrase": "土地ってのはな、そういうもんだで。",
   "relations": [
     {
-      "characterId": "minuma-haru",
-      "kind": "spouse",
-      "note": "妻"
-    },
-    {
       "characterId": "ren",
       "kind": "landlord",
       "note": "花屋の底地を貸している"
@@ -36,6 +31,11 @@
       "characterId": "suzuki-takeo",
       "kind": "neighbor",
       "note": "あとから畑を挟んだ隣に来た家。境界は握手で決めた"
+    },
+    {
+      "characterId": "minuma-haru",
+      "kind": "spouse",
+      "note": "配偶者"
     }
   ],
   "moveIn": {
@@ -96,5 +96,6 @@
   "birthYear": 977,
   "agesByGeneration": {
     "1": 38
-  }
+  },
+  "job": "農業(自作地)"
 }

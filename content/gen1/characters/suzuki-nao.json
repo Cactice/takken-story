@@ -1,6 +1,6 @@
 {
   "id": "suzuki-nao",
-  "name": "ナオ",
+  "name": "鈴木ナオ",
   "familyName": "鈴木",
   "givenName": "ナオ",
   "sprite": "sprites/suzuki-nao.png",
@@ -15,14 +15,14 @@
   "catchphrase": "うちは、そこは譲れません。",
   "relations": [
     {
-      "characterId": "suzuki-takeo",
-      "kind": "spouse",
-      "note": "夫"
-    },
-    {
       "characterId": "minuma-haru",
       "kind": "neighbor",
       "note": "隣の奥さん。世間話の温度差に少し戸惑っている"
+    },
+    {
+      "characterId": "suzuki-takeo",
+      "kind": "spouse",
+      "note": "配偶者"
     }
   ],
   "moveIn": {
@@ -81,5 +81,6 @@
   "birthYear": 980,
   "agesByGeneration": {
     "1": 35
-  }
+  },
+  "job": "主婦(実務担当)"
 }

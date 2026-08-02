@@ -1,6 +1,6 @@
 {
   "id": "yakuba-tsugumi",
-  "name": "ツグミ",
+  "name": "田中ツグミ",
   "familyName": "田中",
   "givenName": "ツグミ",
   "sprite": "sprites/yakuba-tsugumi.png",
@@ -50,5 +50,6 @@
   "birthYear": 1102,
   "agesByGeneration": {
     "5": 33
-  }
+  },
+  "job": "ありきた村役場(空き家バンク担当)"
 }

@@ -1,6 +1,6 @@
 {
   "id": "kk-koga",
-  "name": "テツ",
+  "name": "古賀テツ",
   "familyName": "古賀",
   "givenName": "テツ",
   "sprite": "sprites/kk-koga.png",
@@ -56,5 +56,6 @@
   "birthYear": 983,
   "agesByGeneration": {
     "2": 62
-  }
+  },
+  "job": "宅建業協会 事務局長"
 }

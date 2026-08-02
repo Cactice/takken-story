@@ -1,6 +1,6 @@
 {
   "id": "kk-kirishima-sota",
-  "name": "ソウタ",
+  "name": "都倉ソウタ",
   "familyName": "都倉",
   "givenName": "ソウタ",
   "sprite": "sprites/kk-kirishima-sota.png",
@@ -62,5 +62,6 @@
   "agesByGeneration": {
     "2": 8,
     "3": 38
-  }
+  },
+  "job": "(第2世代は小学生)"
 }

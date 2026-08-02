@@ -1,6 +1,6 @@
 {
   "id": "kr-yoshie",
-  "name": "シルビア",
+  "name": "織部シルビア",
   "familyName": "織部",
   "givenName": "シルビア",
   "sprite": "sprites/kr-yoshie.png",
@@ -82,5 +82,6 @@
   "birthYear": 947,
   "agesByGeneration": {
     "1": 68
-  }
+  },
+  "job": "呉服店(廃業)"
 }

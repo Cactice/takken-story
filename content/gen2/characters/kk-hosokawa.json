@@ -1,6 +1,6 @@
 {
   "id": "kk-hosokawa",
-  "name": "ジョージ",
+  "name": "細川ジョージ",
   "familyName": "細川",
   "givenName": "ジョージ",
   "sprite": "sprites/kk-hosokawa.png",
@@ -56,5 +56,6 @@
   "birthYear": 988,
   "agesByGeneration": {
     "2": 57
-  }
+  },
+  "job": "管理組合 理事長"
 }

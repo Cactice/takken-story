@@ -1,6 +1,6 @@
 {
   "id": "kk-negishi",
-  "name": "ユウ",
+  "name": "都倉ユウ",
   "familyName": "都倉",
   "givenName": "ユウ",
   "sprite": "sprites/kk-negishi.png",
@@ -75,5 +75,6 @@
   "birthYear": 1018,
   "agesByGeneration": {
     "2": 27
-  }
+  },
+  "job": "デザイン会社 共同創業"
 }

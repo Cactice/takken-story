@@ -1,6 +1,6 @@
 {
   "id": "kk-hayama",
-  "name": "コウ",
+  "name": "葉山コウ",
   "familyName": "葉山",
   "givenName": "コウ",
   "sprite": "sprites/kk-hayama.png",
@@ -20,6 +20,11 @@
       "characterId": "kk-hosokawa",
       "kind": "neighbor",
       "note": "マンションの理事長"
+    },
+    {
+      "characterId": "kk-hayama-mina",
+      "kind": "spouse",
+      "note": "配偶者"
     }
   ],
   "smallTalk": {
@@ -67,5 +72,6 @@
   "birthYear": 1016,
   "agesByGeneration": {
     "2": 29
-  }
+  },
+  "job": "会社員"
 }

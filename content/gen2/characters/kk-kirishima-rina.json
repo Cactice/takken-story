@@ -1,6 +1,6 @@
 {
   "id": "kk-kirishima-rina",
-  "name": "リナ",
+  "name": "都倉リナ",
   "familyName": "都倉",
   "givenName": "リナ",
   "sprite": "sprites/kk-kirishima-rina.png",
@@ -17,14 +17,14 @@
   "catchphrase": "……静かかどうか、もう一度だけ確認させて。",
   "relations": [
     {
-      "characterId": "kk-kirishima",
-      "kind": "spouse",
-      "note": "夫"
-    },
-    {
       "characterId": "kk-kirishima-sota",
       "kind": "child",
       "note": "息子"
+    },
+    {
+      "characterId": "kk-kirishima",
+      "kind": "spouse",
+      "note": "配偶者"
     }
   ],
   "moveIn": {
@@ -60,5 +60,6 @@
   "birthYear": 1009,
   "agesByGeneration": {
     "2": 36
-  }
+  },
+  "job": "校正(在宅)"
 }

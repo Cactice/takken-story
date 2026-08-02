@@ -1,6 +1,6 @@
 {
   "id": "sobo",
-  "name": "おばあちゃん",
+  "name": "主おばあちゃん",
   "givenName": "おばあちゃん",
   "sprite": "sprites/sobo.png",
   "generation": 3,
@@ -47,5 +47,8 @@
   "birthYear": 1001,
   "agesByGeneration": {
     "3": 74
-  }
+  },
+  "familyName": "主",
+  "family": "主家",
+  "job": "主一の妻"
 }

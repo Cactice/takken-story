@@ -1,6 +1,6 @@
 {
   "id": "ren",
-  "name": "リオン",
+  "name": "水瀬リオン",
   "familyName": "水瀬",
   "givenName": "リオン",
   "sprite": "sprites/ren.png",
@@ -88,5 +88,6 @@
   "agesByGeneration": {
     "1": 17,
     "3": 77
-  }
+  },
+  "job": "花屋「みなせ生花店」"
 }

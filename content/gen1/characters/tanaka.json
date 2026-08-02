@@ -1,6 +1,6 @@
 {
   "id": "tanaka",
-  "name": "ポッポ",
+  "name": "田中ポッポ",
   "familyName": "田中",
   "givenName": "ポッポ",
   "sprite": "sprites/tanaka.png",
@@ -82,5 +82,6 @@
   "birthYear": 953,
   "agesByGeneration": {
     "1": 62
-  }
+  },
+  "job": "農家"
 }

@@ -1,6 +1,6 @@
 {
   "id": "hinata",
-  "name": "メープル",
+  "name": "桜井メープル",
   "familyName": "桜井",
   "givenName": "メープル",
   "sprite": "sprites/hinata.png",
@@ -88,5 +88,6 @@
   "agesByGeneration": {
     "1": 16,
     "3": 76
-  }
+  },
+  "job": "パン屋「サクライベーカリー」"
 }

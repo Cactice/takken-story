@@ -1,6 +1,6 @@
 {
   "id": "minuma-haru",
-  "name": "ハル",
+  "name": "見沼ハル",
   "familyName": "見沼",
   "givenName": "ハル",
   "sprite": "sprites/minuma-haru.png",
@@ -18,14 +18,14 @@
   "catchphrase": "あらあら、聞いた? ……って、聞く相手がおらんのだったわ。",
   "relations": [
     {
-      "characterId": "minuma-shigeru",
-      "kind": "spouse",
-      "note": "夫"
-    },
-    {
       "characterId": "suzuki-nao",
       "kind": "neighbor",
       "note": "あとから来た隣の奥さん。話しかけたいのに三十秒で切り上げられる"
+    },
+    {
+      "characterId": "minuma-shigeru",
+      "kind": "spouse",
+      "note": "配偶者"
     }
   ],
   "moveIn": {
@@ -85,5 +85,6 @@
   "birthYear": 979,
   "agesByGeneration": {
     "1": 36
-  }
+  },
+  "job": "主婦"
 }

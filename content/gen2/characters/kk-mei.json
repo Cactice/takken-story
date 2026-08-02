@@ -1,6 +1,6 @@
 {
   "id": "kk-mei",
-  "name": "メイ",
+  "name": "鳴海メイ",
   "familyName": "鳴海",
   "givenName": "メイ",
   "sprite": "sprites/kk-mei.png",
@@ -72,5 +72,6 @@
   "birthYear": 1019,
   "agesByGeneration": {
     "2": 26
-  }
+  },
+  "job": "事務員(主人公の事務所)"
 }

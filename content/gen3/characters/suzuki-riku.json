@@ -1,6 +1,6 @@
 {
   "id": "suzuki-riku",
-  "name": "リク",
+  "name": "鈴木リク",
   "familyName": "鈴木",
   "givenName": "リク",
   "sprite": "sprites/suzuki-riku.png",
@@ -62,5 +62,6 @@
   "agesByGeneration": {
     "3": 24,
     "5": 84
-  }
+  },
+  "job": "測量士"
 }

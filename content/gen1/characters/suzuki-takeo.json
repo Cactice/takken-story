@@ -1,6 +1,6 @@
 {
   "id": "suzuki-takeo",
-  "name": "タケオ",
+  "name": "鈴木タケオ",
   "familyName": "鈴木",
   "givenName": "タケオ",
   "sprite": "sprites/suzuki-takeo.png",
@@ -15,11 +15,6 @@
   "catchphrase": "いい村ですね! いや、ほんとに。……人はいませんけど!",
   "relations": [
     {
-      "characterId": "suzuki-nao",
-      "kind": "spouse",
-      "note": "妻"
-    },
-    {
       "characterId": "suzuki-sora",
       "kind": "child",
       "note": "息子"
@@ -28,6 +23,11 @@
       "characterId": "minuma-shigeru",
       "kind": "neighbor",
       "note": "畑を挟んだ隣。挨拶に通っているが打ち解けない"
+    },
+    {
+      "characterId": "suzuki-nao",
+      "kind": "spouse",
+      "note": "配偶者"
     }
   ],
   "moveIn": {
@@ -87,5 +87,6 @@
   "birthYear": 977,
   "agesByGeneration": {
     "1": 38
-  }
+  },
+  "job": "会社員(都会から転職)"
 }

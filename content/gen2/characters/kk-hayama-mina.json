@@ -1,6 +1,6 @@
 {
   "id": "kk-hayama-mina",
-  "name": "ミナ",
+  "name": "葉山ミナ",
   "familyName": "葉山",
   "givenName": "ミナ",
   "sprite": "sprites/kk-hayama-mina.png",
@@ -19,7 +19,7 @@
     {
       "characterId": "kk-hayama",
       "kind": "spouse",
-      "note": "夫"
+      "note": "配偶者"
     }
   ],
   "moveIn": {
@@ -58,5 +58,6 @@
   "birthYear": 1017,
   "agesByGeneration": {
     "2": 28
-  }
+  },
+  "job": "図書館司書"
 }

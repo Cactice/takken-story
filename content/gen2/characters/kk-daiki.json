@@ -1,6 +1,6 @@
 {
   "id": "kk-daiki",
-  "name": "ダイキ",
+  "name": "都倉ダイキ",
   "familyName": "都倉",
   "givenName": "ダイキ",
   "sprite": "sprites/kk-daiki.png",
@@ -85,5 +85,6 @@
   "agesByGeneration": {
     "2": 24,
     "3": 54
-  }
+  },
+  "job": "会社員"
 }

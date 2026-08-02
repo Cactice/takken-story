@@ -1,6 +1,6 @@
 {
   "id": "fuyuno-akari",
-  "name": "アカリ",
+  "name": "冬野アカリ",
   "familyName": "冬野",
   "givenName": "アカリ",
   "sprite": "sprites/fuyuno-akari.png",
@@ -18,14 +18,14 @@
   "catchphrase": "あの町はね、住んでる人のことを数字で見るの。",
   "relations": [
     {
-      "characterId": "fuyuno-so",
-      "kind": "spouse",
-      "note": "夫"
-    },
-    {
       "characterId": "minuma-sae",
       "kind": "friend",
       "note": "畑の使い方を教わっている。争いの外にいる数少ない相手"
+    },
+    {
+      "characterId": "fuyuno-so",
+      "kind": "spouse",
+      "note": "配偶者"
     }
   ],
   "moveIn": {
@@ -86,5 +86,6 @@
   "birthYear": 1043,
   "agesByGeneration": {
     "3": 32
-  }
+  },
+  "job": "会社員"
 }

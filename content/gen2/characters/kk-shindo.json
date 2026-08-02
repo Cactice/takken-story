@@ -1,6 +1,6 @@
 {
   "id": "kk-shindo",
-  "name": "ゴウ",
+  "name": "都倉ゴウ",
   "familyName": "都倉",
   "givenName": "ゴウ",
   "sprite": "sprites/kk-shindo.png",
@@ -83,5 +83,6 @@
   "birthYear": 1004,
   "agesByGeneration": {
     "2": 41
-  }
+  },
+  "job": "建設会社 社長"
 }

@@ -1,6 +1,6 @@
 {
   "id": "kk-kirishima",
-  "name": "タクミ",
+  "name": "都倉タクミ",
   "familyName": "都倉",
   "givenName": "タクミ",
   "sprite": "sprites/kk-kirishima.png",
@@ -35,6 +35,11 @@
       "characterId": "kk-daiki",
       "kind": "sibling",
       "note": "末弟。出てきたばかり"
+    },
+    {
+      "characterId": "kk-kirishima-rina",
+      "kind": "spouse",
+      "note": "配偶者"
     }
   ],
   "moveIn": {
@@ -70,5 +75,6 @@
   "birthYear": 1007,
   "agesByGeneration": {
     "2": 38
-  }
+  },
+  "job": "会社員(転勤族)"
 }
