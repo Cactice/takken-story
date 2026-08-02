@@ -64,7 +64,8 @@ const out = [
 - 家ごとのイベント一覧 … [events-by-household.md](events-by-household.md)
 - 暦: 第1世代の主人公は1000年生まれ。1世代=30年
 - 主人公の家系は**主家**。ゲーム内で主人公は「あなた」で、名前は画面に出ない。
-  各代の名前(アオ・カケル・シノブ・ツトム・ノゾミ)はドキュメント上の識別子である。
+  各代は世代番号をそのまま名にして**主一・主二・主三・主四・主五**と呼ぶ(ドキュメント上の識別子)。
+  「祖父」「父」は世代で指す人が変わるので、地の文では**人物をフルネームで呼ぶ**
 `,
   `\n---\n\n# 本筋\n`,
 ]
@@ -96,6 +97,27 @@ for (const name of names) {
 
   out.push(`## ${fam} ｜ 第${gens.join('・')}世代`)
   out.push('')
+
+  // 世帯の顔ぶれ: 誰が・いつ生まれ・どの世代に出るか
+  const roster = Object.values(chars)
+    .filter((c) => (c.family ?? c.familyName + '家') === fam)
+    .sort((a, b) => (a.birthYear ?? 0) - (b.birthYear ?? 0))
+  const planned = (h.members ?? []).map((m) => ({
+    familyName: '', givenName: m.name, birthYear: m.birthYear,
+    appearsIn: [m.gen], generation: m.gen, _plan: true,
+  }))
+  const all = [...roster, ...planned].sort((a, b) => (a.birthYear ?? 0) - (b.birthYear ?? 0))
+  if (all.length) {
+    out.push('| 人物 | 生年 | 登場 |')
+    out.push('|---|---|---|')
+    for (const c of all) {
+      const name = (c.familyName ?? '') + (c.givenName ?? '')
+      const gs = (c.appearsIn ?? [c.generation]).filter(Boolean)
+      const when = gs.map((g) => `第${g}世代(${(c.birthYear != null ? GEN_START[g] - c.birthYear : c.age)}歳)`).join(' / ')
+      out.push(`| ${name} | ${c.birthYear ?? '—'}年 | ${when} |`)
+    }
+    out.push('')
+  }
   ;(h.movement ?? []).forEach((b, i) => {
     if (i) out.push('>')
     out.push(`> **${b.type}**(${b.who}) ${b.note ?? ''}`)
