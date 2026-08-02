@@ -1,7 +1,7 @@
 {
   "id": "kk-mei",
-  "name": "鳴海メイ",
-  "familyName": "鳴海",
+  "name": "安西メイ",
+  "familyName": "安西",
   "givenName": "メイ",
   "sprite": "sprites/kk-mei.png",
   "generation": 2,
@@ -11,7 +11,7 @@
   "age": 26,
   "gender": "female",
   "romanceable": false,
-  "personality": "26歳。主人公の事務所の事務員。数字と書類に几帳面で、おかしいと思ったことは相手が誰でも口に出す。海沢の言うことを一度は疑うようになった、事務所の良心。",
+  "personality": "26歳。主人公の事務所の事務員。安西家は紙と法と行政で食べてきた家で、彼女はその第2世代にあたる。数字と書類に几帳面で、おかしいと思ったことは相手が誰でも口に出す。海沢の言うことを一度は疑うようになった、事務所の良心。",
   "motive": "会社を、胸を張れる会社のままにしておくこと。",
   "weakness": "自分の判断に自信がなく、確認を取るまで眠れない。貯金を騙し取られた経験がある。",
   "catchphrase": "合理的でも、決まりは決まりです!",
@@ -19,12 +19,17 @@
     {
       "characterId": "kk-koga",
       "kind": "mentor",
-      "note": "協会の古賀に手続きを教わっている"
+      "note": "協会の黒瀬テツに手続きを教わっている"
     },
     {
       "characterId": "umizawa",
       "kind": "distrust",
       "note": "言うことを鵜呑みにしないと決めた相手"
+    },
+    {
+      "characterId": "anzai",
+      "kind": "sibling",
+      "note": "十二歳下の妹。のちに村へ通う弁護士になる"
     }
   ],
   "smallTalk": {

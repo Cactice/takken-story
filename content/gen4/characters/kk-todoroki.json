@@ -1,7 +1,7 @@
 {
   "id": "kk-todoroki",
-  "name": "安西ゴンザ",
-  "familyName": "安西",
+  "name": "都倉ゴンザ",
+  "familyName": "都倉",
   "givenName": "ゴンザ",
   "sprite": "sprites/kk-todoroki.png",
   "generation": 4,
@@ -11,20 +11,20 @@
   "age": 60,
   "gender": "male",
   "romanceable": false,
-  "personality": "60歳。黒会市の建設会社社長。声がでかく、思いつきで動く。法令の細かいところは全部人任せだが、現場の勘は確か。潰れかけた会社に最初に手を貸したのはこの人。",
+  "personality": "60歳。黒会市の建設会社社長で、四人兄弟の長兄・都倉ゴウの息子。親が「好きにしろ」としか言わない家に育ち、父の「とにかく早う」だけをまっすぐ受け継いだ。声がでかく、思いつきで動く。法令の細かいところは全部人任せだが、現場の勘は確か。潰れかけた会社に最初に手を貸したのはこの人。",
   "motive": "自分の建てた建物で街の景色を変えること。",
   "weakness": "数字と手続きに弱い。急いで判を押して何度も損をしている。",
   "catchphrase": "なんだ、そうか! …わし、昨日から眠れんかったんだ。",
   "relations": [
     {
-      "characterId": "hageta-mio",
+      "characterId": "suzuki-pink",
       "kind": "business",
-      "note": "手続きを全面的に頼っている"
+      "note": "手続きを全面的に頼っている事務所の担当"
     },
     {
-      "characterId": "anzai",
-      "kind": "sibling",
-      "note": "十二歳上の姉。村の弁護士。確かめる人だった"
+      "characterId": "kk-shindo",
+      "kind": "parent",
+      "note": "父。都倉四兄弟の長兄で、同じく建設会社の社長だった"
     }
   ],
   "smallTalk": {
@@ -44,7 +44,7 @@
       "試験か! ……わしはそういうのを全部人に頼んできた。えらいもんだ、あんたは"
     ]
   },
-  "family": "安西家",
+  "family": "都倉家",
   "birthYear": 1045,
   "agesByGeneration": {
     "4": 60

@@ -1,0 +1,383 @@
+/*
+ * デバッグ画面。見た目は「禿鷹の野帳」(docs/DESIGN.md)に合わせる。
+ * 色は diagram/tokens.css と同じ値だが、tokens は .dg スコープなのでここで持ち直す。
+ */
+.dbg {
+  --ink: #3f2631;
+  --ink-2: #5a6988;
+  --paper: #fdf6e3;
+  --grid: #c0cbdc;
+  --accent: #fdbe53;
+  --accent-edge: #e38628;
+
+  min-height: 100dvh;
+  padding: 16px clamp(12px, 3vw, 32px) 64px;
+  color: var(--ink);
+  background-color: var(--paper);
+  /* 方眼紙 */
+  background-image:
+    repeating-linear-gradient(to right, var(--grid) 0 1px, transparent 1px 16px),
+    repeating-linear-gradient(to bottom, var(--grid) 0 1px, transparent 1px 16px);
+  image-rendering: auto;
+}
+
+.dbg-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--ink);
+  margin-bottom: 16px;
+}
+
+.dbg-head h1 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.dbg-head h1 small {
+  font-size: 0.75rem;
+  font-weight: normal;
+  color: var(--ink-2);
+}
+
+.dbg-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.dbg-tabs button {
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 6px 14px 4px;
+  border: 3px solid var(--ink);
+  background: #fff;
+  color: var(--ink);
+  clip-path: polygon(3px 0, calc(100% - 3px) 0, 100% 3px, 100% 100%, 0 100%, 0 3px);
+}
+
+.dbg-tabs button.on {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.dbg-btn {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 5px 12px;
+  border: 3px solid var(--ink);
+  background: var(--accent);
+  color: var(--ink);
+  box-shadow: inset 0 2px 0 rgb(255 255 255 / 0.45), inset 0 -2px 0 var(--accent-edge);
+  transition: transform 120ms;
+}
+
+.dbg-btn:hover {
+  transform: translateY(-1px);
+}
+
+.dbg-btn:active {
+  transform: translateY(1px);
+}
+
+/* --- 絞り込み --- */
+.dbg-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px 12px;
+  padding: 12px;
+  margin-bottom: 16px;
+  background: #fff;
+  border: 3px solid var(--ink);
+}
+
+.dbg-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: var(--ink-2);
+}
+
+.dbg-filters select,
+.dbg-filters input {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 4px 6px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 14rem;
+}
+
+.dbg-search {
+  flex: 1 1 16rem;
+}
+
+.dbg-search input {
+  width: 100%;
+  max-width: none;
+}
+
+.dbg-count {
+  font-family: 'DotGothic16', 'Courier New', monospace;
+  font-size: 0.9rem;
+  margin-left: auto;
+}
+
+/* --- 一覧 --- */
+.dbg-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 3px solid var(--ink);
+  font-size: 0.82rem;
+}
+
+.dbg-table th {
+  text-align: left;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 6px 8px;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.dbg-table td {
+  padding: 6px 8px;
+  border-top: 1px solid var(--grid);
+  vertical-align: top;
+}
+
+.dbg-table tbody tr {
+  cursor: pointer;
+}
+
+.dbg-table tbody tr:nth-child(even) {
+  background: #faf4e6;
+}
+
+.dbg-table tbody tr:hover {
+  background: var(--accent);
+}
+
+.dbg-table .dbg-num {
+  font-family: 'DotGothic16', 'Courier New', monospace;
+  text-align: center;
+}
+
+.dbg-topic {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.dbg-title {
+  font-weight: bold;
+  min-width: 9rem;
+}
+
+.dbg-summary {
+  color: var(--ink-2);
+  min-width: 14rem;
+}
+
+.dbg-cast {
+  font-size: 0.75rem;
+  min-width: 8rem;
+}
+
+.dbg-kind {
+  display: inline-block;
+  padding: 1px 6px;
+  font-size: 0.72rem;
+  font-weight: bold;
+  white-space: nowrap;
+  background: #c0cbdc;
+  box-shadow: 0 0 0 2px var(--ink);
+}
+
+.kind-trouble { background: #f28462; }
+.kind-newcomer { background: #84c669; }
+.kind-work { background: #76e4ff; }
+.kind-business { background: #fee761; }
+.kind-village { background: #a8dcf0; }
+.kind-dispute { background: #ff8080; }
+.kind-life { background: #fdbe53; }
+.kind-farewell { background: #c0cbdc; }
+.kind-romance { background: #ffb3d9; }
+.kind-season { background: #b8e986; }
+
+.dbg-play {
+  white-space: nowrap;
+}
+
+.dbg-empty {
+  padding: 32px;
+  text-align: center;
+  color: var(--ink-2);
+}
+
+/* --- 再生 --- */
+.dbg-stage {
+  display: flex;
+  flex-direction: column;
+}
+
+.dbg-quiz {
+  max-width: 44rem;
+  margin-inline: auto;
+  width: 100%;
+  background: #fff;
+  border: 3px solid var(--ink);
+  padding: 16px;
+}
+
+.dbg-quiz h2 {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  background: var(--ink);
+  color: var(--paper);
+  display: inline-block;
+  padding: 2px 10px 1px;
+  margin-bottom: 12px;
+}
+
+.dbg-quiz-q {
+  font-weight: bold;
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+}
+
+.dbg-choices {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dbg-choice {
+  font: inherit;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 3px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.dbg-choice:hover {
+  background: var(--accent);
+}
+
+.dbg-choice.ok {
+  background: #84c669;
+}
+
+.dbg-choice.ng {
+  background: #f28462;
+}
+
+.dbg-explain {
+  margin-top: 16px;
+  padding: 12px;
+  border: 3px dashed var(--ink);
+  background: var(--paper);
+}
+
+.dbg-explain strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.dbg-raw {
+  margin-top: 16px;
+  font-size: 0.78rem;
+}
+
+.dbg-raw summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.dbg-raw pre {
+  margin-top: 8px;
+  padding: 10px;
+  overflow-x: auto;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+/* --- 人物 --- */
+.dbg-chars {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 10px;
+}
+
+.dbg-char {
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  border: 3px solid var(--ink);
+  background: #fff;
+  color: var(--ink);
+}
+
+.dbg-char:hover {
+  background: var(--accent);
+}
+
+.dbg-char-sprite {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 2px 0 rgb(63 38 49 / 0.3));
+}
+
+.dbg-char-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dbg-char-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.72rem;
+  color: var(--ink-2);
+}
+
+.dbg-char-job {
+  font-size: 0.75rem;
+}

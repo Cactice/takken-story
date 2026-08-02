@@ -14,7 +14,7 @@ const byFam = {}
 for (const c of Object.values(chars)) (byFam[famOf(c)] ??= []).push(c)
 
 const ORDER = ['主家','禿鷹家','海沢家','見沼家','鈴木家','桜井家','水瀬家','岸和田家','田中家',
-  '白石家','織部家','冬野家','都倉家','鳴海家','都築家','葉山家','細川家','古賀家','安西家','矢野家','黒瀬家']
+  '白石家','織部家','冬野家','都倉家','葉山家','安西家','黒瀬家']
 const fams = Object.keys(byFam).sort(
   (a, b) => (ORDER.indexOf(a) < 0 ? 99 : ORDER.indexOf(a)) - (ORDER.indexOf(b) < 0 ? 99 : ORDER.indexOf(b)))
 

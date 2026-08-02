@@ -1,0 +1,35 @@
+{
+  "id": "kk-kurose-rui",
+  "name": "黒瀬ルイ",
+  "familyName": "黒瀬",
+  "givenName": "ルイ",
+  "sprite": "sprites/kk-kurose-rui.png",
+  "generation": 4,
+  "appearsIn": [
+    4
+  ],
+  "age": 41,
+  "gender": "female",
+  "romanceable": false,
+  "personality": "41歳。黒瀬商事の物流部門で倉庫と港湾の動線を設計しているエンジニア。黒瀬家の本業は貿易で、土地は物を動かすための場所でしかない。「ここに建てたいから土地を探す」ではなく「一日に何台通るからここでなければならない」と考える。悪意も善意もなく、条件を読み上げるように話す。弟の黒瀬ゲンイチが新幹線の線を引き始めたのは、この姉の出した数字がきっかけだった。",
+  "motive": "物が止まらずに動き続ける形を作ること。それ以外に関心がない。",
+  "weakness": "そこに住んでいる人のことを、計算に入れる欄がそもそも無い。",
+  "catchphrase": "条件を満たすのはここだけです。以上です。",
+  "relations": [
+    {
+      "characterId": "iinkai-kurose",
+      "kind": "sibling",
+      "note": "八歳下の弟。彼女の数字を持って誘致委員会に入った"
+    },
+    {
+      "characterId": "kk-todoroki",
+      "kind": "business",
+      "note": "倉庫の工事を出している建設会社の社長"
+    }
+  ],
+  "job": "黒瀬商事 物流部門 エンジニア",
+  "birthYear": 1064,
+  "agesByGeneration": {
+    "4": 41
+  }
+}

@@ -1,7 +1,7 @@
 {
   "id": "kk-hosokawa",
-  "name": "細川ジョージ",
-  "familyName": "細川",
+  "name": "白石ジョージ",
+  "familyName": "白石",
   "givenName": "ジョージ",
   "sprite": "sprites/kk-hosokawa.png",
   "generation": 2,
@@ -11,7 +11,7 @@
   "age": 57,
   "gender": "male",
   "romanceable": false,
-  "personality": "57歳。分譲マンションの管理組合理事長。理屈っぽく几帳面で、総会の議事録を十年ぶん保管している。区分所有者どうしの揉め事を、なんとか話し合いで収めようとする苦労人。",
+  "personality": "57歳。黒会市の白石医院の内科医で、住んでいる分譲マンションの管理組合理事長も引き受けている。白石家は代々医者で、村の診療所へ赴任した白石オリビアはこの本家から出た娘だ。理屈っぽく几帳面で、総会の議事録を十年ぶん保管している。",
   "motive": "住民同士がやり合わずに済む建物にすること。",
   "weakness": "調整に疲れて、たまに全部投げ出したくなる。",
   "catchphrase": "…では、丁寧に話し合うしかありませんな。",
@@ -20,6 +20,11 @@
       "characterId": "kk-hayama",
       "kind": "neighbor",
       "note": "同じマンションの住人"
+    },
+    {
+      "characterId": "misaki",
+      "kind": "family-like",
+      "note": "ほぼ同世代の親戚。本家から村の診療所へ出た人で、村に医者がいる状態を作った"
     }
   ],
   "smallTalk": {
@@ -57,5 +62,5 @@
   "agesByGeneration": {
     "2": 57
   },
-  "job": "管理組合 理事長"
+  "job": "内科医・管理組合 理事長"
 }

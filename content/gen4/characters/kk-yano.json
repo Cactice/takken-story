@@ -1,7 +1,7 @@
 {
   "id": "kk-yano",
-  "name": "矢野ハジメ",
-  "familyName": "矢野",
+  "name": "安西ハジメ",
+  "familyName": "安西",
   "givenName": "ハジメ",
   "sprite": "sprites/kk-yano.png",
   "generation": 4,
@@ -12,15 +12,20 @@
   "age": 35,
   "gender": "male",
   "romanceable": false,
-  "personality": "35歳。黒会市役所都市計画課の職員。淡々としているが、業者を試すような質問をする癖がある。免許取消を経た会社が本当に立ち直ったのか、窓口から見届けようとしている。",
+  "personality": "35歳。黒会市役所都市計画課の職員。母は村へ通う弁護士の安西ルミ、大伯母は事務員の安西メイ。三代とも紙を扱う家に育った。淡々としているが、業者を試すような質問をする癖がある。免許取消を経た会社が本当に立ち直ったのか、窓口から見届けようとしている。",
   "motive": "街を、燃えない・崩れない形で次の世代に渡す。",
   "weakness": "規則を盾にしすぎて、事情のある相手を切り捨てたことがある。",
   "catchphrase": "試してますよ。本当に立ち直ったのか、見ておきたいので。",
   "relations": [
     {
-      "characterId": "hageta-mio",
+      "characterId": "anzai",
+      "kind": "parent",
+      "note": "母。村へ通う弁護士"
+    },
+    {
+      "characterId": "suzuki-pink",
       "kind": "business",
-      "note": "申請の窓口で何度も顔を合わせる"
+      "note": "申請の窓口で何度も顔を合わせる後輩の担当者"
     }
   ],
   "smallTalk": {

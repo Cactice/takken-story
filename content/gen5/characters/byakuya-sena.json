@@ -19,12 +19,12 @@
     {
       "characterId": "umizawa-lily",
       "kind": "mentor",
-      "note": "師と仰いでいる。会ったことのない先代の言葉を、リリー越しに教わっている"
+      "note": "白夜村の設計者。数字の使い方を教わった"
     },
     {
-      "characterId": "kk-shindo",
-      "kind": "ancestor",
-      "note": "曾祖父。黒会市の建設会社社長。母の代で白夜村へ移った"
+      "characterId": "kk-todoroki",
+      "kind": "grandparent",
+      "note": "祖父。黒会市の建設会社社長。母はそこから白夜村へ移った"
     }
   ],
   "smallTalk": {
@@ -50,5 +50,5 @@
   "agesByGeneration": {
     "5": 30
   },
-  "job": "白夜村 広報 → 芸能人・発信者"
+  "job": "白夜村 広報"
 }

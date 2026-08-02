@@ -4,19 +4,19 @@
   "familyName": "禿鷹",
   "givenName": "ミオ",
   "sprite": "sprites/hageta-mio.png",
-  "generation": 4,
+  "generation": 3,
   "appearsIn": [
-    4
+    3
   ],
-  "age": 28,
+  "age": 24,
   "gender": "female",
   "family": "禿鷹家",
   "descendantOf": "hageta-goro",
   "romanceable": false,
-  "personality": "28歳。禿鷹ゴローの孫で、禿鷹家の四代目。初代・二代目と違って髪はふさふさ。統合されて黒鷹不動産になった主家の会社が免許を取り直すまで手伝うため、村から黒会市へ出てきた。歯に衣着せず、身内の甘さを一番に指摘する。仕事が済んだら村へ帰るつもりでいる。",
-  "motive": "曾祖父の代から続く縁を、潰れかけた会社ごと立て直すこと。そのあと村へ帰ること。",
+  "personality": "24歳。禿鷹ゴローの孫で、禿鷹家の四代目。初代・二代目と違って髪はふさふさ。村を出るという考えがそもそもなく、祖父の帳面をそのまま引き継いだ。歯に衣着せず、身内の甘さを一番に指摘する。会社を主家へ返したあとの禿鷹家が何をする家になるのかを、この代が決めることになる。",
+  "motive": "商売を降りた家に、村のためにやることを見つけること。",
   "weakness": "「禿鷹家なのに禿げていない」といじられ続け、家名への引け目がある。",
-  "catchphrase": "…そういうことを言い出すから、うちの会社は潰れかけたんですよ。",
+  "catchphrase": "うちはもう不動産屋じゃありませんので。",
   "relations": [
     {
       "characterId": "hageta-goro",
@@ -24,14 +24,14 @@
       "note": "祖父。禿鷹不動産の二代目で、会社を主家へ返した人"
     },
     {
-      "characterId": "kk-todoroki",
-      "kind": "business",
-      "note": "再建で組む建設会社の社長"
+      "characterId": "minuma-sae",
+      "kind": "ally",
+      "note": "同い年。村に残ると決めた側の一人"
     },
     {
-      "characterId": "kk-yano",
-      "kind": "business",
-      "note": "市役所の窓口担当"
+      "characterId": "suzuki-riku",
+      "kind": "ally",
+      "note": "同い年。図面で村を測り直そうとしている"
     }
   ],
   "smallTalk": {
@@ -52,9 +52,9 @@
       "試験ですか。落ちる前提で予定を組まないでくださいね。……その甘さが、会社を潰したので"
     ]
   },
-  "birthYear": 1077,
+  "birthYear": 1051,
   "agesByGeneration": {
-    "4": 28
+    "3": 24
   },
   "job": "村の活性化・のちに村長"
 }
