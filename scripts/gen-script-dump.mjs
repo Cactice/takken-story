@@ -29,14 +29,6 @@ const walk = (d, o = []) => {
   return o
 }
 
-const names = new Map()
-for (let g = 1; g <= 5; g++) {
-  for (const p of walk(path.join(ROOT, `content/gen${g}/characters`))) {
-    const c = JSON.parse(fs.readFileSync(p, 'utf8'))
-    names.set(c.id, { name: c.name, job: c.job, age: c.age })
-  }
-}
-
 const out = [
   '# 全イベントの台本(セリフのみ)',
   '',
@@ -76,20 +68,10 @@ for (let g = 1; g <= 5; g++) {
   for (const { p, j } of events) {
     const kind = p.includes('/romance/') ? 'romance' : j.kind
     const when = j.year ? `${j.year}年${j.month ?? 1}月` : '時期未設定'
-    const cast = (j.cast ?? [j.characterId])
-      .map((id) => {
-        const c = names.get(id)
-        return c ? `${c.name}(${c.age ?? '?'}・${c.job ?? ''})` : id
-      })
-      .join(' / ')
-
     out.push(
       `## ${when} ｜ [${KIND[kind] ?? kind}] ${j.title ?? j.id}`,
       '',
-      `- **あらすじ**: ${j.summary ?? '(なし)'}`,
-      `- **出る人**: ${cast}`,
-      `- **論点**: ${j.topicId}`,
-      `- **id**: \`${j.id}\``,
+      `<sub>${j.topicId} ｜ \`${j.id}\`</sub>`,
       '',
     )
     for (const line of j.dialogue ?? []) out.push(`  - ${line}`)
