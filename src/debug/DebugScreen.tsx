@@ -13,6 +13,7 @@ import {
   KIND_LABEL,
   TOPICS,
   castOf,
+  characterById,
   characterName,
   familyGroupOf,
   haystack,
@@ -287,7 +288,50 @@ function EventList({ events, selected, onPick }: EventListProps) {
 /** セリフ「本文」を話者と中身に割る。話者名が無い行(ト書き)はそのまま出す */
 function splitLine(line: string): { who?: string; text: string } {
   const m = line.match(/^(.+?)「([\s\S]*)」\s*$/)
-  return m ? { who: m[1], text: m[2] } : { text: line }
+  // 「地の文のなかの「引用」」を話者と読み違えないように、名前らしい短さだけ通す
+  if (!m || m[1].length > 10 || /[、。!?…「」]/.test(m[1])) return { text: line }
+  return { who: m[1], text: m[2] }
+}
+
+/** セリフ上の呼び名 → characterId。content は「ハゲタ」と短く呼んでいる */
+const SPEAKER_ALIAS: Record<string, string> = {
+  ハゲタ: 'hageta-hageta',
+  'ハゲタの野帳': 'hageta-hageta',
+}
+
+/**
+ * 話者名から人物を引く。content のセリフは「ヒメカ「…」」のように名前だけなので、
+ * そのイベントに出ている人の中から、名前の末尾一致で探す。
+ */
+function speakerOf(event: DebugEvent, who: string | undefined): DebugCharacter | undefined {
+  if (!who) return undefined
+  const alias = SPEAKER_ALIAS[who]
+  if (alias) return characterById(alias)
+  const cast = castOf(event)
+    .map(characterById)
+    .filter((c): c is DebugCharacter => c !== undefined)
+  return cast.find((c) => c.name === who || c.givenName === who || c.name.endsWith(who))
+}
+
+/** 会話1行。本編の DialogueBox と同じ見た目(顔 + 名前 + 本文)にする */
+function Line({ event, line, as }: { event: DebugEvent; line: string; as?: string }) {
+  const { who, text } = splitLine(line)
+  const speaker = speakerOf(event, as ?? who)
+  const name = as ?? who
+  if (!name) return <li className="dbg-line note">{text}</li>
+  return (
+    <li className="dbg-line">
+      <span className="dbg-portrait">
+        {speaker ? (
+          <span className="dbg-line-sprite" style={characterSpriteStyle(speaker.id)} />
+        ) : (
+          <span className="dbg-line-sprite is-narrator" aria-hidden="true" />
+        )}
+        <span className="dbg-line-name">{name}</span>
+      </span>
+      <span className="dbg-line-text">{text}</span>
+    </li>
+  )
 }
 
 /** イベントを一覧で読む。上から下までスクロールすれば、その回の話が全部読める */
@@ -320,15 +364,9 @@ function Player({ event }: { event: DebugEvent }) {
       <section className="dbg-script">
         <h2>会話</h2>
         <ol className="dbg-lines">
-          {event.dialogue.map((line, i) => {
-            const { who, text } = splitLine(line)
-            return (
-              <li key={`${event.id}-d${i}`} className={who ? '' : 'note'}>
-                {who && <b className="dbg-who">{who}</b>}
-                <span>{text}</span>
-              </li>
-            )
-          })}
+          {event.dialogue.map((line, i) => (
+            <Line key={`${event.id}-d${i}`} event={event} line={line} />
+          ))}
         </ol>
       </section>
 
@@ -339,28 +377,11 @@ function Player({ event }: { event: DebugEvent }) {
           <h2>解いたあと</h2>
           <ol className="dbg-lines">
             {(event.playerLines ?? []).map((l, i) => (
-              <li key={`${event.id}-p${i}`}>
-                <b className="dbg-who">あなた</b>
-                <span>{l}</span>
-              </li>
+              <Line key={`${event.id}-p${i}`} event={event} line={l} as="あなた" />
             ))}
-            {event.thanksLine && (
-              <li>
-                {(() => {
-                  const { who, text } = splitLine(event.thanksLine)
-                  return (
-                    <>
-                      {who && <b className="dbg-who">{who}</b>}
-                      <span>{text}</span>
-                    </>
-                  )
-                })()}
-              </li>
-            )}
+            {event.thanksLine && <Line event={event} line={event.thanksLine} />}
             {event.resolvedLine && (
-              <li className="note">
-                <span>のちに — {splitLine(event.resolvedLine).text}</span>
-              </li>
+              <li className="dbg-line note">のちに — {splitLine(event.resolvedLine).text}</li>
             )}
           </ol>
         </section>
