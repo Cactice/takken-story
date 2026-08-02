@@ -15,7 +15,8 @@ export interface IdealHome {
 export interface RomanceContent {
   characterId: string
   /** 住民の性別。主人公と異性のときだけ恋愛対象になる */
-  gender: Gender
+  /** 未指定なら主人公の逆になる(旅人の美一〜美五) */
+  gender?: Gender
   stages: RomanceStage[]
   houseInviteLines: string[]
   idealHome: IdealHome
@@ -66,9 +67,17 @@ export const romanceContents: RomanceContent[] = Object.values(contentModules).m
   (m) => m.default,
 )
 
-/** 主人公と異性の候補だけを返す */
+/**
+ * 主人公と異性の候補だけを返す。
+ * 美一〜美五(旅人)は gender を持たない。**性別は主人公の逆**になるので、常に候補に入る。
+ */
 export function romanceCandidates(playerGender: Gender): RomanceContent[] {
-  return romanceContents.filter((c) => c.gender !== playerGender)
+  return romanceContents.filter((c) => c.gender === undefined || c.gender !== playerGender)
+}
+
+/** その世代の想い人の性別。旅人(gender なし)は主人公の逆 */
+export function partnerGender(c: RomanceContent, playerGender: Gender): Gender {
+  return c.gender ?? (playerGender === 'male' ? 'female' : 'male')
 }
 
 export function romanceContentFor(
