@@ -2,9 +2,11 @@
 
 | 世代 | ファイル |
 |---|---|
-| 共通ルール + 第1世代 | このファイル |
-| 第2世代 | [script-new-gen2.md](script-new-gen2.md) |
-| 第3世代 | [script-new-gen3.md](script-new-gen3.md) |
+| 第1世代 ｜ ありきた村(基礎) | [script-new-gen1.md](script-new-gen1.md) |
+| 第2世代 ｜ 黒会市(誘惑) | [script-new-gen2.md](script-new-gen2.md) |
+| 第3世代 ｜ ありきた村(ミステリー) | [script-new-gen3.md](script-new-gen3.md) |
+| 第4世代 ｜ 黒会市(再建) | [script-new-gen4.md](script-new-gen4.md) |
+| 第5世代 ｜ ありきた村(総力戦) | [script-new-gen5.md](script-new-gen5.md) |
 
 追加指示は [script-notes.md](script-notes.md)。骨格は [script-plan.md](script-plan.md)。
 
@@ -73,11 +75,3 @@
 | 第2世代 **都倉ヨンナン** | 第3世代 村 | 街を出て、村の空き家を買う |
 
 ---
-
-## 世代ごとのファイル
-
-- [第1世代](script-new-gen1.md)
-- [第2世代](script-new-gen2.md)
-- [第3世代](script-new-gen3.md)
-- [第4世代](script-new-gen4.md)
-- [第5世代](script-new-gen5.md)
