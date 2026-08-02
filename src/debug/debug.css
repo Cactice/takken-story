@@ -1,6 +1,7 @@
 /*
  * デバッグ画面。見た目は「禿鷹の野帳」(docs/DESIGN.md)に合わせる。
  * 色は diagram/tokens.css と同じ値だが、tokens は .dg スコープなのでここで持ち直す。
+ * 左右2ペイン: 左=選択(絞り込み+一覧、スクロール) / 右=再生。
  */
 .dbg {
   --ink: #3f2631;
@@ -10,8 +11,11 @@
   --accent: #fdbe53;
   --accent-edge: #e38628;
 
-  min-height: 100dvh;
-  padding: 16px clamp(12px, 3vw, 32px) 64px;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 12px clamp(8px, 2vw, 20px);
   color: var(--ink);
   background-color: var(--paper);
   /* 方眼紙 */
@@ -21,28 +25,72 @@
   image-rendering: auto;
 }
 
+.dbg-split {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(24rem, 42%) 1fr;
+  gap: 12px;
+}
+
+.dbg-left,
+.dbg-right {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dbg-right {
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* 一覧のスクロール領域。ここだけが縦に伸びる */
+.dbg-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  border: 3px solid var(--ink);
+  background: #fff;
+}
+
+.dbg-scroll:focus-visible {
+  outline: 3px solid var(--accent-edge);
+  outline-offset: 2px;
+}
+
+/* 画面が狭いときは上下に積む */
+@media (max-width: 999px) {
+  .dbg {
+    height: auto;
+    overflow: visible;
+  }
+
+  .dbg-split {
+    grid-template-columns: 1fr;
+  }
+
+  .dbg-scroll {
+    max-height: 60vh;
+  }
+}
+
 .dbg-head {
   display: flex;
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
-  padding-bottom: 12px;
+  padding-bottom: 8px;
   border-bottom: 3px solid var(--ink);
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .dbg-head h1 {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: bold;
   margin-right: auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.dbg-head h1 small {
-  font-size: 0.75rem;
-  font-weight: normal;
-  color: var(--ink-2);
 }
 
 .dbg-tabs {
@@ -71,6 +119,7 @@
   font-size: 0.85rem;
   font-weight: bold;
   cursor: pointer;
+  align-self: flex-start;
   padding: 5px 12px;
   border: 3px solid var(--ink);
   background: var(--accent);
@@ -92,18 +141,18 @@
   display: flex;
   flex-wrap: wrap;
   align-items: end;
-  gap: 8px 12px;
-  padding: 12px;
-  margin-bottom: 16px;
+  gap: 6px 10px;
+  padding: 8px 10px;
   background: #fff;
   border: 3px solid var(--ink);
+  flex: none;
 }
 
 .dbg-filters label {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  font-size: 0.7rem;
+  gap: 1px;
+  font-size: 0.68rem;
   font-weight: bold;
   color: var(--ink-2);
 }
@@ -111,16 +160,16 @@
 .dbg-filters select,
 .dbg-filters input {
   font: inherit;
-  font-size: 0.85rem;
-  padding: 4px 6px;
+  font-size: 0.8rem;
+  padding: 3px 5px;
   border: 2px solid var(--ink);
   background: var(--paper);
   color: var(--ink);
-  max-width: 14rem;
+  max-width: 10rem;
 }
 
 .dbg-search {
-  flex: 1 1 16rem;
+  flex: 1 1 12rem;
 }
 
 .dbg-search input {
@@ -130,33 +179,31 @@
 
 .dbg-count {
   font-family: 'DotGothic16', 'Courier New', monospace;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   margin-left: auto;
 }
 
-/* --- 一覧 --- */
+/* --- イベント一覧 --- */
 .dbg-table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
-  border: 3px solid var(--ink);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
 }
 
 .dbg-table th {
   text-align: left;
   background: var(--ink);
   color: var(--paper);
-  padding: 6px 8px;
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
+  padding: 5px 7px;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
   position: sticky;
   top: 0;
   z-index: 1;
 }
 
 .dbg-table td {
-  padding: 6px 8px;
+  padding: 5px 7px;
   border-top: 1px solid var(--grid);
   vertical-align: top;
 }
@@ -170,40 +217,45 @@
 }
 
 .dbg-table tbody tr:hover {
+  background: #ffeec4;
+}
+
+.dbg-table tbody tr.on {
   background: var(--accent);
+  box-shadow: inset 4px 0 0 var(--ink);
+}
+
+.dbg-num {
+  font-family: 'DotGothic16', 'Courier New', monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 .dbg-table .dbg-num {
-  font-family: 'DotGothic16', 'Courier New', monospace;
   text-align: center;
 }
 
 .dbg-topic {
   font-family: 'Courier New', monospace;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: var(--ink-2);
   white-space: nowrap;
 }
 
 .dbg-title {
   font-weight: bold;
-  min-width: 9rem;
+  min-width: 8rem;
 }
 
 .dbg-summary {
   color: var(--ink-2);
-  min-width: 14rem;
-}
-
-.dbg-cast {
-  font-size: 0.75rem;
-  min-width: 8rem;
+  font-size: 0.76rem;
+  font-weight: normal;
 }
 
 .dbg-kind {
   display: inline-block;
   padding: 1px 6px;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: bold;
   white-space: nowrap;
   background: #c0cbdc;
@@ -221,63 +273,117 @@
 .kind-romance { background: #ffb3d9; }
 .kind-season { background: #b8e986; }
 
-.dbg-play {
-  white-space: nowrap;
-}
-
 .dbg-empty {
-  padding: 32px;
+  padding: 24px;
   text-align: center;
   color: var(--ink-2);
 }
 
-/* --- 再生 --- */
-.dbg-stage {
-  display: flex;
-  flex-direction: column;
-}
-
-.dbg-quiz {
-  max-width: 44rem;
-  margin-inline: auto;
-  width: 100%;
+/* --- 右ペイン: 見出し情報 --- */
+.dbg-meta {
+  flex: none;
   background: #fff;
   border: 3px solid var(--ink);
-  padding: 16px;
+  padding: 10px 12px;
+}
+
+.dbg-meta h2 {
+  font-size: 1.05rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.dbg-meta h3 {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  background: var(--ink);
+  color: var(--paper);
+  display: inline-block;
+  padding: 2px 8px 1px;
+  margin: 14px 0 6px;
+}
+
+.dbg-meta dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 10px;
+  font-size: 0.8rem;
+  margin-bottom: 6px;
+}
+
+.dbg-meta dt {
+  font-size: 0.68rem;
+  font-weight: bold;
+  color: var(--ink-2);
+  padding-top: 2px;
+}
+
+.dbg-meta > p {
+  margin-bottom: 8px;
+}
+
+/*
+ * 会話ウィンドウを右ペインの中に納める。
+ * DialogueBox 側は書き換えず、position: fixed の上書きだけで済ませる。
+ */
+.dbg-inline-dialogue {
+  flex: none;
+}
+
+.dbg-inline-dialogue .dialogue-overlay {
+  position: relative;
+  inset: auto;
+  /* 会話は上から積む(下端に貼りつくのは全画面のときだけ) */
+  align-items: flex-start;
+  background: none;
+  padding: 0;
+  z-index: 0;
+}
+
+/* --- 試験問題 --- */
+.dbg-quiz {
+  flex: none;
+  background: #fff;
+  border: 3px solid var(--ink);
+  padding: 12px;
 }
 
 .dbg-quiz h2 {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   background: var(--ink);
   color: var(--paper);
   display: inline-block;
   padding: 2px 10px 1px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .dbg-quiz-q {
   font-weight: bold;
-  font-size: 1.05rem;
-  margin-bottom: 12px;
+  font-size: 1rem;
+  margin-bottom: 10px;
 }
 
 .dbg-choices {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .dbg-choice {
   font: inherit;
+  font-size: 0.9rem;
   text-align: left;
   width: 100%;
   cursor: pointer;
   display: flex;
   align-items: baseline;
   gap: 8px;
-  padding: 8px 10px;
+  padding: 7px 9px;
   border: 3px solid var(--ink);
   background: var(--paper);
   color: var(--ink);
@@ -296,19 +402,20 @@
 }
 
 .dbg-explain {
-  margin-top: 16px;
-  padding: 12px;
+  margin-top: 12px;
+  padding: 10px;
   border: 3px dashed var(--ink);
   background: var(--paper);
+  font-size: 0.9rem;
 }
 
 .dbg-explain strong {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .dbg-raw {
-  margin-top: 16px;
+  margin-top: 12px;
   font-size: 0.78rem;
 }
 
@@ -323,16 +430,47 @@
   overflow-x: auto;
   background: var(--ink);
   color: var(--paper);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   line-height: 1.5;
 }
 
-/* --- 人物 --- */
+/* --- 人物: 家系ごとの一覧 --- */
+.dbg-family-head {
+  font: inherit;
+  font-weight: bold;
+  font-size: 0.85rem;
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border: none;
+  border-bottom: 2px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.dbg-family-head:hover {
+  background: #5a3a48;
+}
+
+.dbg-caret {
+  font-size: 0.7rem;
+}
+
+.dbg-family-count {
+  margin-left: auto;
+  font-family: 'DotGothic16', 'Courier New', monospace;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
 .dbg-chars {
   list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-  gap: 10px;
 }
 
 .dbg-char {
@@ -340,22 +478,28 @@
   text-align: left;
   cursor: pointer;
   width: 100%;
-  height: 100%;
   display: flex;
-  gap: 10px;
-  padding: 10px;
-  border: 3px solid var(--ink);
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border: none;
+  border-bottom: 1px solid var(--grid);
   background: #fff;
   color: var(--ink);
 }
 
 .dbg-char:hover {
+  background: #ffeec4;
+}
+
+.dbg-char.on {
   background: var(--accent);
+  box-shadow: inset 4px 0 0 var(--ink);
 }
 
 .dbg-char-sprite {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   flex: none;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -366,18 +510,102 @@
 .dbg-char-body {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   min-width: 0;
+  font-size: 0.85rem;
 }
 
 .dbg-char-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--ink-2);
 }
 
-.dbg-char-job {
+/* --- 人物詳細: 家系図・移動の型・出演 --- */
+.dbg-tree,
+.dbg-movement,
+.dbg-appearances {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dbg-tree li.on .dbg-tree-row {
+  background: var(--accent);
+}
+
+.dbg-tree-row {
+  font: inherit;
+  font-size: 0.82rem;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 6px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.dbg-tree-row:hover {
+  background: #ffeec4;
+}
+
+.dbg-tree-row .dbg-char-sprite {
+  width: 24px;
+  height: 24px;
+}
+
+.dbg-tree-row .dbg-num {
   font-size: 0.75rem;
+  color: var(--ink-2);
+}
+
+.dbg-rel {
+  font-size: 0.7rem;
+  font-weight: bold;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0 5px;
+  white-space: nowrap;
+}
+
+.dbg-rel:empty {
+  display: none;
+}
+
+.dbg-movement li,
+.dbg-appearance {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 6px 8px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  font-size: 0.82rem;
+}
+
+.dbg-appearance {
+  font: inherit;
+  font-size: 0.82rem;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.dbg-appearance:hover {
+  background: var(--accent);
+}
+
+.dbg-story {
+  font-size: 0.82rem;
+  line-height: 1.75;
+  margin-bottom: 8px;
 }
