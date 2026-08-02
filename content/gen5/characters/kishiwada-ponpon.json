@@ -1,32 +1,32 @@
 {
-  "id": "yakuba-tsugumi",
-  "name": "田中ツグミ",
-  "familyName": "田中",
-  "givenName": "ツグミ",
-  "sprite": "sprites/yakuba-tsugumi.png",
+  "id": "kishiwada-ponpon",
+  "name": "岸和田ポンポン",
+  "familyName": "岸和田",
+  "givenName": "ポンポン",
+  "sprite": "sprites/kishiwada-ponpon.png",
   "generation": 5,
   "appearsIn": [
     5
   ],
   "age": 33,
   "gender": "female",
-  "family": "田中家",
-  "descendantOf": "tanaka",
+  "family": "岸和田家",
+  "descendantOf": "tetsujiro",
   "romanceable": false,
-  "personality": "33歳。ありきた村役場の職員で、空き家バンクの担当。村を一から開墾した田中ポッポの子孫で、家に伝わる「畑は人に渡すもの」という口伝を信じている。前のめりで手が早く、勢い余って危ない土地まで宅地にしようとする。",
+  "personality": "33歳。ありきた村役場の職員で、空き家バンクの担当。村に最初にアパートを建てた岸和田ガストンと、荒れ地を開墾した田中ポッポの子孫。**村に最初に「物」を建てた二人の血を引いて、五代後に空き家を埋める側に回った。**のんびりした話し方はポッポ譲り、面倒見の良さはガストン譲り。",
   "motive": "村の人口を増やし、統廃合の話を止めること。",
   "weakness": "成果を急ぐ。数を追って安全を後回しにしかける。",
   "catchphrase": "村始まって以来です!",
   "relations": [
     {
-      "characterId": "minuma-sae",
-      "kind": "ally",
-      "note": "空き家と農地の受け皿づくりで組む"
+      "characterId": "tetsujiro",
+      "kind": "ancestor",
+      "note": "先祖。村に最初のアパートを建てた"
     },
     {
-      "characterId": "suzuki-riku",
-      "kind": "ally",
-      "note": "測量と登記の調査を頼んでいる"
+      "characterId": "tanaka",
+      "kind": "ancestor",
+      "note": "先祖。荒れ地を開墾した"
     }
   ],
   "smallTalk": {

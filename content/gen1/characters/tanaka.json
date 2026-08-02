@@ -6,9 +6,9 @@
   "sprite": "sprites/tanaka.png",
   "generation": 1,
   "age": 62,
-  "gender": "male",
+  "gender": "female",
   "romanceable": false,
-  "personality": "62歳。荒れ地を一から開墾して畑にした農家。話がのんびりしていて必ず脱線する。「やあやあ」が口癖。人を疑うということを知らず、そのせいで何度も損をしかけている。畑の土のことなら誰よりも詳しい。",
+  "personality": "62歳。荒れ地を一から開墾して畑にした農家。話がのんびりしていて必ず脱線する。「やあやあ」が口癖。人を疑うということを知らず、そのせいで何度も損をしかけている。村で岸和田ガストンと出会い、老いてから連れ添うことになった。",
   "motive": "自分が起こした畑を、いつか誰か大事にしてくれる人に渡したい。",
   "weakness": "断れない。頼まれると判子を押してしまう。",
   "catchphrase": "やあやあ、まあ聞いてくだされ。",
@@ -22,6 +22,11 @@
       "characterId": "tencho-gozo",
       "kind": "client",
       "note": "畑の周りの土地のことでいつも相談している"
+    },
+    {
+      "characterId": "tetsujiro",
+      "kind": "spouse",
+      "note": "村で出会い、老いてから連れ添った"
     }
   ],
   "moveIn": {
