@@ -20,8 +20,8 @@
   "relations": [
     {
       "characterId": "minase-rion",
-      "kind": "friend",
-      "note": "同い年の幼なじみ。店を並べて出す約束をしている"
+      "kind": "spouse",
+      "note": "同い年の幼なじみ。隣に店を並べて、そのまま所帯を持った"
     },
     {
       "characterId": "oribe-silvia",
