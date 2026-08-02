@@ -132,7 +132,7 @@ export const BANNER: StageCommand = {
  * @param members 最初の転入世帯。世帯IDは決め打ちしない(コンテンツが差し替わっても壊れない)
  */
 export function openingStaging(places: OpeningPlaces, members: StageActor[]): Staging {
-  const boss = 'tencho-gozo'
+  const boss = 'hageta-hageta'
   const newcomers = members.length > 0
   return {
     id: 'opening-gen1',

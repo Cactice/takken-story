@@ -1,5 +1,5 @@
 {
-  "id": "rom-ren",
+  "id": "rom-minase-rion",
   "topicId": "minpo-baibai",
   "generation": 1,
   "kind": "romance",
@@ -8,10 +8,10 @@
   ],
   "title": "デート:二人の名前で買う家",
   "summary": "水瀬リオンが、二人の名前で家を買うときの契約のしかたを聞いてくる",
-  "characterId": "ren",
+  "characterId": "minase-rion",
   "cast": [
-    "ren",
-    "tencho-gozo"
+    "minase-rion",
+    "hageta-hageta"
   ],
   "minAffection": 24,
   "dialogue": [

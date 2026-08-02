@@ -151,7 +151,7 @@ export function OfficeInterior({ gender, listings, onTalkBoss, onLeave, locked =
           style={{ gridColumn: BOSS[0] + 1, gridRow: BOSS[1] + 1 }}
           aria-label="ハゲタ社長"
         >
-          <span className="office-sprite" style={characterSpriteStyle('tencho-gozo')} />
+          <span className="office-sprite" style={characterSpriteStyle('hageta-hageta')} />
         </div>
 
         <div

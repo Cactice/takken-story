@@ -1,5 +1,5 @@
 {
-  "id": "ev03-hinata-menkyo",
+  "id": "ev03-sakurai-maple-menkyo",
   "topicId": "gyoho-menkyo",
   "generation": 1,
   "kind": "business",
@@ -8,10 +8,10 @@
   ],
   "title": "パン屋の二階を貸したい",
   "summary": "桜井メープルの父がパン屋の二階を貸すのに資格が要るか悩む",
-  "characterId": "hinata",
+  "characterId": "sakurai-maple",
   "cast": [
-    "hinata",
-    "tencho-gozo"
+    "sakurai-maple",
+    "hageta-hageta"
   ],
   "dialogue": [
     "ねえねえ聞いて! うちのお父さん、パン屋の二階を人に貸すんだって!",

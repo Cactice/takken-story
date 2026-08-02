@@ -11,7 +11,7 @@
   "age": 33,
   "gender": "female",
   "family": "岸和田家",
-  "descendantOf": "tetsujiro",
+  "descendantOf": "kishiwada-gaston",
   "romanceable": false,
   "personality": "33歳。ありきた村役場の職員で、空き家バンクの担当。村に最初にアパートを建てた岸和田ガストンと、荒れ地を開墾した田中ポッポの子孫。**村に最初に「物」を建てた二人の血を引いて、五代後に空き家を埋める側に回った。**のんびりした話し方はポッポ譲り、面倒見の良さはガストン譲り。",
   "motive": "村の人口を増やし、統廃合の話を止めること。",
@@ -19,12 +19,12 @@
   "catchphrase": "村始まって以来です!",
   "relations": [
     {
-      "characterId": "tetsujiro",
+      "characterId": "kishiwada-gaston",
       "kind": "ancestor",
       "note": "先祖。村に最初のアパートを建てた"
     },
     {
-      "characterId": "tanaka",
+      "characterId": "tanaka-poppo-poppo",
       "kind": "ancestor",
       "note": "先祖。荒れ地を開墾した"
     }

@@ -458,7 +458,7 @@ export default function App() {
     if (PROPERTIES.filter((p) => isVacant(p.id, occ)).length >= VACANCY_TARGET) return
     const homes = state.residentHomes ?? {}
     const leavers = (state.residents ?? INITIAL_RESIDENTS).filter(
-      (id) => id !== 'tencho-gozo' && homes[id],
+      (id) => id !== 'hageta-hageta' && homes[id],
     )
     if (leavers.length === 0) return
     const next = nextHousehold(state)

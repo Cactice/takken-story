@@ -1,5 +1,5 @@
 {
-  "id": "ev08-tetsujiro-koteishisan",
+  "id": "ev08-kishiwada-gaston-koteishisan",
   "topicId": "zei-fudosan",
   "generation": 1,
   "kind": "trouble",
@@ -8,10 +8,10 @@
   ],
   "title": "売ったのに来た納税通知",
   "summary": "三月にアパートを売った岸和田ガストンに、一年ぶんの納税通知が届く",
-  "characterId": "tetsujiro",
+  "characterId": "kishiwada-gaston",
   "cast": [
-    "tetsujiro",
-    "tencho-gozo"
+    "kishiwada-gaston",
+    "hageta-hageta"
   ],
   "dialogue": [
     "坊、ちょお教えてくれや。古いほうのアパート、今年の三月に売ったんや。",

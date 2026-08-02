@@ -8,11 +8,11 @@
   ],
   "title": "息子夫婦を入れたい",
   "summary": "岸和田ガストンが息子夫婦を入れるため、村で唯一の医師白石オリビアを追い出そうとする",
-  "characterId": "tetsujiro",
+  "characterId": "kishiwada-gaston",
   "cast": [
-    "tetsujiro",
-    "misaki",
-    "tencho-gozo"
+    "kishiwada-gaston",
+    "shiraishi-olivia",
+    "hageta-hageta"
   ],
   "dialogue": [
     "ガストン「なあ坊、聞いてや。うちのアパートの101号室に、息子夫婦を住まわせたいんや。」",

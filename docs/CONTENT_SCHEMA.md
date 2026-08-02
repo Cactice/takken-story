@@ -68,23 +68,23 @@ content/
   "category": ["kenri"],                  // 分野。複数該当してよい kenri|gyoho|hourei|zei
   "minAffection": 24,                     // 任意。親密度がこれ以上でないと発生しない(恋愛・打ち明け話)
 
-  "cast": ["kr-yoshie", "kr-genta"],     // 登場するキャラID(1人以上)。先頭 = characterId(主役)
+  "cast": ["oribe-silvia", "kr-genta"],     // 登場するキャラID(1人以上)。先頭 = characterId(主役)
   "places": ["house-yoshie"],            // 関係する建物・土地ID(0件以上)
   "trigger": {                            // 発生条件
     "type": "talk",                       // talk | enterBuilding | company | date
-    "characterId": "kr-yoshie",           // type=talk のとき: 話しかける相手
+    "characterId": "oribe-silvia",           // type=talk のとき: 話しかける相手
     "placeId": null                       // type=enterBuilding のとき: 対象の建物
   },
 
   "script": [                             // 会話の進行。順に表示する
-    { "speaker": "kr-yoshie", "text": "先日、主人が亡くなりましたの。" },
-    { "speaker": "kr-yoshie", "text": "自宅と預金は、どう分けるものかしら?" },
+    { "speaker": "oribe-silvia", "text": "先日、主人が亡くなりましたの。" },
+    { "speaker": "oribe-silvia", "text": "自宅と預金は、どう分けるものかしら?" },
     { "speaker": "mentor", "text": "いいか新人、これは相続の分け前の問題だ。",
       "diagram": { "type": "parties", "labels": ["夫(亡)", "妻", "長男", "長女"] } },
     { "speaker": "mentor", "text": "配偶者が2分の1、子が残りを分ける。",
       "diagram": { "type": "ratio", "labels": ["妻", "長男", "長女"], "values": [50, 25, 25] } },
     { "speaker": "player", "text": "つまり奥さんが半分、お子さんが4分の1ずつです!" },
-    { "speaker": "kr-yoshie", "text": "まあ、すっきりしましたわ。ありがとう。", "effect": "thanks" }
+    { "speaker": "oribe-silvia", "text": "まあ、すっきりしましたわ。ありがとう。", "effect": "thanks" }
   ],
 
   "quiz": {                               // 試験当日に使う。相談中は表示しない
@@ -139,7 +139,7 @@ content/
 ### `speaker` の値
 | 値 | 意味 |
 |---|---|
-| キャラID(`kr-yoshie` 等) | `content/gen<N>/characters/` の人物 |
+| キャラID(`oribe-silvia` 等) | `content/gen<N>/characters/` の人物 |
 | `"player"` | 主人公(名前・見た目はプレイヤーの選択に従う) |
 | `"mentor"` | 教える側。**第1世代=禿鷹社長(ハゲタ)、第2世代=海沢(ジン)、第3世代以降=その世代の師**。表示時に解決する |
 | `"narration"` | 地の文(話者名なし) |
@@ -147,7 +147,7 @@ content/
 > `dialogue: string[]` を使っている現行データでは、メンターの行を `ハゲタ「…」` で書き、
 > 表示時にその世代のメンター名へ置換する(docs/GAME_DESIGN.md)。
 > **世代ごとのメンターが誰かは `content/gen<N>/README.md` に書く。** イベント側で明示したいときは
-> `"mentorId": "umizawa"` を持たせる(第2世代のように、メンター本人が登場人物でもある場合)。
+> `"mentorId": "umizawa-kyle-kyle"` を持たせる(第2世代のように、メンター本人が登場人物でもある場合)。
 > **第2世代のメンター(海沢)は信用できない。** 教えにグレーな手法が混ざり、その誤りが後の回で判明する。
 
 ### 恋愛イベント(`kind: "romance"`)の追加フィールド
@@ -188,7 +188,7 @@ content/
 
 ```jsonc
 {
-  "id": "kr-yoshie",
+  "id": "oribe-silvia",
   "name": "シルビア",             // 表示名。原則 givenName と同じ(呼ぶときは名前だけ)
   "familyName": "織部",          // 苗字は日本語(漢字)。家の話をするときに出す
   "givenName": "シルビア",        // 名前はカタカナ(あつ森風)
@@ -209,7 +209,7 @@ content/
   "weakness": "思い出のある物を手放す決心が、いつも一歩手前で鈍る",   // 弱さ・欠点
   "catchphrase": "あらまあ、そうですのね。",                          // 口癖
   "relations": [                                                      // 人物どうしの関係
-    { "characterId": "hinata", "kind": "friend", "note": "孫のようにかわいがっている" }
+    { "characterId": "sakurai-maple", "kind": "friend", "note": "孫のようにかわいがっている" }
   ]
 }
 ```
@@ -223,7 +223,7 @@ content/
 |---|---|---|---|---|
 | 見沼家 | シゲル / ハル | カオル / サエ | — | サエ |
 | 鈴木家 | タケオ / ナオ / ソラ | ソラ(68) / マモル / リク | — | リク |
-| 禿鷹家 | ハゲタ | ゴロー | ミオ | — |
+| 禿鷹家 | ハゲタ | ハゲル | ハゲ子 | — |
 | 田中家 | ポッポ | — | — | ポンポン |
 | 桜井家 | メープル | メープル(76) | — | — |
 | 水瀬家 | リオン | リオン(77) | — | — |
@@ -288,14 +288,14 @@ content/
 
 ```jsonc
 {
-  "id": "hh-tanaka",
+  "id": "hh-tanaka-poppo",
   "kind": "family",                 // single | couple | family | share
   "label": "田中さん一家",
   "moveReason": "転勤で村に来た",
   "topicId": "gyoho-juyojiko",      // 引越し理由に紐づく論点(メモが発生する)
   "budget": 9,                       // 世帯合計(万円)
   "order": 1,                        // 案内する順番。1 = 村にいちばん最初に来る世帯(見沼家)
-  "memberIds": ["nc-tanaka-taro", "nc-tanaka-hana"]
+  "memberIds": ["nc-tanaka-poppo-taro", "nc-tanaka-poppo-hana"]
 }
 ```
 **世帯は「家」単位**。苗字を持たない量産キャラは置かない。第1世代は住民ゼロの村に

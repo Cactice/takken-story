@@ -161,7 +161,7 @@ export interface GameState {
  * 開始時から村にいる住民。村は出来立てだが空っぽではない(docs/SYSTEMS.md「村の人口」)。
  * ハゲ田社長 + すでに住んでいる3世帯。この3人は転入者としては現れない(App が除外する)。
  */
-export const INITIAL_RESIDENTS = ['tencho-gozo', 'misaki', 'ren', 'kr-yoshie']
+export const INITIAL_RESIDENTS = ['hageta-hageta', 'shiraishi-olivia', 'minase-rion', 'oribe-silvia']
 
 /**
  * 開始時の住民の住まい(住民ID → 物件ID)。
@@ -170,7 +170,7 @@ export const INITIAL_RESIDENTS = ['tencho-gozo', 'misaki', 'ren', 'kr-yoshie']
 export const INITIAL_HOMES: Readonly<Record<string, string>> = {
   misaki: 'clinic',
   ren: 'flower',
-  'kr-yoshie': 'kimono',
+  'oribe-silvia': 'kimono',
 }
 
 export const START_AGE = 15

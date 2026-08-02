@@ -86,7 +86,7 @@ export function DialogueBox({ character, event, gender, smallTalk, onComplete, o
     step.speaker === 'boss' ? BOSS_NAME : step.speaker === 'player' ? 'あなた' : character.name
   const spriteStyle =
     step.speaker === 'boss'
-      ? characterSpriteStyle('tencho-gozo')
+      ? characterSpriteStyle('hageta-hageta')
       : step.speaker === 'player'
         ? playerSpriteStyle(gender)
         : characterSpriteStyle(character.id)

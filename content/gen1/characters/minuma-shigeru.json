@@ -18,12 +18,12 @@
   "catchphrase": "土地ってのはな、そういうもんだで。",
   "relations": [
     {
-      "characterId": "ren",
+      "characterId": "minase-rion",
       "kind": "landlord",
       "note": "花屋の底地を貸している"
     },
     {
-      "characterId": "tencho-gozo",
+      "characterId": "hageta-hageta",
       "kind": "client",
       "note": "村の第一号として案内された縁"
     },

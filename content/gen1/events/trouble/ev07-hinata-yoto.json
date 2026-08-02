@@ -1,5 +1,5 @@
 {
-  "id": "ev07-hinata-yoto",
+  "id": "ev07-sakurai-maple-yoto",
   "topicId": "hourei-yoto",
   "generation": 1,
   "kind": "trouble",
@@ -8,11 +8,11 @@
   ],
   "title": "丘の上のカフェ",
   "summary": "桜井メープルが、家しか建っていない丘の上にパンとコーヒーの店を出したがる",
-  "characterId": "hinata",
+  "characterId": "sakurai-maple",
   "cast": [
-    "hinata",
-    "ren",
-    "tencho-gozo"
+    "sakurai-maple",
+    "minase-rion",
+    "hageta-hageta"
   ],
   "dialogue": [
     "ねえねえ聞いて! 将来の夢の話なんだけどね!",

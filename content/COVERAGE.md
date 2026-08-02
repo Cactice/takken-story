@@ -14,7 +14,7 @@ node scripts/check-coverage.mjs --write  # このファイルの対応表を再�
 - **原則は1論点1イベント。** 世代が増えてもイベントを増やさず、置き場所を変える方針。
 - **例外: 頻出度Aかつ物語上の必然があるものに限り1論点2イベント。** 第3世代(サスペンス)の
   段階構造のために4件だけ追加した(下記「第3世代の2件目」)。
-- 旧 `tanaka-tejukin`(topicId `takkengyouhou-tetsukekin` が topics.md に存在せず、内容も `gyoho-tetsuke-seigen` と重複)は**削除**した。
+- 旧 `tanaka-poppo-tejukin`(topicId `takkengyouhou-tetsukekin` が topics.md に存在せず、内容も `gyoho-tetsuke-seigen` と重複)は**削除**した。
   手付の論点は `ev-gyoho-tetsuke-seigen`(第2世代・海沢が800万を要求する場面)が受け持つ。
 
 ## 世代への振り分けの考え方
@@ -61,10 +61,10 @@ node scripts/check-coverage.mjs --write  # このファイルの対応表を再�
 | 分野 | topicId | 論点 | 頻出度 | イベントID | 世代 | 有無 |
 |---|---|---|---|---|---|---|
 | 権利関係 | minpo-ishihyoji | 意思表示(詐欺・強迫・虚偽表示・錯誤) | A | ev-minpo-ishihyoji | 2 | ✅ |
-| 権利関係 | minpo-seinen | 制限行為能力者(未成年者・成年被後見人等) | B | ev06-ren-seinen | 1 | ✅ |
+| 権利関係 | minpo-seinen | 制限行為能力者(未成年者・成年被後見人等) | B | ev06-minase-rion-seinen | 1 | ✅ |
 | 権利関係 | minpo-dairi | 代理(無権代理・表見代理・復代理) | A | ev-minpo-dairi | 3 | ✅ |
-| 権利関係 | minpo-baibai | 売買契約の基本(申込と承諾・手付) | A | ev05-misaki-tetsuke<br>rom-ren | 1,1 | ✅ |
-| 権利関係 | minpo-chintai | 賃貸借(敷金・原状回復・転貸) | A | ev-life-yachin<br>ev01-tetsujiro-shikikin | 1,1 | ✅ |
+| 権利関係 | minpo-baibai | 売買契約の基本(申込と承諾・手付) | A | ev05-shiraishi-olivia-tetsuke<br>rom-minase-rion | 1,1 | ✅ |
+| 権利関係 | minpo-chintai | 賃貸借(敷金・原状回復・転貸) | A | ev-life-yachin<br>ev01-kishiwada-gaston-shikikin | 1,1 | ✅ |
 | 権利関係 | minpo-jiko | 時効(取得時効・消滅時効・完成猶予と更新) | B | ev-minpo-jiko | 3 | ✅ |
 | 権利関係 | minpo-bukken-hendo | 物権変動(登記と対抗要件・二重譲渡) | A | ev-minpo-bukken-hendo | 3 | ✅ |
 | 権利関係 | minpo-tanpo | 契約不適合責任(追完・代金減額・解除・通知期間) | A | ev-minpo-tanpo | 3 | ✅ |
@@ -78,7 +78,7 @@ node scripts/check-coverage.mjs --write  # このファイルの対応表を再�
 | 権利関係 | minpo-fuhoukoui | 不法行為(使用者責任・工作物責任) | B | ev-minpo-fuhoukoui | 1 | ✅ |
 | 権利関係 | kubun-shoyu | 区分所有法(集会・規約・決議要件) | A | ev-kubun-shoyu | 2 | ✅ |
 | 権利関係 | toki-ho | 不動産登記法(表示登記・権利登記・仮登記) | B | ev-toki-ho | 3 | ✅ |
-| 宅建業法 | gyoho-menkyo | 宅建業の免許(要否・欠格事由・免許換え) | A | ev03-hinata-menkyo | 1 | ✅ |
+| 宅建業法 | gyoho-menkyo | 宅建業の免許(要否・欠格事由・免許換え) | A | ev03-sakurai-maple-menkyo | 1 | ✅ |
 | 宅建業法 | gyoho-takkenshi | 宅地建物取引士(登録・宅建士証・専任設置) | A | ev-gyoho-takkenshi | 1 | ✅ |
 | 宅建業法 | gyoho-baikai | 媒介契約(一般・専任・専属専任、レインズ・報告義務) | A | ev-gyoho-baikai<br>ev-gyoho-baikai-kakoikomi | 1,3 | ✅ |
 | 宅建業法 | gyoho-juyojiko | 重要事項説明(35条書面) | A | ev-gen2-opening<br>ev02-koji-juyojiko<br>ev-gyoho-juyojiko-byakuya | 2,2,3 | ✅ |
@@ -93,7 +93,7 @@ node scripts/check-coverage.mjs --write  # このファイルの対応表を再�
 | 宅建業法 | gyoho-kantoku | 監督処分・罰則(指示・業務停止・免許取消) | B | ev-gyoho-kantoku | 2 | ✅ |
 | 宅建業法 | gyoho-kashi-tanpo | 住宅瑕疵担保履行法(資力確保措置・届出) | B | ev-gyoho-kashi-tanpo | 4 | ✅ |
 | 宅建業法 | gyoho-meibo | 従業者名簿・帳簿・従業者証明書 | C | ev-gyoho-meibo | 2 | ✅ |
-| 法令上の制限 | hourei-yoto | 用途地域と用途制限 | A | rom-hinata<br>ev07-hinata-yoto | 1,1 | ✅ |
+| 法令上の制限 | hourei-yoto | 用途地域と用途制限 | A | rom-sakurai-maple<br>ev07-sakurai-maple-yoto | 1,1 | ✅ |
 | 法令上の制限 | hourei-kenpei | 建蔽率・容積率 | A | ev-hourei-kenpei | 1 | ✅ |
 | 法令上の制限 | hourei-toshikeikaku | 都市計画法(区域区分・地域地区・都市計画の内容) | A | ev-hourei-toshikeikaku | 4 | ✅ |
 | 法令上の制限 | hourei-kaihatsu | 開発許可(要否・規模・手続) | A | ev-hourei-kaihatsu | 4 | ✅ |
@@ -104,7 +104,7 @@ node scripts/check-coverage.mjs --write  # このファイルの対応表を再�
 | 法令上の制限 | hourei-boka | 防火地域・準防火地域 | B | ev-hourei-boka | 4 | ✅ |
 | 法令上の制限 | hourei-moridokisei | 盛土規制法(宅地造成等工事の許可・届出) | B | ev-hourei-moridokisei | 3 | ✅ |
 | 法令上の制限 | hourei-kukaku | 土地区画整理法(換地・仮換地) | C | ev-hourei-kukaku | 4 | ✅ |
-| 税・その他 | zei-fudosan | 不動産取得税・固定資産税 | A | ev08-tetsujiro-koteishisan | 1 | ✅ |
+| 税・その他 | zei-fudosan | 不動産取得税・固定資産税 | A | ev08-kishiwada-gaston-koteishisan | 1 | ✅ |
 | 税・その他 | zei-inshi | 印紙税(課税文書・記載金額・過怠税) | B | ev-zei-inshi | 4 | ✅ |
 | 税・その他 | zei-touroku | 登録免許税(税率・住宅用家屋の軽減) | C | ev-zei-touroku | 3 | ✅ |
 | 税・その他 | zei-shotoku | 所得税(譲渡所得・3000万円特別控除・軽減税率) | B | ev-zei-shotoku | 5 | ✅ |

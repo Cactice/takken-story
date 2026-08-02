@@ -8,11 +8,11 @@
   ],
   "title": "両方から一ヶ月ずつ",
   "summary": "白石ジョージが貸室の仲介で、貸主と借主の両方から家賃1ヶ月分を請求される",
-  "characterId": "kk-hosokawa",
-  "mentorId": "umizawa",
+  "characterId": "shiraishi-george",
+  "mentorId": "umizawa-kyle-kyle",
   "cast": [
-    "kk-hosokawa",
-    "kk-mei"
+    "shiraishi-george",
+    "anzai-rumi-mei"
   ],
   "dialogue": [
     "ジョージ「マンションの一室を貸しに出しましてね。他社に客付けを頼んだんですが。」",

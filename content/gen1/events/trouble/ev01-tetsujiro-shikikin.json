@@ -1,5 +1,5 @@
 {
-  "id": "ev01-tetsujiro-shikikin",
+  "id": "ev01-kishiwada-gaston-shikikin",
   "topicId": "minpo-chintai",
   "generation": 1,
   "kind": "trouble",
@@ -8,11 +8,11 @@
   ],
   "title": "仮住まいの壁紙",
   "summary": "岸和田ガストンが退去した鈴木ナオから、壁紙と畳の張り替え代15万円を全額引こうとする",
-  "characterId": "tetsujiro",
+  "characterId": "kishiwada-gaston",
   "cast": [
-    "tetsujiro",
+    "kishiwada-gaston",
     "suzuki-nao",
-    "tencho-gozo"
+    "hageta-hageta"
   ],
   "dialogue": [
     "ガストン「おう坊、聞いてくれや。うちの店子が、家が建ったからて出ていきよってな。」",

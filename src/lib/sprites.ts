@@ -38,7 +38,7 @@ interface CharSprite {
 
 // characterId → Tiny Dungeon の人物タイル。ここに無い家系は種(下)から自動で決まる
 const CHARACTER_SPRITES: Record<string, CharSprite> = {
-  'tencho-gozo': { tile: 110 },
+  'hageta-hageta': { tile: 110 },
 }
 
 /**
@@ -48,10 +48,10 @@ const CHARACTER_SPRITES: Record<string, CharSprite> = {
  */
 const FAMILY_SEED: Record<string, string | CharSprite> = {
   // 既に画面に出ている人に合わせる(その人の見た目は変えない)
-  禿鷹: 'tencho-gozo',
-  都倉: 'kk-daiki',
-  葉山: 'kk-hayama',
-  黒瀬: 'kk-tsuzuki',
+  禿鷹: 'hageta-hageta',
+  都倉: 'togura-yonnan',
+  葉山: 'hayama-ko',
+  黒瀬: 'kurose-rei',
   // 家の性格で選ぶ
   白石: { tile: 108 }, // 青い宇宙人みたいなやつ
   織部: { tile: 84 }, // 魔法使い(織部シルビア)

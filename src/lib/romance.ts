@@ -202,7 +202,7 @@ function assert(cond: boolean, msg: string): void {
 
 /** 自己チェック(dev のみ)。親密度とときめき度の判定が壊れたら即落ちる */
 export function romanceSelfCheck(): void {
-  const c = romanceContents.find((x) => x.characterId === 'hinata')
+  const c = romanceContents.find((x) => x.characterId === 'sakurai-maple')
   assert(c !== undefined, 'hinata content missing')
   if (!c) return
 

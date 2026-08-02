@@ -1,5 +1,5 @@
 {
-  "id": "ev05-misaki-tetsuke",
+  "id": "ev05-shiraishi-olivia-tetsuke",
   "topicId": "minpo-baibai",
   "generation": 1,
   "kind": "newcomer",
@@ -8,11 +8,11 @@
   ],
   "title": "手付を打った古民家",
   "summary": "白石オリビアが100万円払った古民家を、診療所に近い家に乗り換えたくなる",
-  "characterId": "misaki",
+  "characterId": "shiraishi-olivia",
   "cast": [
-    "misaki",
-    "tanaka",
-    "tencho-gozo"
+    "shiraishi-olivia",
+    "tanaka-poppo-poppo",
+    "hageta-hageta"
   ],
   "dialogue": [
     "オリビア「田中さんの母屋を買う約束をして、手付金100万円を払ったの。」",
