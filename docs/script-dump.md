@@ -13,7 +13,7 @@
 
 ## 1015年4月 ｜ [人生] ボロ屋が拠点になった日
 
-<sub>minpo-chintai ｜ `ev-life-yachin`</sub>
+minpo-chintai ｜ `ev-life-yachin`
 
   - ハゲタ「ついて来い! お前の住むところに案内してやる。」
   - ハゲタ「…ここだ。雨漏りはしてねえ。たぶんな。」
@@ -29,7 +29,7 @@
 
 ## 1015年5月 ｜ [悩み] 社長がひとりになった日
 
-<sub>gyoho-takkenshi ｜ `ev-gyoho-takkenshi`</sub>
+gyoho-takkenshi ｜ `ev-gyoho-takkenshi`
 
   - ハゲタ「新人。この事務所、昔は俺を入れて従業者が四人いたんだ。」
   - ハゲタ「資格を持つ専属の担当は、佐藤ってやつ一人だった。あいつが辞めると言い出してな。」
@@ -46,7 +46,7 @@
 
 ## 1015年7月 ｜ [転入] 村に知り合いがいない
 
-<sub>minpo-hosho ｜ `ev-minpo-hosho`</sub>
+minpo-hosho ｜ `ev-minpo-hosho`
 
   - タネゾウ「借りる家は決まったで。……ただ、保証人を立ててくれと言われてな。」
   - ハル「あらあら、困ったわ。この村、まだ知り合いが一人もおらんのよ。」
@@ -66,7 +66,7 @@
 
 ## 1015年8月 ｜ [悩み] はじめての祭りでけが人
 
-<sub>minpo-fuhoukoui ｜ `ev-minpo-fuhoukoui`</sub>
+minpo-fuhoukoui ｜ `ev-minpo-fuhoukoui`
 
   - ガストン「坊、えらいこっちゃ。ちょっと聞いてくれや。」
   - ガストン「村ではじめての秋祭りでな、やぐら組むのに人を雇うたんや。」
@@ -87,7 +87,7 @@
 
 ## 1016年4月 ｜ [転入] 鈴木さん、村に家を建てる
 
-<sub>hourei-kenpei ｜ `ev-hourei-kenpei`</sub>
+hourei-kenpei ｜ `ev-hourei-kenpei`
 
   - タケオ「都会から越してきました、鈴木です。ここに土地を買って、家を建てたいんです。」
   - タケオ「敷地は200平米。看板に「60%・200%」って数字が書いてありました。」
@@ -106,7 +106,7 @@
 
 ## 1016年9月 ｜ [悩み] 手付を打った古民家
 
-<sub>minpo-baibai ｜ `ev-minpo-baibai-naresome`</sub>
+minpo-baibai ｜ `ev-minpo-baibai-naresome`
 
   - ガストン「坊、田中さんの母屋を買う約束をしてな。手付金100万、もう払うたんや。」
   - ガストン「息子夫婦を村に呼ぼう思てな。……足の一件からこっち、あの畑によう通うとるんや。」
@@ -126,7 +126,7 @@
 
 ## 1017年2月 ｜ [悩み] 仮住まいの壁紙
 
-<sub>minpo-chintai ｜ `ev01-kishiwada-gaston-shikikin`</sub>
+minpo-chintai ｜ `ev01-kishiwada-gaston-shikikin`
 
   - ガストン「おう坊、聞いてくれや。うちの店子の先生が、診療所の近くに家を見つけて出ていきよってな。」
   - ガストン「二年住んで、壁紙は日に焼けて黄色いし、畳もへたっとる。張り替えたら十五万や。」
@@ -150,7 +150,7 @@
 
 ## 1017年5月 ｜ [悩み] 花屋の下の土地
 
-<sub>shakuchi ｜ `ev-shakuchi`</sub>
+shakuchi ｜ `ev-shakuchi`
 
   - …別に、聞きたいだけだ。うちの花屋、建物は親父のものだが、土地は借り物だ。
   - タネゾウ「うちの土地だでな。おまえのじいさんの代から、ずっと貸しとる。」
@@ -169,7 +169,7 @@
 
 ## 1017年8月 ｜ [悩み] 十七歳の温室
 
-<sub>minpo-seinen ｜ `ev06-minase-rion-seinen`</sub>
+minpo-seinen ｜ `ev06-minase-rion-seinen`
 
   - …別に、たいした話じゃない。俺は十七だ。
   - 店の裏の空き地を借りて、温室を建てたい。花の苗を増やしたいだけだ。
@@ -187,7 +187,7 @@
 
 ## 1018年3月 ｜ [悩み] パン屋の二階を貸したい
 
-<sub>gyoho-menkyo ｜ `ev03-sakurai-maple-menkyo`</sub>
+gyoho-menkyo ｜ `ev03-sakurai-maple-menkyo`
 
   - ねえねえ聞いて! うちのお父さん、パン屋の二階を人に貸すんだって!
   - でもね、「人に貸すのに何か資格が要るんじゃないか」って心配してるの。
@@ -204,7 +204,7 @@
 
 ## 1018年10月 ｜ [悩み] 丘の上のカフェ
 
-<sub>hourei-yoto ｜ `ev07-sakurai-maple-yoto`</sub>
+hourei-yoto ｜ `ev07-sakurai-maple-yoto`
 
   - ねえねえ聞いて! 将来の夢の話なんだけどね!
   - 丘の上の住宅街あるでしょ? あそこにパンとコーヒーのお店を出したいの!
@@ -223,7 +223,7 @@
 
 ## 1020年2月 ｜ [悩み] 息子夫婦を入れたい
 
-<sub>shakka ｜ `ev-shakka`</sub>
+shakka ｜ `ev-shakka`
 
   - ガストン「なあ坊、聞いてや。うちのアパートの101号室に、息子夫婦を住まわせたいんや。」
   - ガストン「今の店子さんとの契約、来月で二年の満了でな。」
@@ -243,7 +243,7 @@
 
 ## 1021年9月 ｜ [悩み] 跡を継ぐ人がいない家
 
-<sub>minpo-souzoku ｜ `ev-minpo-igon-oribe`</sub>
+minpo-souzoku ｜ `ev-minpo-igon-oribe`
 
   - ごきげんよう。……今日はね、少し縁起でもない話をしにまいりましたの。
   - 主人が遺したこの呉服店、私が死んだらどうなるのかしら、と思いまして。
@@ -263,7 +263,7 @@
 
 ## 1022年5月 ｜ [悩み] 売ったのに来た納税通知
 
-<sub>zei-fudosan ｜ `ev08-kishiwada-gaston-koteishisan`</sub>
+zei-fudosan ｜ `ev08-kishiwada-gaston-koteishisan`
 
   - 坊、ちょお教えてくれや。古いほうのアパート、今年の三月に売ったんや。
   - そしたら五月になって、今年ぶんの税金の紙がワシんとこに来よってん!
@@ -287,7 +287,7 @@
 
 ## 1023年6月 ｜ [恋愛] デート:二人の名前で買う家
 
-<sub>minpo-baibai ｜ `rom-minase-rion`</sub>
+minpo-baibai ｜ `rom-minase-rion`
 
   - …今日は、物件を見せてくれと言ったが。勉強のためだ。…それだけじゃないが。
   - 土のある庭。朝、水をやる音が聞こえるくらい静かな家。…そういうのを、探している。
@@ -334,7 +334,7 @@
 
 ## 1023年7月 ｜ [恋愛] デート:一階がお店の家
 
-<sub>hourei-yoto ｜ `rom-sakurai-maple`</sub>
+hourei-yoto ｜ `rom-sakurai-maple`
 
   - ねえ、今日は仕事じゃなくて…その、ふつうに歩こうよ。えへへ。
   - 丘の上、店は建てられないって前に教えてもらったでしょ。あれからずっと考えててね。
@@ -387,7 +387,7 @@
 
 ## 1045年4月 ｜ [人生] 黒会市で最初に会った人
 
-<sub>gyoho-juyojiko ｜ `ev-gen2-opening`</sub>
+gyoho-juyojiko ｜ `ev-gen2-opening`
 
   - ナレーション「黒会市。改札を出た瞬間、人の流れに二回ぶつかった。村の一年ぶんの人が、一分で通り過ぎていく。」
   - カイル「おや。荷物の持ち方で分かりますよ、地方の方でしょう。……失礼、当たりましたか。」
@@ -410,7 +410,7 @@
 
 ## 1045年6月 ｜ [悩み] 徒歩5分の事務所
 
-<sub>gyoho-kokoku ｜ `ev-gen2-bottakuri`</sub>
+gyoho-kokoku ｜ `ev-gen2-bottakuri`
 
   - ホチキ「あの、駅からここまで、私、毎朝十三分かかるんですけど。」
   - ホチキ「募集の紙には『駅から徒歩5分』と書いてあります。……私の足が遅いんでしょうか。」
@@ -431,7 +431,7 @@
 
 ## 1045年9月 ｜ [悩み] 独立の日、供託所へ
 
-<sub>gyoho-eigyo-hosho ｜ `ev-gyoho-eigyo-hosho`</sub>
+gyoho-eigyo-hosho ｜ `ev-gyoho-eigyo-hosho`
 
   - テッコー「黒会市へようこそ。協会の黒瀬です。開業の届けを見せてもらいましたよ。」
   - テッコー「本店ひとつ、支店ひとつ。…若いのに、いきなり支店とは思いきったねえ。」
@@ -450,7 +450,7 @@
 
 ## 1046年2月 ｜ [悩み] 一千五百万が九十万になる話
 
-<sub>gyoho-hosho-kyokai ｜ `ev-gyoho-hosho-kyokai`</sub>
+gyoho-hosho-kyokai ｜ `ev-gyoho-hosho-kyokai`
 
   - テッコー「1,500万は重かろう。だから業者どうしで助け合う団体がある。うちだ。」
   - ホチキ「事務の安西です! 加入の書類、わたしが揃えました! …金額、合ってますか?」
@@ -468,7 +468,7 @@
 
 ## 1046年6月 ｜ [悩み] モデルルームを出す
 
-<sub>gyoho-jimusho ｜ `ev-gyoho-jimusho`</sub>
+gyoho-jimusho ｜ `ev-gyoho-jimusho`
 
   - カイル「駅前のタワー、現地にモデルルームを出しましょう。そこで申込みも受ける。」
   - チョーナン「いいねえ! 早ければ早いほどいい。今週末には開けたい!」
@@ -487,7 +487,7 @@
 
 ## 1046年8月 ｜ [悩み] 「今すぐ広告を」
 
-<sub>gyoho-kokoku ｜ `ev-gyoho-kokoku`</sub>
+gyoho-kokoku ｜ `ev-gyoho-kokoku`
 
   - チョーナン「駅向こうの新築マンション、販売はお宅に任せる。今すぐ広告を打ってくれ!」
   - チョーナン「他社に先を越されたら終わりだ。とにかく、明日から出せ!」
@@ -507,7 +507,7 @@
 
 ## 1047年3月 ｜ [悩み] 徒歩五分の嘘
 
-<sub>sonota-keihin ｜ `ev-sonota-keihin`</sub>
+sonota-keihin ｜ `ev-sonota-keihin`
 
   - ハガネ「お宅の広告、「駅から徒歩5分」になってるけど。わたし、歩いてみたの。9分だった。」
   - カイル「駅の敷地の端からなら5分ですよ。嘘は言っていない。」
@@ -525,7 +525,7 @@
 
 ## 1047年7月 ｜ [悩み] 駅前で声をかけられて
 
-<sub>gyoho-8shu ｜ `ev04-koji-cooling`</sub>
+gyoho-8shu ｜ `ev04-koji-cooling`
 
   - ヨンナン「やっちゃったかもしれないっす…。黒会駅の東口で声かけられたんすよ。」
   - ヨンナン「そのまま喫茶店に連れていかれて、新築マンションの購入を申し込んじゃったっす。」
@@ -544,7 +544,7 @@
 
 ## 1048年1月 ｜ [悩み] 説明はあとで、という店
 
-<sub>gyoho-juyojiko ｜ `ev02-koji-juyojiko`</sub>
+gyoho-juyojiko ｜ `ev02-koji-juyojiko`
 
   - ヨンナン「黒会市に出てきたばかりで、部屋を探してるんすよ。いい物件を見つけたんす!」
   - ヨンナン「そしたらそのお店、「契約書にサインしたあとで、お部屋の大事な説明をしますね」って。」
@@ -562,7 +562,7 @@
 
 ## 1048年6月 ｜ [悩み] 八百万を先に
 
-<sub>gyoho-tetsuke-seigen ｜ `ev-gyoho-tetsuke-seigen`</sub>
+gyoho-tetsuke-seigen ｜ `ev-gyoho-tetsuke-seigen`
 
   - カイル「3,000万の新築建売。うちが売主です。手付は800万いただきましょう。」
   - カイル「多く払わせるほど、客は逃げない。人は払った額に縛られる生き物ですから。」
@@ -581,7 +581,7 @@
 
 ## 1049年2月 ｜ [悩み] 契約のあとに渡す紙
 
-<sub>gyoho-37jo ｜ `ev-gyoho-37jo`</sub>
+gyoho-37jo ｜ `ev-gyoho-37jo`
 
   - コウ「先日、御社でマンションの契約をした葉山です。妻と二人で、はじめての家で。」
   - コウ「契約のあとにもらえるはずの書類、まだ届かないんですが…。」
@@ -599,7 +599,7 @@
 
 ## 1049年8月 ｜ [悩み] 引渡し日が来ない
 
-<sub>minpo-furikou ｜ `ev-minpo-furikou`</sub>
+minpo-furikou ｜ `ev-minpo-furikou`
 
   - コウ「妻の実家の近くに、教室にする物件を買う約束をしたんです。」
   - コウ「でも引渡しの日から、もう1ヶ月過ぎてるのに、全然渡してくれなくて。」
@@ -617,7 +617,7 @@
 
 ## 1050年4月 ｜ [悩み] ペット禁止の総会
 
-<sub>kubun-shoyu ｜ `ev-kubun-shoyu`</sub>
+kubun-shoyu ｜ `ev-kubun-shoyu`
 
   - ジョージ「管理組合の理事長をしております白石です。今度の総会で揉めそうでしてね。」
   - ジョージ「議題が「規約を変えてペット禁止にする」なんですよ。」
@@ -635,7 +635,7 @@
 
 ## 1051年5月 ｜ [悩み] 両方から一ヶ月ずつ
 
-<sub>gyoho-hoshu ｜ `ev-gyoho-hoshu`</sub>
+gyoho-hoshu ｜ `ev-gyoho-hoshu`
 
   - ジョージ「マンションの一室を貸しに出しましてね。他社に客付けを頼んだんですが。」
   - ジョージ「家賃8万円の部屋です。決まったら手数料を、私と入居者から8万ずつだと言うんですよ。」
@@ -653,7 +653,7 @@
 
 ## 1052年3月 ｜ [悩み] 名簿と帳簿
 
-<sub>gyoho-meibo ｜ `ev-gyoho-meibo`</sub>
+gyoho-meibo ｜ `ev-gyoho-meibo`
 
   - ホチキ「これ、わたしの従業者証明書ですよね? いつ使うんですか?」
   - テッコー「お客に求められたら見せる。持たずに現場に出たらいかん。」
@@ -671,7 +671,7 @@
 
 ## 1053年9月 ｜ [悩み] 再開発が来るという話
 
-<sub>minpo-ishihyoji ｜ `ev-minpo-ishihyoji`</sub>
+minpo-ishihyoji ｜ `ev-minpo-ishihyoji`
 
   - ホチキ「あの…プライベートの相談なんですけど。わたし、土地を買っちゃったんです。」
   - ホチキ「貯金を全部はたいて。「隣に再開発が来る、来年には倍になる」って言われて。」
@@ -690,7 +690,7 @@
 
 ## 1054年6月 ｜ [悩み] 隣の店が止まった
 
-<sub>gyoho-kantoku ｜ `ev-gyoho-kantoku`</sub>
+gyoho-kantoku ｜ `ev-gyoho-kantoku`
 
   - テッコー「駅向こうの業者が、大事な説明をサボって営業停止を食らったよ。」
   - ハガネ「うちの同期の店です。…半年、看板を下ろすことになりました。」
@@ -709,7 +709,7 @@
 
 ## 1055年9月 ｜ [悩み] 地震で落ちた増築部分
 
-<sub>hourei-kenchiku-kakunin ｜ `ev-hourei-kakunin-jishin`</sub>
+hourei-kenchiku-kakunin ｜ `ev-hourei-kakunin-jishin`
 
   - ハガネ「揺れたわね。……で、あなたが去年まとめた三号棟。裏の増築部分だけ落ちたわよ」
   - ハガネ「本体は無傷。増築したところだけ。こういう落ち方をするのは、だいたい理由が一つなの」
@@ -736,7 +736,7 @@
 
 ## 1075年4月 ｜ [転出] おじいちゃんが遺したもの
 
-<sub>minpo-souzoku ｜ `ev-minpo-souzoku`</sub>
+minpo-souzoku ｜ `ev-minpo-souzoku`
 
   - おばあちゃん「…おじいちゃん、行っちゃったねえ。あんたによく懐いとったのに。」
   - おばあちゃん「遺言なんて、あの人が書くわけないよ。「そんなもん要らん」の一点張りでね。」
@@ -755,7 +755,7 @@
 
 ## 1075年8月 ｜ [転入] 二度と追い出されない家
 
-<sub>gyoho-juyojiko ｜ `ev-gyoho-juyojiko-byakuya`</sub>
+gyoho-juyojiko ｜ `ev-gyoho-juyojiko-byakuya`
 
   - ソウ「前に住んでいた町を、出てきました。……借りていた家の期限が来まして。」
   - アカリ「更新できる契約だと思っていたんです。でも「期間が来たら終わる約束です」と言われて。」
@@ -775,7 +775,7 @@
 
 ## 1076年5月 ｜ [悩み] 言わないほうが売れる、と言われて
 
-<sub>minpo-tanpo ｜ `ev-minpo-tanpo`</sub>
+minpo-tanpo ｜ `ev-minpo-tanpo`
 
   - リク「先月引き渡してもらった空き家、二階の天井から水が落ちてくるんですよ。バケツ二杯。」
   - ヌカベエ「そんなはずはねえ。あの家はうちの親父が建てた家だでな。」
@@ -795,7 +795,7 @@
 
 ## 1077年3月 ｜ [転出] 花屋が店を畳む日
 
-<sub>shakuchi ｜ `ev-shakuchi-hanaya`</sub>
+shakuchi ｜ `ev-shakuchi-hanaya`
 
   - リオン「…店を閉める。娘のところへ行く。七十七だ。そろそろ潮時だろう。」
   - リオン「土地は見沼さんの借り物のままだ。あんたのじいさんが、あの日守ってくれた土地だ。」
@@ -814,7 +814,7 @@
 
 ## 1077年6月 ｜ [転出] 六十年ぶんのオーブン
 
-<sub>shakka ｜ `ev-shakka-panya`</sub>
+shakka ｜ `ev-shakka-panya`
 
   - メープル「六十年やったからね。もう、朝三時に起きられないの。えへへ。」
   - メープル「お店は返すんだけどね。冷蔵ケースとオーブン、大家さんの許可をもらって付けたのよ。」
@@ -833,7 +833,7 @@
 
 ## 1078年4月 ｜ [悩み] 同じ家を二度売る
 
-<sub>minpo-bukken-hendo ｜ `ev-minpo-bukken-hendo`</sub>
+minpo-bukken-hendo ｜ `ev-minpo-bukken-hendo`
 
   - リク「妙なんですよ。見沼さんの空き家、買う約束をしたのはうちが先なんです。」
   - リク「なのに、同じ家を冬野さんも買う約束をしてる。売主は…見沼さん、あんただ。」
@@ -853,7 +853,7 @@
 
 ## 1079年2月 ｜ [悩み] 預かったまま、動かない
 
-<sub>gyoho-baikai ｜ `ev-gyoho-baikai-kakoikomi`</sub>
+gyoho-baikai ｜ `ev-gyoho-baikai-kakoikomi`
 
   - ハゲル「見沼さんの空き家と山、隣町の大手が預かってます。専任媒介で、もう五ヶ月だ。」
   - ハゲル「うちに買いたい客がいると伝えたんですがね。「先約がある」の一点張りで。」
@@ -872,7 +872,7 @@
 
 ## 1080年5月 ｜ [悩み] 三分の一ずつの家
 
-<sub>minpo-kyoyu ｜ `ev-minpo-kyoyu`</sub>
+minpo-kyoyu ｜ `ev-minpo-kyoyu`
 
   - ヌカベエ「うちの本家、わしと弟と妹の三人で三分の一ずつ持っとる。」
   - ヌカベエ「わしと弟は売りたい。買いたいと言うとる者がおるでな。…鈴木のとこだ。」
@@ -891,7 +891,7 @@
 
 ## 1081年7月 ｜ [悩み] 裏山が平らになっていた
 
-<sub>hourei-moridokisei ｜ `ev-hourei-moridokisei`</sub>
+hourei-moridokisei ｜ `ev-hourei-moridokisei`
 
   - ワカバ「裏山の斜面。子どもの頃は斜めだったのに、平らになってる。高さ1.5メートルの段差。」
   - リク「うちはやっていません。測量はしましたが、工事はしていない。」
@@ -911,7 +911,7 @@
 
 ## 1082年9月 ｜ [悩み] 仮登記の席取り
 
-<sub>toki-ho ｜ `ev-toki-ho`</sub>
+toki-ho ｜ `ev-toki-ho`
 
   - ハゲル「登記簿を全部取り寄せた。…見ろ、変な行が入ってる。」
   - ハゲル「本登記じゃない。「仮登記」だ。しかも日付は、おじいさんが亡くなる三日前。」
@@ -929,7 +929,7 @@
 
 ## 1083年5月 ｜ [悩み] 代理人を名乗る男と、祖父のノート
 
-<sub>minpo-dairi ｜ `ev-minpo-dairi`</sub>
+minpo-dairi ｜ `ev-minpo-dairi`
 
   - おばあちゃん「妙な話を聞いてねえ。おじいちゃんの山の土地のことなんだよ。」
   - おばあちゃん「亡くなる少し前に、スーツの男が「ご本人の代わりに来ました」と言って。」
@@ -948,7 +948,7 @@
 
 ## 1084年8月 ｜ [悩み] 八歳の夏に、柵は動いた
 
-<sub>minpo-jiko ｜ `ev-minpo-jiko`</sub>
+minpo-jiko ｜ `ev-minpo-jiko`
 
   - ヌカベエ「鈴木さんとこの柵、うちの畑に食い込んどる。あれはうちの土地だ。」
   - リク「食い込んでません。あの柵は、うちの親父が立てたものです。」
@@ -969,7 +969,7 @@
 
 ## 1086年4月 ｜ [悩み] 村に残ると決めた日
 
-<sub>zei-touroku ｜ `ev-zei-touroku`</sub>
+zei-touroku ｜ `ev-zei-touroku`
 
   - ワカバ「わたし、村に残ることにした。空き家を一軒買うの。中古の一戸建て、90平米。」
   - ワカバ「お父さんは「都会へ出ろ」って言うけどね。…この村、まだ終わってないと思うから。」
@@ -992,7 +992,7 @@
 
 ## 1105年5月 ｜ [悩み] 八百平米の分譲地
 
-<sub>hourei-kaihatsu ｜ `ev-hourei-kaihatsu`</sub>
+hourei-kaihatsu ｜ `ev-hourei-kaihatsu`
 
   - ハンコ「市役所都市計画課の安西です。御社の申請の件で伺いました。」
   - ハンコ「800平米の土地をならして、分譲用の家を何軒か建てる…という計画ですね。」
@@ -1010,7 +1010,7 @@
 
 ## 1105年9月 ｜ [悩み] 大きな地震のあとで
 
-<sub>sonota-tatemono ｜ `ev-sonota-tatemono`</sub>
+sonota-tatemono ｜ `ev-sonota-tatemono`
 
   - チョーナンJr.「昨夜の地震、揺れたなあ。うちの現場は無事だったが、肝が冷えたわ。」
   - チョーナンJr.「客が「揺れに強い建物にしてくれ」と言い出しとる。…耐震、制震、免震。どう違うんだ?」
@@ -1027,7 +1027,7 @@
 
 ## 1106年4月 ｜ [悩み] 防火地域の建て替え
 
-<sub>hourei-boka ｜ `ev-hourei-boka`</sub>
+hourei-boka ｜ `ev-hourei-boka`
 
   - チョーナンJr.「駅前の古い店舗を建て替える話が来た。2階建て、延べ90平米だ。」
   - チョーナンJr.「あそこは防火地域だろう。一番厳しい造りにすると、予算が倍になっちまう。」
@@ -1045,7 +1045,7 @@
 
 ## 1106年5月 ｜ [悩み] 最初に預かった物件
 
-<sub>gyoho-baikai ｜ `ev-gyoho-baikai`</sub>
+gyoho-baikai ｜ `ev-gyoho-baikai`
 
   - チョーナンJr.「免許、下りたんやってな。おめでとうさん。ほなら一発目はうちや。」
   - チョーナンJr.「うちの持ちビル、全部おまえんとこに預けたる。そのかわり条件が二つある。」
@@ -1066,7 +1066,7 @@
 
 ## 1106年9月 ｜ [悩み] 中庭の物置
 
-<sub>hourei-kenchiku-kakunin ｜ `ev-hourei-kenchiku-kakunin`</sub>
+hourei-kenchiku-kakunin ｜ `ev-hourei-kenchiku-kakunin`
 
   - ケント「マンションの中庭に、防災備蓄用の物置を置きたいという話が出ましてね。」
   - ケント「8平米ほどの小さなものです。総会でも賛成多数でした。」
@@ -1084,7 +1084,7 @@
 
 ## 1107年6月 ｜ [悩み] 仮の土地
 
-<sub>hourei-kukaku ｜ `ev-hourei-kukaku`</sub>
+hourei-kukaku ｜ `ev-hourei-kukaku`
 
   - チョーナンJr.「駅の向こうで、区画を整え直す事業が始まっとるだろう。あの中の土地を買いたい。」
   - チョーナンJr.「ところが売主が「今は代わりの土地を使え、と言われている」と言うんだ。どういうこった。」
@@ -1101,7 +1101,7 @@
 
 ## 1107年10月 ｜ [悩み] 父の置き土産を回収しにきた男
 
-<sub>minpo-chintai ｜ `ev-minpo-chintai-cecil`</sub>
+minpo-chintai ｜ `ev-minpo-chintai-cecil`
 
   - セシル「海沢です。父をご存じでしょう。この界隈の契約は、たいてい父が組んだものです」
   - セシル「駅前の三棟、当社が買い取りました。入居者の方はそのままで結構ですよ」
@@ -1122,7 +1122,7 @@
 
 ## 1108年3月 ｜ [悩み] 安すぎる土地
 
-<sub>hourei-toshikeikaku ｜ `ev-hourei-toshikeikaku`</sub>
+hourei-toshikeikaku ｜ `ev-hourei-toshikeikaku`
 
   - チョーナンJr.「おい若いの。市の外れに、驚くほど安い土地がある。買い占めようと思ってな。」
   - チョーナンJr.「周りは畑ばかりだ。建物がほとんどない。だから安い。安いのはいいことだろう?」
@@ -1140,7 +1140,7 @@
 
 ## 1109年5月 ｜ [悩み] ビルをカタに入れる
 
-<sub>minpo-teito ｜ `ev-minpo-teito`</sub>
+minpo-teito ｜ `ev-minpo-teito`
 
   - チョーナンJr.「再建のために銀行から金を借りる。そしたら銀行が、うちのビルと土地をカタに取ると言う。」
   - チョーナンJr.「カタに取られたら、もうテナントに貸せんのか? 家賃が入らんかったら会社が死ぬぞ!」
@@ -1158,7 +1158,7 @@
 
 ## 1110年7月 ｜ [悩み] 倒れた会社の後始末
 
-<sub>gyoho-kashi-tanpo ｜ `ev-gyoho-kashi-tanpo`</sub>
+gyoho-kashi-tanpo ｜ `ev-gyoho-kashi-tanpo`
 
   - ケント「新築の建売を買おうと思っているんですが…売主は小さな不動産会社でしてね。」
   - ケント「この街では、会社が倒れる話を何度も見ました。あなたのお父様の会社も、一度は。」
@@ -1176,7 +1176,7 @@
 
 ## 1111年4月 ｜ [悩み] フラット35の正体
 
-<sub>sonota-kiko ｜ `ev-sonota-kiko`</sub>
+sonota-kiko ｜ `ev-sonota-kiko`
 
   - コーシャク「息子が家を買うと言い出しましてね。私も年を取ったものです。」
   - コーシャク「「フラット35」を勧められたそうなんですが、国っぽい機関の名前が出てくると。」
@@ -1193,7 +1193,7 @@
 
 ## 1112年6月 ｜ [悩み] 隣の空き地が気になる
 
-<sub>hourei-takasa ｜ `ev-hourei-takasa`</sub>
+hourei-takasa ｜ `ev-hourei-takasa`
 
   - コーシャク「息子の家の話の続きなんですが。静かな住宅街で、日当たり最高の物件でしてね。」
   - コーシャク「ただ、隣が駐車場なんです。…将来あそこに高いビルが建ったら、日当たりは全滅では?」
@@ -1210,7 +1210,7 @@
 
 ## 1114年5月 ｜ [悩み] 十億の契約書
 
-<sub>zei-inshi ｜ `ev-zei-inshi`</sub>
+zei-inshi ｜ `ev-zei-inshi`
 
   - ピンク「再開発の契約書、いよいよ調印っすね。売主と買主で一通ずつ、二通つくります。」
   - チョーナンJr.「二通も要るかね。切手みたいなやつ、金額がでかいと高いんだろう?」
@@ -1234,7 +1234,7 @@
 
 ## 1135年4月 ｜ [悩み] 九十二歳が追い出された理由
 
-<sub>shakka ｜ `ev-shakka-kaiken`</sub>
+shakka ｜ `ev-shakka-kaiken`
 
   - アカリ「あの町でね、わたしら夫婦は十二年住んどったんです。ちゃんと家賃も払って」
   - アカリ「そしたらある日、期間が来たので終わりです、と。出ていけと」
@@ -1254,7 +1254,7 @@
 
 ## 1135年9月 ｜ [悩み] 自分で内見に行けない人
 
-<sub>minpo-dairi ｜ `ev-minpo-dairi-himeka`</sub>
+minpo-dairi ｜ `ev-minpo-dairi-himeka`
 
   - ヒメカ「あの会見の日から、ずっと考えてまして。わたし、この村に住みたいんです」
   - ヒメカ「でも、わたしが昼間に空き家を見て回ると、次の日には記事になるんですよ」
@@ -1274,7 +1274,7 @@
 
 ## 1136年3月 ｜ [悩み] 持ち主のいない温室
 
-<sub>minpo-souzoku ｜ `ev-minpo-souzoku-onshitsu`</sub>
+minpo-souzoku ｜ `ev-minpo-souzoku-onshitsu`
 
   - ヒメカ「あの、裏に温室のある家。あそこがいちばん良かったんです」
   - ヒメカ「ガラスが半分割れてるんですけど、骨組みがきれいで。誰かが本気で建てたやつですよね、あれ」
@@ -1294,7 +1294,7 @@
 
 ## 1136年6月 ｜ [悩み] 畑を宅地に、村に人を
 
-<sub>hourei-nochi ｜ `ev-hourei-nochi`</sub>
+hourei-nochi ｜ `ev-hourei-nochi`
 
   - ポンポン「役場の田中です。空き家バンク、応募が30件を超えました! 村始まって以来です!」
   - ワカバ「住むところが足りないね。…うちの畑を、宅地にして貸そうと思うの。」
@@ -1312,7 +1312,7 @@
 
 ## 1137年5月 ｜ [悩み] ブログに書かれたパン
 
-<sub>hourei-yoto ｜ `ev-hourei-yoto-pan`</sub>
+hourei-yoto ｜ `ev-hourei-yoto-pan`
 
   - コッペ「三人ぶん焼いてたんです。今朝、四十人並んでました」
   - ヒメカ「……あの、わたしです。ブログに書きました。安くて美味しいって」
@@ -1333,7 +1333,7 @@
 
 ## 1137年9月 ｜ [悩み] 空き家を売って住み替える
 
-<sub>zei-shotoku ｜ `ev-zei-shotoku`</sub>
+zei-shotoku ｜ `ev-zei-shotoku`
 
   - ポンポン「移住希望の方に売りたい、という空き家の持ち主が何人も出てきました。」
   - ポンポン「でも「税金が怖い」と言って、みなさん手を止めてしまうんです。」
@@ -1350,7 +1350,7 @@
 
 ## 1138年5月 ｜ [悩み] 川跡の低地に家を建てるか
 
-<sub>sonota-tochi ｜ `ev-sonota-tochi`</sub>
+sonota-tochi ｜ `ev-sonota-tochi`
 
   - ポンポン「移住者の受け皿がまだ足りません。川沿いの低い畑、あそこを宅地にできませんか?」
   - ポンポン「平らで日当たりもいいし、道もついています。すぐ造成できそうです。」
@@ -1368,7 +1368,7 @@
 
 ## 1139年4月 ｜ [悩み] 静かに買われていく土地
 
-<sub>hourei-kokudo ｜ `ev-hourei-kokudo`</sub>
+hourei-kokudo ｜ `ev-hourei-kokudo`
 
   - ポンポン「役場に妙な届出が続いています。新幹線の予定線沿いの土地ばかり。」
   - リク「3,000平米の遊休地が、まとめて買われてる。買主は…黒会市の法人だ。」
@@ -1385,7 +1385,7 @@
 
 ## 1140年3月 ｜ [悩み] 公示価格が動いた年
 
-<sub>sonota-chika ｜ `ev-sonota-chika`</sub>
+sonota-chika ｜ `ev-sonota-chika`
 
   - カブト「誘致委員会の黒瀬です。新幹線をどちらへ通すか、数字で決めます。」
   - カブト「まず土地の値段だ。国が毎年発表している目安がありますな。」
@@ -1402,7 +1402,7 @@
 
 ## 1141年5月 ｜ [悩み] 数字で村を守る
 
-<sub>sonota-toukei ｜ `ev-sonota-toukei`</sub>
+sonota-toukei ｜ `ev-sonota-toukei`
 
   - チョーナンJrJrJr.「白夜村広報の都倉です。人口増加率、住宅着工戸数、いずれも当村が上回っています。」
   - チョーナンJrJrJr.「…海沢先生のご指導のとおり、数字は完璧に揃えました。」

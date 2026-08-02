@@ -19,7 +19,7 @@
 
 ## 1015年4月 ｜ [人生] ボロ屋が拠点になった日
 
-<sub>minpo-chintai ｜ `ev-life-yachin`</sub>
+minpo-chintai ｜ `ev-life-yachin`
 
   - ハゲタ「ついて来い! お前の住むところに案内してやる。」
   - ハゲタ「…ここだ。雨漏りはしてねえ。たぶんな。」
@@ -37,7 +37,7 @@
 
 ## 1015年6月 ｜ [転出] 佐藤が村を出た日
 
-<sub>gyoho-takkenshi ｜ `ev-gyoho-takkenshi`</sub>
+gyoho-takkenshi ｜ `ev-gyoho-takkenshi`
 
   - ハゲタ「……新人。佐藤が辞めた。今朝、荷物を積んで村を出ていった。」
   - ハゲタ「引き止めたぞ。三度引き止めた。村から人が減るのと、うちから人が減るのは同じ速さなんだと言った。」
@@ -56,7 +56,7 @@
 
 ## 1015年9月 ｜ [転入] 村に知り合いがいない
 
-<sub>minpo-hosho ｜ `ev-minpo-hosho`</sub>
+minpo-hosho ｜ `ev-minpo-hosho`
 
   - タネゾウ「借りる家は決まったで。……ただ、保証人を立ててくれと言われてな。」
   - ミノリ「あらあら、困ったわ。この村、まだ知り合いが一人もおらんのよ。」
@@ -77,7 +77,7 @@
 
 ## 1016年4月 ｜ [転入] 二棟建ててしまった人
 
-<sub>gyoho-menkyo ｜ `ev-gyoho-menkyo-gaston`(新規)</sub>
+gyoho-menkyo ｜ `ev-gyoho-menkyo-gaston`(新規)
 
   - ハゲタ「……新人、表を見ろ。荷車が三台停まっとる。うちの前にだ。」
   - ガストン「岸和田言います。関西から流れてきましてん。……先に謝っときますわ。」
@@ -101,7 +101,7 @@
 
 ## 1016年8月 ｜ [悩み] はじめての祭りでけが人
 
-<sub>minpo-fuhoukoui ｜ `ev-minpo-fuhoukoui`</sub>
+minpo-fuhoukoui ｜ `ev-minpo-fuhoukoui`
 
   - ポッポ「やあやあ、まあ聞いてくだされ。……いや、大した話じゃないんですよ。ほんとに」
   - ポッポ「畑の隅をお貸ししたんです。ただでいいですよって。村ではじめてのお祭りですからね」
@@ -124,7 +124,7 @@
 
 ## 1017年2月 ｜ [悩み] 手付を打った古民家
 
-<sub>minpo-baibai ｜ `ev-minpo-baibai-naresome`</sub>
+minpo-baibai ｜ `ev-minpo-baibai-naresome`
 
   - ハゲタ「新人、岸和田さんが表を三十分うろうろしとる。呼んでこい。」
   - ガストン「……坊、入りにくかったんや。今日は自分から悪い話をしに来たさかいな。」
@@ -146,7 +146,7 @@
 
 ## 1017年5月 ｜ [転出] 仮住まいの壁紙
 
-<sub>minpo-chintai ｜ `ev01-kishiwada-gaston-shikikin`</sub>
+minpo-chintai ｜ `ev01-kishiwada-gaston-shikikin`
 
   - オリビア「先に来てしまってごめんなさい。今日じゅうに片をつけたくて。」
   - オリビア「岸和田さんのアパートを出ます。診療所の裏に空き家が出たので、そちらへ。村は出ませんよ。」
@@ -170,7 +170,7 @@
 
 ## 1018年8月 ｜ [悩み] 十七歳の温室
 
-<sub>minpo-seinen ｜ `ev06-minase-rion-seinen`</sub>
+minpo-seinen ｜ `ev06-minase-rion-seinen`
 
   - リオン「…別に、たいした話じゃない。俺は十七だ。」
   - リオン「店の裏の空き地を借りて、温室を建てたい。花の苗を増やしたいだけだ。」
@@ -188,7 +188,7 @@
 
 ## 1019年4月 ｜ [悩み] 花屋の下の土地
 
-<sub>shakuchi ｜ `ev-shakuchi`</sub>
+shakuchi ｜ `ev-shakuchi`
 
   - リオン「…別に、聞きたいだけだ。うちの花屋、建物は親父のものだが、土地は借り物だ。」
   - タネゾウ「うちの土地だでな。おまえのじいさんの代から、ずっと貸しとる。」
@@ -208,7 +208,7 @@
 
 ## 1020年2月 ｜ [転入] 六ヶ月って、長いのかしらね
 
-<sub>gyoho-baikai ｜ `ev-gyoho-baikai-oribe`(新規)</sub>
+gyoho-baikai ｜ `ev-gyoho-baikai-oribe`(新規)
 
   - シルビア「はじめまして。織部と申します。町のほうから、この村へ移ってまいりましたの。」
   - シルビア「先月、主人を亡くしましてね。……呉服は、これからは私ひとりで回しますのよ。」
@@ -229,7 +229,7 @@
 
 ## 1021年7月 ｜ [悩み] 丘の上のカフェ
 
-<sub>hourei-yoto ｜ `ev07-sakurai-maple-yoto`</sub>
+hourei-yoto ｜ `ev07-sakurai-maple-yoto`
 
   - メープル「ねえねえ聞いて! 将来の夢の話なんだけどね!」
   - メープル「丘の上の住宅街あるでしょ? あそこにパンとコーヒーのお店を出したいの!」
@@ -248,7 +248,7 @@
 
 ## 1022年2月 ｜ [転入] 息子夫婦を入れたい
 
-<sub>shakka ｜ `ev-shakka`</sub>
+shakka ｜ `ev-shakka`
 
   - ハゲタ「新人、応接に若い夫婦が座っとる。荷物ごと来とるぞ。」
   - ガストン「息子や。嫁もおる。今日から村の人間や。」
@@ -273,7 +273,7 @@
 
 ## 1023年6月 ｜ [悩み] 跡を継ぐ人がいない家
 
-<sub>minpo-souzoku ｜ `ev-minpo-igon-oribe`</sub>
+minpo-souzoku ｜ `ev-minpo-igon-oribe`
 
   - シルビア「ごきげんよう。……今日はね、少し縁起でもない話をしにまいりましたの。」
   - シルビア「三年前、あなたに紙のことを教わりましたでしょう。あれから、紙が怖くなくなりましたのよ。」
@@ -296,7 +296,7 @@
 
 ## 1024年5月 ｜ [悩み] 売ったのに来た納税通知
 
-<sub>zei-fudosan ｜ `ev08-kishiwada-gaston-koteishisan`</sub>
+zei-fudosan ｜ `ev08-kishiwada-gaston-koteishisan`
 
   - ガストン「…………」
   - ガストン「…………(机に紙を一枚置く)」
@@ -320,7 +320,7 @@
 
 ## 1026年6月 ｜ [恋愛] 二人の名前で買う家
 
-<sub>minpo-baibai ｜ `rom-minase-rion`</sub>
+minpo-baibai ｜ `rom-minase-rion`
 
   - リオン「…今日は、物件を見せてくれと言ったが。勉強のためだ。…それだけじゃないが。」
   - リオン「土のある庭。朝、水をやる音が聞こえるくらい静かな家。…そういうのを、探している。」
@@ -367,7 +367,7 @@
 
 ## 1027年9月 ｜ [恋愛] 一階がお店の家
 
-<sub>hourei-yoto ｜ `rom-sakurai-maple`</sub>
+hourei-yoto ｜ `rom-sakurai-maple`
 
   - メープル「ねえ、今日は仕事じゃなくて…その、ふつうに歩こうよ。えへへ。」
   - メープル「丘の上、店は建てられないって前に教えてもらったでしょ。あれからずっと考えててね。」
@@ -413,7 +413,7 @@
 
 ## 1028年10月 ｜ [転入] 鈴木さん、村に家を建てる
 
-<sub>hourei-kenpei ｜ `ev-hourei-kenpei`</sub>
+hourei-kenpei ｜ `ev-hourei-kenpei`
 
   - ハゲタ「新人。……これで、村の空いとる土地は全部埋まる。十三年かかったな。」
   - ハゲタ「最後の一軒だ。現地で契約してこい。畑の隅に杭が打ってある。」

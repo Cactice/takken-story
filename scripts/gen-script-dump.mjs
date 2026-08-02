@@ -71,7 +71,7 @@ for (let g = 1; g <= 5; g++) {
     out.push(
       `## ${when} ｜ [${KIND[kind] ?? kind}] ${j.title ?? j.id}`,
       '',
-      `<sub>${j.topicId} ｜ \`${j.id}\`</sub>`,
+      `${j.topicId} ｜ \`${j.id}\``,
       '',
     )
     for (const line of j.dialogue ?? []) out.push(`  - ${line}`)
