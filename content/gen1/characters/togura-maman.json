@@ -1,9 +1,9 @@
 {
-  "id": "togura-mama",
-  "name": "都倉ママ",
+  "id": "togura-maman",
+  "name": "都倉ママン",
   "familyName": "都倉",
-  "givenName": "ママ",
-  "sprite": "sprites/togura-mama.png",
+  "givenName": "ママン",
+  "sprite": "sprites/togura-maman.png",
   "generation": 1,
   "appearsIn": [
     1,
