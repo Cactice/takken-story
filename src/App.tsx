@@ -44,7 +44,7 @@ import { MemoBook } from './components/memo/MemoBook'
 import { HomeInterior } from './components/home/HomeInterior'
 import { MAP_OF_GENERATION, ARIKITA } from './lib/maps'
 import type { GameMap } from './lib/maps'
-import { arrivalStaging, openingStaging } from './lib/staging'
+import { arrivalStaging, departureStaging, openingStaging } from './lib/staging'
 import type { Staging } from './lib/staging'
 import { GenerationSelect } from './components/generation/GenerationSelect'
 import { seasonOfMonth } from './lib/maps'
@@ -468,6 +468,8 @@ export default function App() {
     }
     const leaver = leavers.find(suits) ?? leavers[0]
     setMovingOut({ characterId: leaver, propertyId: homes[leaver] })
+    // 転入と同じく、大きく告知してから始める(気づいたら人が減っていた、を避ける)
+    setStaging(departureStaging(leaver))
   }, [state, movingOut, tour, staging])
 
   // 毎月1日、転入希望者が村にやってくる(手持ち無沙汰な時間を作らない)。

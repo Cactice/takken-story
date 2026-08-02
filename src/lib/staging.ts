@@ -129,6 +129,29 @@ export const BANNER: StageCommand = {
 }
 
 /**
+ * 誰かが村を出ていくことの告知。転入と対になる演出で、
+ * 気づいたら住民が減っていた、という状態を避ける(docs/SYSTEMS.md)。
+ */
+export const LEAVE_BANNER: StageCommand = {
+  cmd: 'banner',
+  text: '転出者、発生!',
+  sub: '村を出ていく人がいる。話を聞きに行こう',
+  ms: 1800,
+}
+
+/**
+ * 転出の告知だけを出す。出ていく人はもうマップ上にいるので、歩かせるものはない。
+ * 物件を案内している最中は呼ばれない(呼び出し側が tour を見て待つ)。
+ */
+export function departureStaging(characterId: string): Staging {
+  return {
+    id: `departure/${characterId}`,
+    actors: [],
+    script: [LEAVE_BANNER],
+  }
+}
+
+/**
  * @param members 最初の転入世帯。世帯IDは決め打ちしない(コンテンツが差し替わっても壊れない)
  */
 export function openingStaging(places: OpeningPlaces, members: StageActor[]): Staging {
