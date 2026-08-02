@@ -20,6 +20,11 @@
       "characterId": "hageta-goro",
       "kind": "business",
       "note": "証拠集めで組む相手"
+    },
+    {
+      "characterId": "kk-todoroki",
+      "kind": "sibling",
+      "note": "十二歳下の弟。理屈っぽさが嫌で村を出た"
     }
   ],
   "smallTalk": {

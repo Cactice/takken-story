@@ -20,6 +20,11 @@
       "characterId": "hageta-mio",
       "kind": "business",
       "note": "手続きを全面的に頼っている"
+    },
+    {
+      "characterId": "anzai",
+      "kind": "sibling",
+      "note": "十二歳上の姉。村の弁護士。確かめる人だった"
     }
   ],
   "smallTalk": {
@@ -38,5 +43,6 @@
     "beforeExam": [
       "試験か! ……わしはそういうのを全部人に頼んできた。えらいもんだ、あんたは"
     ]
-  }
+  },
+  "family": "安西家"
 }

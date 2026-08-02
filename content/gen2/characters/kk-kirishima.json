@@ -1,7 +1,7 @@
 {
   "id": "kk-kirishima",
   "name": "タクミ",
-  "familyName": "霧島",
+  "familyName": "都倉",
   "givenName": "タクミ",
   "sprite": "sprites/kk-kirishima.png",
   "generation": 2,
@@ -20,6 +20,21 @@
       "characterId": "kk-hayama",
       "kind": "neighbor",
       "note": "同じマンションになれば隣人"
+    },
+    {
+      "characterId": "kk-shindo",
+      "kind": "sibling",
+      "note": "長兄。建設会社の社長"
+    },
+    {
+      "characterId": "kk-negishi",
+      "kind": "sibling",
+      "note": "三男。デザイン会社を興した"
+    },
+    {
+      "characterId": "kk-daiki",
+      "kind": "sibling",
+      "note": "末弟。出てきたばかり"
     }
   ],
   "moveIn": {
@@ -50,5 +65,6 @@
       "車を停める場所を別に借りました。月極が思ったより高くて",
       "古い建物なので、冬の朝が冷えます。前の街ではこうじゃなかったんですが"
     ]
-  }
+  },
+  "family": "都倉家"
 }

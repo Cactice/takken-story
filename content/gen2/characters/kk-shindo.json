@@ -1,7 +1,7 @@
 {
   "id": "kk-shindo",
   "name": "ゴウ",
-  "familyName": "進藤",
+  "familyName": "都倉",
   "givenName": "ゴウ",
   "sprite": "sprites/kk-shindo.png",
   "generation": 2,
@@ -20,6 +20,21 @@
       "characterId": "umizawa",
       "kind": "business",
       "note": "販売戦略を任せている"
+    },
+    {
+      "characterId": "kk-kirishima",
+      "kind": "sibling",
+      "note": "次兄。転勤族"
+    },
+    {
+      "characterId": "kk-negishi",
+      "kind": "sibling",
+      "note": "三男。デザイン会社を興した"
+    },
+    {
+      "characterId": "kk-daiki",
+      "kind": "sibling",
+      "note": "末弟。出てきたばかり"
     }
   ],
   "smallTalk": {
@@ -31,7 +46,7 @@
     "default": [
       "今すぐだ。他社に先を越されたら終わりだ。……いや、分かってる、聞いてるよ",
       "完売しないと次が回らん。止まったら死ぬんだ、この商売は",
-      "ジンさんは絵を描くのがうまい。数字の絵をな。あれに乗ると速いんだ",
+      "カイルさんは絵を描くのがうまい。数字の絵をな。あれに乗ると速いんだ",
       "モデルルームは金がかかる。かかるが、あれで決まるんだ。人は図面じゃ買わん",
       "待てと言われるのが一番こたえる。手続きってのは、なんであんなに人を待たせるんだ"
     ],
@@ -63,5 +78,6 @@
       "築古",
       "エレベーターなし"
     ]
-  }
+  },
+  "family": "都倉家"
 }

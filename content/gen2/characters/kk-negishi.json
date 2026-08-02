@@ -1,7 +1,7 @@
 {
   "id": "kk-negishi",
   "name": "ユウ",
-  "familyName": "根岸",
+  "familyName": "都倉",
   "givenName": "ユウ",
   "sprite": "sprites/kk-negishi.png",
   "generation": 2,
@@ -25,6 +25,21 @@
       "characterId": "kk-koga",
       "kind": "client",
       "note": "協会の事務局で開業の相談をした"
+    },
+    {
+      "characterId": "kk-shindo",
+      "kind": "sibling",
+      "note": "長兄。建設会社の社長"
+    },
+    {
+      "characterId": "kk-kirishima",
+      "kind": "sibling",
+      "note": "次兄。転勤族"
+    },
+    {
+      "characterId": "kk-daiki",
+      "kind": "sibling",
+      "note": "末弟。出てきたばかり"
     }
   ],
   "moveIn": {
@@ -55,5 +70,6 @@
       "住むのと仕事とで、使い方が契約と合っていない気がして落ち着かないんです",
       "駅から遠いと、打ち合わせのたびに時間を捨てることになります"
     ]
-  }
+  },
+  "family": "都倉家"
 }

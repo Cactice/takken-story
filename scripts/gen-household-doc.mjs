@@ -60,6 +60,60 @@ if (noSummary.length) {
 }
 
 const plan = JSON.parse(readFileSync(PLAN, 'utf8'));
+
+// --- 移動の型 × 登場世代の舞台 の整合チェック --------------------------------
+// 第1・3・5世代 = ありきた村 / 第2・4世代 = 黒会市。どの世代に出るかで住んでいる場所が決まる。
+// 型は「家に1つ」ではなく「系統(枝)ごと」。枝の gens は ids の appearsIn と gens の和集合。
+const STAGE = { 1: '村', 2: '都会', 3: '村', 4: '都会', 5: '村' };
+const branchGens = (b) => {
+  const fromIds = (b.ids ?? []).flatMap((id) => (byId.has(id) ? genList(byId.get(id)) : []));
+  return [...new Set([...fromIds, ...(b.gens ?? [])])].sort((a, z) => a - z);
+};
+const MOVE_RULES = {
+  村に留まる: (g) => (g.every((x) => STAGE[x] === '村') ? null : '村の世代(1・3・5)にしか出ないはず'),
+  都会に留まる: (g) => (g.every((x) => STAGE[x] === '都会') ? null : '都会の世代(2・4)にしか出ないはず'),
+  '村→都会': (g) => {
+    const v = g.filter((x) => STAGE[x] === '村');
+    const c = g.filter((x) => STAGE[x] === '都会');
+    if (!v.length || !c.length) return '村の世代と都会の世代の両方に出る必要がある';
+    return v[0] < c[0] && STAGE[g.at(-1)] === '都会' ? null : '村が先・都会で終わる並びになっていない';
+  },
+  '都会→村': (g) => {
+    const v = g.filter((x) => STAGE[x] === '村');
+    const c = g.filter((x) => STAGE[x] === '都会');
+    if (!v.length || !c.length) return '都会の世代と村の世代の両方に出る必要がある';
+    return c[0] < v[0] && STAGE[g.at(-1)] === '村' ? null : '都会が先・村で終わる並びになっていない';
+  },
+  '村→都会→村': (g) => {
+    const c = g.filter((x) => STAGE[x] === '都会');
+    if (!c.length) return '都会の世代(2・4)に出る必要がある';
+    const before = g.some((x) => STAGE[x] === '村' && x < c[0]);
+    const after = g.some((x) => STAGE[x] === '村' && x > c.at(-1));
+    return before && after ? null : '都会の前と後の両方に村の世代が要る';
+  },
+  // 白夜村は第4世代に造られ第5世代に完成している。村でも都会でもない第三の行き先。
+  '都会→白夜村': (g) =>
+    g.some((x) => STAGE[x] === '都会') && g.at(-1) >= 4 ? null : '都会の世代に出て、第4・5世代まで続く必要がある',
+  '白夜村→村': (g) => (g.length ? null : '登場世代がない'), // 移動が前史なので並び順は問わない
+  絶える: (g) => (g.length ? null : '登場世代がない'), // 家が消える型。並び順は問わない
+};
+const moveErrors = [];
+for (const [name, cfg] of Object.entries(plan.households)) {
+  const branches = cfg.movement ?? [];
+  if (!branches.length) moveErrors.push(`${name}家: movement が空`);
+  for (const b of branches) {
+    const rule = MOVE_RULES[b.type];
+    if (!rule) { moveErrors.push(`${name}家/${b.who}: 知らない型「${b.type}」`); continue; }
+    const g = branchGens(b);
+    if (!g.length) { moveErrors.push(`${name}家/${b.who}: 登場世代が特定できない(ids も gens も空)`); continue; }
+    const err = rule(g);
+    if (err) moveErrors.push(`${name}家/${b.who}: 型「${b.type}」だが登場世代は ${g.join('・')} — ${err}`);
+  }
+}
+if (moveErrors.length) {
+  console.error('移動の型と登場世代の舞台が食い違っています:\n' + moveErrors.map((e) => '  - ' + e).join('\n'));
+  process.exit(1);
+}
 // 同居する別姓(シェアハウス等)を一つの世帯に寄せる
 const familyOf = (c) => (c?.familyName ? plan.merge?.[c.familyName] ?? c.familyName : null);
 
@@ -137,7 +191,14 @@ out.push('| 村→都会 | 夢のために出ていく。親元を離れる | �
 out.push('| 都会→村 | 疲れて/追われて戻る。Uターン | 空き家バンク、相続した実家、農地転用、譲渡所得 |');
 out.push('| 村に留まる | 根を張る。土地を守る | 相続、境界、借地、固定資産税 |');
 out.push('| 都会に留まる | 都会が性に合う | 区分所有、住み替え、住宅ローン |');
+out.push('| 村→都会→村 | 出て、戻る。一族で円環が閉じる | 修行先の狭小賃貸、Uターン、造作買取 |');
+out.push('| 都会→白夜村 | 管理された人工の街を選ぶ | 統計、地価公示、区分所有 |');
+out.push('| 白夜村→村 | 人工の街に追われて/疑って村へ | 定期借家、空き家バンク |');
 out.push('| 絶える | 跡継ぎがなく消える | 空き家、相続人不存在 |');
+out.push('');
+out.push('**型は家に1つではなく、系統(枝)ごとに持つ。** 同じ親に育った兄弟が違う場所を選ぶ家があるため。');
+out.push('第1・3・5世代=ありきた村、第2・4世代=黒会市。**どの世代に出るかで、その人がどこに住んでいるかが決まる。**');
+out.push('枝の型と登場世代の舞台が食い違うと、このスクリプトはエラーで止まる。');
 out.push('');
 out.push('> このファイルは `node scripts/gen-household-doc.mjs` で生成される。');
 out.push('> **手で書いた設計(移動の型・計画行)は [household-plan.json](household-plan.json) にある。** そちらを編集すること。');
@@ -148,7 +209,8 @@ out.push('');
 out.push('| 家 | 型 | 世代 | 実装 | 計画 |');
 out.push('|---|---|---|---|---|');
 for (const h of sorted) {
-  out.push(`| ${h.name}家 | ${h.cfg.move ?? '**未割当**'} | ${h.gens.join('・') || '—'} | ${h.done} | ${h.todo} |`);
+  const types = (h.cfg.movement ?? []).map((b) => b.type);
+  out.push(`| ${h.name}家 | ${types.join(' / ') || '**未割当**'} | ${h.gens.join('・') || '—'} | ${h.done} | ${h.todo} |`);
 }
 out.push('');
 out.push(
@@ -163,8 +225,20 @@ out.push('');
 for (const h of sorted) {
   out.push(`## ${h.name}家 ｜ 第${h.gens.join('・')}世代 ｜ 実装${h.done}件 + 計画${h.todo}件`);
   out.push('');
-  out.push(`**移動の型: ${h.cfg.move ?? '未割当'}** — ${h.cfg.note ?? ''}`);
+  out.push(h.cfg.note ?? '');
   out.push('');
+  out.push('| 系統 | 移動の型 | 登場世代 | どういう枝か |');
+  out.push('|---|---|---|---|');
+  for (const b of h.cfg.movement ?? []) {
+    out.push(`| ${b.who} | **${b.type}** | ${branchGens(b).join('・')} | ${b.note ?? ''} |`);
+  }
+  out.push('');
+  if (h.cfg.story) {
+    out.push(`> **あらすじ**`);
+    out.push('>');
+    out.push(`> ${h.cfg.story}`);
+    out.push('');
+  }
   for (const m of h.members) {
     out.push(`- **${fullName(m)}**(初出${m.age}歳・第${genList(m).join('・')}世代) ${(m.personality ?? '').slice(0, 50)}`);
   }
@@ -183,6 +257,12 @@ out.push(
   `初代 **${BOSS}禿ゲ田**(第1世代) → 二代目 **${BOSS}ゴロー**(第3世代) → 三代目 **${BOSS}ミオ**(第4世代)。主人公の家系と並走し、どの世代でも隣にいる。`,
 );
 out.push('');
+if (plan.boss?.story) {
+  out.push('> **あらすじ**');
+  out.push('>');
+  out.push(`> ${plan.boss.story}`);
+  out.push('');
+}
 out.push('主人公・その身内・社長だけで完結する回(どの世帯にも属さない):');
 out.push('');
 out.push('| 世代 | イベント | どんな話か | 学ぶ論点 | 状態 |');

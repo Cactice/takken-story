@@ -1,12 +1,13 @@
 {
   "id": "kk-kirishima-sota",
   "name": "ソウタ",
-  "familyName": "霧島",
+  "familyName": "都倉",
   "givenName": "ソウタ",
   "sprite": "sprites/kk-kirishima-sota.png",
   "generation": 2,
   "appearsIn": [
-    2
+    2,
+    3
   ],
   "age": 8,
   "gender": "male",
@@ -55,5 +56,6 @@
       "犬、だめなんだって。……べつにいいけど。べつに",
       "はしるとしたの人におこられる。だからあるいてる"
     ]
-  }
+  },
+  "family": "都倉家"
 }

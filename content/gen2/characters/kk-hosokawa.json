@@ -6,8 +6,7 @@
   "sprite": "sprites/kk-hosokawa.png",
   "generation": 2,
   "appearsIn": [
-    2,
-    4
+    2
   ],
   "age": 57,
   "gender": "male",

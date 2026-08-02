@@ -6,8 +6,7 @@
   "sprite": "sprites/umizawa.png",
   "generation": 2,
   "appearsIn": [
-    2,
-    3
+    2
   ],
   "age": 24,
   "gender": "male",
@@ -23,9 +22,9 @@
       "note": "何度も邪魔をされてきた相手。内心では認めている"
     },
     {
-      "characterId": "byakuya-sena",
-      "kind": "mentor",
-      "note": "白夜村の広報。弟子として育てている"
+      "characterId": "umizawa-cecil",
+      "kind": "child",
+      "note": "第2世代の時点ではまだ生まれていない息子。二十年あまり後に生まれる"
     }
   ],
   "smallTalk": {

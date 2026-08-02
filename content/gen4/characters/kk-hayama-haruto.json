@@ -1,0 +1,26 @@
+{
+  "id": "kk-hayama-haruto",
+  "name": "ハルト",
+  "familyName": "葉山",
+  "givenName": "ハルト",
+  "sprite": "sprites/kk-hayama.png",
+  "generation": 4,
+  "appearsIn": [4],
+  "age": 58,
+  "gender": "male",
+  "romanceable": false,
+  "personality": "58歳。葉山コウとミナの息子。両親が六十年前に買ったマンションで育ち、今もその街に住んでいる。父ゆずりで押しに弱いが、父と違って「不安なら人に聞く」を先に覚えた。息子が家を買うと言い出して、六十年前の父と同じ顔で相談に来る。",
+  "motive": "息子に、自分の父がしたのと同じことをしてやること。",
+  "weakness": "自分のことになると途端に決められない。",
+  "catchphrase": "…父も、同じことを聞いたそうです。",
+  "relations": [
+    { "characterId": "kk-hayama", "kind": "parent", "note": "父。コウの慎重さを笑いながら受け継いでいる" },
+    { "characterId": "hageta-mio", "kind": "client", "note": "息子の家のことで相談する相手" }
+  ],
+  "smallTalk": {
+    "default": [
+      "父はこの街で家を買うとき、契約のたびに眠れなくなったそうです。血ですね",
+      "母が契約書の細かい字を全部読む人でしてね。あれは真似できません"
+    ]
+  }
+}

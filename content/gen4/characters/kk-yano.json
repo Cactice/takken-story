@@ -6,7 +6,8 @@
   "sprite": "sprites/kk-yano.png",
   "generation": 4,
   "appearsIn": [
-    4
+    4,
+    5
   ],
   "age": 35,
   "gender": "male",

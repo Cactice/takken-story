@@ -6,7 +6,8 @@
   "sprite": "sprites/kk-daiki.png",
   "generation": 2,
   "appearsIn": [
-    2
+    2,
+    3
   ],
   "age": 24,
   "gender": "male",
@@ -20,6 +21,21 @@
       "characterId": "kk-tsuzuki",
       "kind": "helper",
       "note": "何度も助けられている"
+    },
+    {
+      "characterId": "kk-shindo",
+      "kind": "sibling",
+      "note": "長兄。建設会社の社長"
+    },
+    {
+      "characterId": "kk-kirishima",
+      "kind": "sibling",
+      "note": "次兄。転勤族"
+    },
+    {
+      "characterId": "kk-negishi",
+      "kind": "sibling",
+      "note": "三男。デザイン会社を興した"
     }
   ],
   "smallTalk": {
@@ -63,5 +79,6 @@
       "築古",
       "広い"
     ]
-  }
+  },
+  "family": "都倉家"
 }
