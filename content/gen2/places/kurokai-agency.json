@@ -1,0 +1,36 @@
+{
+  "id": "kurokai-agency",
+  "name": "黒会不動産(事務所)",
+  "kind": "office",
+  "generation": 2,
+  "category": "事務所(自社)",
+  "forRent": false,
+  "vacantUnitsAtStart": 0,
+  "spec": {
+    "structure": "RC造(鉄筋コンクリート)",
+    "floors": 2,
+    "units": 1,
+    "ageYears": 19,
+    "layout": "1階カウンター + 2階事務室",
+    "area": 110,
+    "zoning": "近隣商業地域",
+    "buildingCoverage": 80,
+    "floorAreaRatio": 300,
+    "rent": 18,
+    "depositMonths": 6,
+    "keyMoneyMonths": 0,
+    "road": "幅員8mの市道に14m接道",
+    "features": [
+      "1階が接客カウンター、2階が事務室",
+      "駅から徒歩9分",
+      "来客用の駐車2台",
+      "大型ガラス張りの物件ボード"
+    ],
+    "legalNotes": [
+      "事務所には標識(宅地建物取引業者票)と報酬額表の掲示義務がある",
+      "業務に従事する者5人に1人以上の割合で専任の宅地建物取引士を置く",
+      "帳簿は各事業年度末に閉鎖して5年間、従業者名簿は最終記載から10年間保存する",
+      "事務所を新設したら、2週間以内に営業保証金の追加供託(または分担金の納付)が必要"
+    ]
+  }
+}

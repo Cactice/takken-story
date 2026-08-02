@@ -109,6 +109,36 @@ def snow_tile(im, tx, ty, seed, ground, road=None):
                 break
 
 
+# 落葉樹の骨格。(x0,y0)-(x1,y1) の線を 16x16 のタイルに引く。
+# 冬の村に緑の木しか無いと「ただ地面が白い夏」に見えるので、葉を落とした木を混ぜる
+BARE_BRANCHES = (
+    ((7, 15), (7, 7)), ((8, 15), (8, 7)),      # 幹(2px)
+    ((7, 11), (4, 8)), ((4, 8), (3, 6)),       # 左の大枝
+    ((8, 10), (11, 7)), ((11, 7), (12, 5)),    # 右の大枝
+    ((7, 9), (5, 6)), ((5, 6), (4, 4)),        # 内側の枝
+    ((8, 8), (10, 5)), ((10, 5), (10, 3)),
+    ((7, 7), (6, 4)), ((8, 7), (8, 3)),        # 梢
+)
+BARE_TRUNK_X = (7, 8)
+BARE_DARK = (86, 58, 43)
+BARE_LIGHT = (134, 95, 64)
+
+
+def draw_bare_tree(im, tx, ty):
+    """葉を落とした落葉樹。枝の上には雪が乗る"""
+    d = ImageDraw.Draw(im)
+    x0, y0 = tx * S, ty * S
+    for (ax, ay), (bx, by) in BARE_BRANCHES:
+        d.line([(x0 + ax, y0 + ay), (x0 + bx, y0 + by)], fill=(*BARE_DARK, 255))
+    px = im.load()
+    for y in range(6, S):                       # 幹の右半分を明るく(光は西から)
+        px[x0 + BARE_TRUNK_X[1], y0 + y] = (*BARE_LIGHT, 255)
+    for x in range(S):                          # 枝の上に積もる雪
+        for y in range(S - 1, 0, -1):
+            if px[x0 + x, y0 + y][3] and px[x0 + x, y0 + y - 1][3] == 0 and patch(3, x, y, 70):
+                px[x0 + x, y0 + y - 1] = (*SNOW, 255)
+
+
 def draw_snowman(im, tx, ty):
     d = ImageDraw.Draw(im)
     x0, y0 = tx * S, ty * S
@@ -126,7 +156,7 @@ def build(src, dst, cols, rows, field, road):
     base = Image.open(src).convert('RGBA')
     ground_set = set(field) | set(road)
     # 元のタイル: 建物などは上端に積雪。地面は「素通り」させ、下で薄い/濃いを作る
-    extra = 1 + len(field) * 2 + len(road) * 2
+    extra = 2 + len(field) * 2 + len(road) * 2
     out_rows = rows + math.ceil(extra / cols)
     im = Image.new('RGBA', (cols * S, out_rows * S), (0, 0, 0, 0))
     im.paste(base, (0, 0))
@@ -141,6 +171,9 @@ def build(src, dst, cols, rows, field, road):
     nxt = cols * rows
     snowman = nxt
     draw_snowman(im, snowman % cols, snowman // cols)
+    nxt += 1
+    bare = nxt
+    draw_bare_tree(im, bare % cols, bare // cols)
     nxt += 1
     snow, rut_h, rut_v = {}, {}, {}
     for g in field:
@@ -158,8 +191,8 @@ def build(src, dst, cols, rows, field, road):
             table[g] = [nxt]
             nxt += 1
     im.save(dst)
-    print(f'wrote {dst} ({cols}x{out_rows}) 雪だるま={snowman}')
-    return {'cols': cols, 'rows': out_rows, 'snowman': snowman,
+    print(f'wrote {dst} ({cols}x{out_rows}) 雪だるま={snowman} 裸木={bare}')
+    return {'cols': cols, 'rows': out_rows, 'snowman': snowman, 'bare': bare,
             'snow': snow, 'rutH': rut_h, 'rutV': rut_v}
 
 
@@ -184,6 +217,7 @@ with open('src/lib/maps/winter-tiles.ts', 'w') as f:
 //   snow          … 雪が積もったマス(中心は白ベタ、ふちだけディザ)。模様違いが2枚
 //   rutH / rutV   … 轍(わだち)が残った道。横の道 / 縦の道
 //   snowman       … 雪だるま
+//   bareTree      … 葉を落とした落葉樹(枝に雪)。常緑樹は元のタイルに雪が乗るので不要
 
 /** 元のタイル番号 → 冬のタイル候補 */
 export type SnowTable = Readonly<Record<number, readonly number[]>>
@@ -194,6 +228,9 @@ export const CITY_WINTER_SIZE = {{ cols: {city['cols']}, rows: {city['rows']} }}
 
 export const TOWN_SNOWMAN = {town['snowman']}
 export const CITY_SNOWMAN = {city['snowman']}
+
+export const TOWN_BARE_TREE = {town['bare']}
+export const CITY_BARE_TREE = {city['bare']}
 
 {block('TOWN_SNOW', town['snow'])}
 {block('CITY_SNOW', city['snow'])}

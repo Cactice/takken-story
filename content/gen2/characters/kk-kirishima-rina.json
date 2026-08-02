@@ -1,0 +1,59 @@
+{
+  "id": "kk-kirishima-rina",
+  "name": "リナ",
+  "familyName": "霧島",
+  "givenName": "リナ",
+  "sprite": "sprites/kk-kirishima-rina.png",
+  "generation": 2,
+  "appearsIn": [
+    2
+  ],
+  "age": 36,
+  "gender": "female",
+  "romanceable": false,
+  "personality": "36歳。タクミの妻。在宅で校正の仕事をしている。家にいる時間が長いぶん、音と日当たりに人一倍うるさい。引っ越しのたびに「今度こそ静かな家」と言う。",
+  "motive": "仕事に集中できる静かな部屋を、ようやく手に入れる。",
+  "weakness": "不満をその場で言わず、半年後にまとめて言う。",
+  "catchphrase": "……静かかどうか、もう一度だけ確認させて。",
+  "relations": [
+    {
+      "characterId": "kk-kirishima",
+      "kind": "spouse",
+      "note": "夫"
+    },
+    {
+      "characterId": "kk-kirishima-sota",
+      "kind": "child",
+      "note": "息子"
+    }
+  ],
+  "moveIn": {
+    "demands": "家で仕事をするので、静かで日の入る部屋がいいんです",
+    "likedFeatures": [
+      "日当たり良好",
+      "静か"
+    ],
+    "dislikedFeatures": [
+      "隣が近い"
+    ]
+  },
+  "smallTalk": {
+    "movedIn": [
+      "昼間に一度、窓を開けて座ってみました。ここなら仕事ができます",
+      "校正は音があると進まないんです。静けさは贅沢品ですね"
+    ],
+    "default": [
+      "夫は駅から近ければいいと言うんです。私は昼のうるささのほうが困る",
+      "ソウタが庭で走り回れる家、いつかは欲しいですね",
+      "在宅の仕事だと、家がそのまま職場です。だから選ぶのに時間がかかるんです"
+    ],
+    "satisfied": [
+      "昼間、鳥の声しかしません。この静けさに越してきた甲斐がありました",
+      "窓際に机を置いたら、午前中は電気が要らなくなりました"
+    ],
+    "dissatisfied": [
+      "壁が薄くて、隣の生活音で手が止まります。……半年、我慢していました",
+      "日が入らないので、昼でも暗いんです。仕事場としては辛くて"
+    ]
+  }
+}

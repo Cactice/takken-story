@@ -1,0 +1,36 @@
+{
+  "id": "kurokai-souko",
+  "name": "東倉庫",
+  "kind": "shop",
+  "generation": 2,
+  "category": "倉庫(鉄骨平屋・賃貸)",
+  "forRent": true,
+  "vacantUnitsAtStart": 0,
+  "spec": {
+    "structure": "鉄骨造",
+    "floors": 1,
+    "units": 1,
+    "ageYears": 22,
+    "layout": "倉庫1棟",
+    "area": 240,
+    "zoning": "準工業地域",
+    "buildingCoverage": 60,
+    "floorAreaRatio": 200,
+    "rent": 14,
+    "depositMonths": 3,
+    "keyMoneyMonths": 0,
+    "road": "幅員9mの市道に20m接道",
+    "features": [
+      "大型シャッターと4t車の横付け可",
+      "天井高5m",
+      "駐車場あり(3台)",
+      "事務スペース併設",
+      "夜間の搬入可"
+    ],
+    "legalNotes": [
+      "準工業地域。住宅も店舗も建てられるが、環境の悪化をもたらすおそれの大きい工場は建てられない",
+      "倉庫を店舗や住宅に用途変更する場合、200㎡を超える部分は建築確認が必要",
+      "事業用の建物賃貸借。契約期間の満了後の扱いは特約に従う"
+    ]
+  }
+}

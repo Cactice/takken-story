@@ -9,13 +9,13 @@ export interface Sheet {
 }
 
 export const TOWN_SHEET: Sheet = {
-  url: `${import.meta.env.BASE_URL}assets/tiny-town/tilemap_packed.png`,
+  url: `${import.meta.env?.BASE_URL ?? '/'}assets/tiny-town/tilemap_packed.png`,
   cols: 12,
   rows: 11,
 }
 
 export const CHAR_SHEET: Sheet = {
-  url: `${import.meta.env.BASE_URL}assets/tiny-dungeon/tilemap_packed.png`,
+  url: `${import.meta.env?.BASE_URL ?? '/'}assets/tiny-dungeon/tilemap_packed.png`,
   cols: 12,
   rows: 11,
 }
@@ -83,7 +83,7 @@ export function playerSpriteStyle(
 ): CSSProperties {
   const col = WALK_FRAMES[step % WALK_FRAMES.length]
   return {
-    backgroundImage: `url(${import.meta.env.BASE_URL}assets/player/${gender}.png)`,
+    backgroundImage: `url(${import.meta.env?.BASE_URL ?? '/'}assets/player/${gender}.png)`,
     backgroundSize: '300% 400%',
     backgroundPosition: `${(col / 2) * 100}% ${(FACING_ROW[facing] / 3) * 100}%`,
   }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { TitleScreen } from './components/title/TitleScreen'
 import { TownView } from './components/town/TownView'
 import { DialogueBox } from './components/dialogue/DialogueBox'
@@ -369,6 +369,15 @@ export default function App() {
     return () => clearInterval(id)
   }, [tourRunning, uiBusy, dispatchTour])
 
+  // 面談(転入者の話を聞く)の謝礼。世帯ごとに1回だけ
+  const paidMeeting = useRef<string | null>(null)
+  useEffect(() => {
+    if (tour === null || tour.phase.kind !== 'briefing') return
+    if (paidMeeting.current === tour.household.id) return
+    paidMeeting.current = tour.household.id
+    changeMoney(REWARD_MEETING, '面談の謝礼金')
+  }, [tour, changeMoney])
+
   // 毎月1日に自宅の家賃を引く。家賃は定数ではなく「住んでいる物件の賃料」(世代で変わる)
   useEffect(() => {
     if (state === null) return
@@ -682,11 +691,9 @@ export default function App() {
     if (f.kind === 'book') return setMemoPrompt(true)
     if (tour === null) return
     // 面談前(ついてきているだけ)なら、話しかけると要望のヒアリングが始まる
-    if (tour.phase.kind === 'arriving') {
-      dispatchTour({ type: 'meet' })
-      changeMoney(REWARD_MEETING, '面談の謝礼金')
-      return
-    }
+    // (謝礼は下の効果で払う。この関数は TownView の setState 更新関数の中から呼ばれるので、
+    //  ここで副作用を起こすと二重に走る)
+    if (tour.phase.kind === 'arriving') return dispatchTour({ type: 'meet' })
     setFollowerTalk(
       tour.household.members.map((member) => ({ member, text: followerLine(tour, member) })),
     )

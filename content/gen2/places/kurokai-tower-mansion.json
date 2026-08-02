@@ -1,0 +1,39 @@
+{
+  "id": "kurokai-tower-mansion",
+  "name": "スカイレジデンス黒会",
+  "kind": "mansion",
+  "generation": 2,
+  "category": "駅近ワンルーム(RC・賃貸)",
+  "forRent": true,
+  "vacantUnitsAtStart": 1,
+  "spec": {
+    "structure": "RC造(鉄筋コンクリート)",
+    "floors": 6,
+    "units": 18,
+    "ageYears": 3,
+    "layout": "1K・302号室",
+    "area": 26,
+    "zoning": "商業地域",
+    "buildingCoverage": 80,
+    "floorAreaRatio": 500,
+    "rent": 9,
+    "priceNote": "共益費 0.5万円/月",
+    "depositMonths": 1,
+    "keyMoneyMonths": 1,
+    "road": "幅員16mの都道に11m接道",
+    "features": [
+      "駅近(黒会駅まで徒歩2分)",
+      "築浅(築3年)",
+      "オートロックと24時間ゴミ出し",
+      "1階がコンビニで深夜も明るい",
+      "ペット不可",
+      "室内洗濯機置き場"
+    ],
+    "legalNotes": [
+      "商業地域。日影規制の適用がなく、周囲に高い建物が建つ可能性がある",
+      "区分所有建物の一室。管理規約でペット飼育と楽器演奏が禁止されている",
+      "前面道路の幅員が12m以上なので、容積率は指定容積率500%がそのまま適用される",
+      "普通借家契約(期間2年・更新あり)。定期建物賃貸借ではない"
+    ]
+  }
+}

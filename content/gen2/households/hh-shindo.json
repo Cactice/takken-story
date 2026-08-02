@@ -1,0 +1,13 @@
+{
+  "id": "hh-shindo",
+  "kind": "single",
+  "label": "進藤建設(社長・進藤ゴウ)",
+  "moveReason": "建設会社の事務所が手狭になり、資材も置ける場所へ移りたい",
+  "topicId": "gyoho-jimusho",
+  "budget": 25,
+  "order": 6,
+  "memberIds": [
+    "kk-shindo"
+  ],
+  "note": "「今すぐ」「明日から」で急かしてくる客。事務所・案内所の規制が題材になる"
+}

@@ -393,7 +393,8 @@ export function TownView({
   const openSpec = openProperty === null ? undefined : propertyById(openProperty)
 
   return (
-    <section className="town" aria-label="町">
+    // data-stage/-pc は演出イベントの進行を外から見るための目印(E2Eのデバッグ用)
+    <section className="town" aria-label="町" data-stage={cmd?.cmd ?? '-'} data-pc={pc}>
       <div className="town-viewport">
         {/* カメラ: 主人公が常に中央。--px/--py でマップ側を逆方向に translate */}
         <div

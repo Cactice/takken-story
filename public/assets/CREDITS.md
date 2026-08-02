@@ -38,7 +38,8 @@
 - `tiny-town/tilemap_winter.png` と `city/tilemap_winter.png` は、上記 Kenney (CC0) のシートに
   `scripts/make-winter-tiles.py` で**雪を乗せて**作った派生物(色は変換していない。屋根や木の上端に
   積雪を乗せ、地面はまだらの雪パッチ、道は轍を残す)。元からあるタイル番号は元シートと同一で、
-  シートを数行ぶん拡張して雪だるまと積雪パターン違いを追加している(番号は `src/lib/maps/winter-tiles.ts`)。
+  シートを数行ぶん拡張して雪だるま・積雪パターン違い・落葉樹(葉を落とした裸の枝)を追加している
+  (番号は `src/lib/maps/winter-tiles.ts`)。
 - ライセンス: 元が CC0 のため派生物も自由に利用可。
 - 用途: 季節が冬のあいだ、参照するシートをこちらに差し替える(`src/lib/maps/types.ts` の SeasonSkin.sheet)
 

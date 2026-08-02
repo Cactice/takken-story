@@ -1,0 +1,13 @@
+{
+  "id": "hh-daiki",
+  "kind": "single",
+  "label": "都倉ダイキ",
+  "moveReason": "地方から出てきて、実家を出てはじめての一人暮らしを始める",
+  "topicId": "gyoho-8shu",
+  "budget": 10,
+  "order": 2,
+  "memberIds": [
+    "kk-daiki"
+  ],
+  "note": "駅前で声をかけられる側。案内をていねいにやらないと、そのまま他社の車に乗っていく"
+}

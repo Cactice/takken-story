@@ -200,7 +200,8 @@ export const REWARD_EXAM_FAIL = 5
  */
 export const HOME_OF_GENERATION: Readonly<Record<number, string>> = {
   1: 'player-home',
-  2: 'player-home',
+  // 第2世代: 海沢に「相場の半値」と勧められた雑居ビルの一室。実際は共益費込みで月15万
+  2: 'kurokai-zakkyo-s',
   3: 'player-home',
   4: 'player-home',
   5: 'player-home',

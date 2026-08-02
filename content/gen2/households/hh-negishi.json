@@ -1,0 +1,14 @@
+{
+  "id": "hh-negishi",
+  "kind": "share",
+  "label": "根岸さんと早坂さん(創業二人)",
+  "moveReason": "二人で会社を興し、事務所と住まいを一つにして固定費を抑えたい",
+  "topicId": "gyoho-eigyo-hosho",
+  "budget": 12,
+  "order": 5,
+  "memberIds": [
+    "kk-negishi",
+    "kk-hayasaka"
+  ],
+  "note": "起業したての二人。開業と供託の話が、そのまま自分たちの独立の話になる"
+}

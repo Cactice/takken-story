@@ -1,0 +1,35 @@
+{
+  "id": "kurokai-konbini",
+  "name": "コンビニ黒会駅前店",
+  "kind": "shop",
+  "generation": 2,
+  "category": "路面テナント(営業中)",
+  "forRent": true,
+  "vacantUnitsAtStart": 0,
+  "spec": {
+    "structure": "鉄骨造",
+    "floors": 1,
+    "units": 1,
+    "ageYears": 11,
+    "layout": "路面店1区画",
+    "area": 180,
+    "zoning": "商業地域",
+    "buildingCoverage": 80,
+    "floorAreaRatio": 400,
+    "rent": 45,
+    "depositMonths": 10,
+    "keyMoneyMonths": 0,
+    "road": "幅員16mの都道に18m接道",
+    "features": [
+      "駅前の一等地",
+      "24時間営業のフランチャイズ店が営業中",
+      "大型の看板が出せる",
+      "駐車場あり(4台)"
+    ],
+    "legalNotes": [
+      "定期建物賃貸借契約(期間5年・更新なし)。書面で契約し、あらかじめ別紙で説明する必要がある",
+      "屋外広告物条例により、看板の大きさと位置に制限がある",
+      "事業用の建物賃貸借。造作買取請求は特約で排除されている"
+    ]
+  }
+}

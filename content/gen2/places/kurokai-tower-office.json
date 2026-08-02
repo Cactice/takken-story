@@ -1,0 +1,38 @@
+{
+  "id": "kurokai-tower-office",
+  "name": "黒会セントラルタワー",
+  "kind": "office",
+  "generation": 2,
+  "category": "オフィスビル(1フロア貸し)",
+  "forRent": true,
+  "vacantUnitsAtStart": 0,
+  "spec": {
+    "structure": "RC造(鉄筋コンクリート)",
+    "floors": 11,
+    "units": 6,
+    "ageYears": 8,
+    "layout": "7階ワンフロア",
+    "area": 90,
+    "zoning": "商業地域",
+    "buildingCoverage": 80,
+    "floorAreaRatio": 600,
+    "rent": 24,
+    "priceNote": "共益費 3万円/月",
+    "depositMonths": 6,
+    "keyMoneyMonths": 0,
+    "road": "幅員16mの都道に30m接道",
+    "features": [
+      "駅近(黒会駅まで徒歩1分・地下通路直結)",
+      "事務所仕様の1フロア貸し",
+      "24時間空調と共用の会議室",
+      "大型駐車場あり(機械式)",
+      "法人契約のみ"
+    ],
+    "legalNotes": [
+      "宅建業者が事務所として使うなら、標識(宅地建物取引業者票)と報酬額表の掲示義務がある",
+      "業務に従事する者5人に1人以上の割合で専任の宅地建物取引士を置く必要がある",
+      "事務所を新設すると、営業保証金の追加供託(または保証協会への分担金の納付)が必要になる",
+      "事業用の建物賃貸借。敷金6ヶ月・スケルトン返しの原状回復特約あり"
+    ]
+  }
+}

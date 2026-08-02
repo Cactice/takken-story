@@ -1,0 +1,14 @@
+{
+  "id": "hh-hayama",
+  "kind": "couple",
+  "label": "葉山さん夫妻",
+  "moveReason": "結婚して、二人ではじめての住まいを黒会市で借りる",
+  "topicId": "kubun-shoyu",
+  "budget": 13,
+  "order": 1,
+  "memberIds": [
+    "kk-hayama",
+    "kk-hayama-mina"
+  ],
+  "note": "分譲マンションの一室を借りる世帯。管理規約と共用部分の話が自然に出る。第4世代では息子の家探しに付き添う父としてコウが再登場する"
+}

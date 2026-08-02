@@ -17,11 +17,12 @@ import {
   SPARE_SPOTS,
   START_POS,
   T,
-} from '../map'
-import { TOWN_SHEET } from '../sprites'
-import type { Sheet } from '../sprites'
+} from '../map.ts'
+import { TOWN_SHEET } from '../sprites.ts'
+import type { Sheet } from '../sprites.ts'
 import { cellHash, drift, seasonLayers } from './types.ts'
 import {
+  TOWN_BARE_TREE,
   TOWN_RUT_H,
   TOWN_RUT_V,
   TOWN_SNOW,
@@ -49,13 +50,18 @@ const SNOWMEN: readonly (readonly [number, number])[] = [
  * 積もるマスは吹きだまりで塊になり、雪だるまの周りは必ず積もる(雪をかき集めた跡)。
  */
 function snowAt(tile: number, x: number, y: number): number | undefined {
+  // 木は半分を落葉樹(葉を落とした裸の枝)、半分を常緑樹(枝に雪)にする。
+  // 元の並びは紅葉/緑の交互なので、そのままだと冬に紅葉が残ってしまう
+  if (tile === T.treeOrange || tile === T.treeGreen)
+    return cellHash(x, y) % 2 === 0 ? TOWN_BARE_TREE : T.treeGreen
   // 道は轍を残す。左右に道が続いていれば横向き、そうでなければ縦向き
   const isPath = (px: number, py: number) => GROUND[py]?.[px] === 'P'
   const rut = (isPath(x - 1, y) || isPath(x + 1, y) ? TOWN_RUT_H : TOWN_RUT_V)[tile]
   if (rut) return rut[0]
   const near = SNOWMEN.some(([sx, sy]) => Math.abs(sx - x) + Math.abs(sy - y) <= 2)
   if (!near && !drift(x, y, 30)) return undefined // このマスは雪なし
-  const vs = TOWN_SNOW[tile]
+  // きのこは秋の飾りなので、冬は草地として雪に埋める
+  const vs = TOWN_SNOW[tile === T.mushroom ? T.grassTuft : tile]
   return vs?.[cellHash(x, y) % vs.length]
 }
 
@@ -65,10 +71,18 @@ function snowAt(tile: number, x: number, y: number): number | undefined {
  */
 const SEASONS_ARIKITA: Partial<Record<Season, SeasonSkin>> = {
   // 春: 枯れ色の木が芽吹き、草むらに花が咲く
-  spring: { swap: { [T.treeOrange]: T.treeGreen, [T.grassTuft]: T.flowers }, filter: 'saturate(1.06) brightness(1.05)' },
+  spring: {
+    swap: { [T.treeOrange]: T.treeGreen, [T.grassTuft]: T.flowers, [T.mushroom]: T.grassTuft },
+    filter: 'saturate(1.06) brightness(1.05)',
+  },
   // 夏: 濃い緑。草むらは伸びて茂みに
   summer: {
-    swap: { [T.treeOrange]: T.treeGreen, [T.grassTuft]: T.bush, [T.flowers]: T.grassTuft },
+    swap: {
+      [T.treeOrange]: T.treeGreen,
+      [T.grassTuft]: T.bush,
+      [T.flowers]: T.grassTuft,
+      [T.mushroom]: T.bush,
+    },
     filter: 'saturate(1.3) contrast(1.04)',
   },
   // 秋: 全部紅葉。花は散り、茂みにきのこ

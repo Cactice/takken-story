@@ -18,6 +18,7 @@
 import type { Sheet } from '../sprites'
 import { assertMap, cellHash, defineMap, drift } from './types.ts'
 import {
+  CITY_BARE_TREE,
   CITY_RUT_H,
   CITY_RUT_V,
   CITY_SNOW,
@@ -38,9 +39,9 @@ export const CITY_WINTER_SHEET: Sheet = {
   ...CITY_WINTER_SIZE,
 }
 
-/** 街路樹 */
+/** 街路樹。緑と紅葉は同じ列の上下(幹まで入った下半分)。402 は幹の無い上半分なので使わない */
 const TREE_GREEN = 440
-const TREE_AUTUMN = 402
+const TREE_AUTUMN = 439
 
 /** 雪だるま(広場に2体)。この周りだけ雪が濃い */
 const SNOWMEN: readonly (readonly [number, number])[] = [
@@ -56,7 +57,10 @@ const ROAD_COLS = new Set([11, 12])
  * 冬の地面。道は轍が残った雪。歩道や広場は3割くらいのマスに雪が積もる(吹きだまりで塊になる)。
  */
 function snowAt(tile: number, x: number, y: number): number | undefined {
-  const rut = (ROAD_ROWS.has(y) ? CITY_RUT_H : ROAD_COLS.has(x) ? CITY_RUT_V : undefined)?.[tile]
+  // 街路樹。半分は葉を落とした裸の枝、半分は雪をかぶった常緑樹にする
+  if (tile === TREE_GREEN || tile === TREE_AUTUMN)
+    return cellHash(x, y) % 2 === 0 ? CITY_BARE_TREE : TREE_GREEN
+  const rut =(ROAD_ROWS.has(y) ? CITY_RUT_H : ROAD_COLS.has(x) ? CITY_RUT_V : undefined)?.[tile]
   if (rut) return rut[0]
   const near = SNOWMEN.some(([sx, sy]) => Math.abs(sx - x) + Math.abs(sy - y) <= 2)
   if (!near && !drift(x, y, 30)) return undefined // このマスは雪なし
