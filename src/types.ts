@@ -242,8 +242,8 @@ export const MONEY_START_OF_GENERATION: Readonly<Record<number, number>> = {
   1: 10,
   2: 300,
   3: 500,
-  4: 50,
-  5: 5000,
+  4: 1000,
+  5: 3000,
 }
 /**
  * 世代ごとの目標額(万円)。これを超えるとその世代クリア(docs/GAME_DESIGN.md)。
