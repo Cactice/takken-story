@@ -1,0 +1,38 @@
+{
+  "id": "umizawa-lily",
+  "name": "海沢リリー",
+  "familyName": "海沢",
+  "givenName": "リリー",
+  "sprite": "sprites/umizawa-lily.png",
+  "generation": 5,
+  "appearsIn": [
+    5
+  ],
+  "age": 34,
+  "gender": "female",
+  "family": "海沢家",
+  "romanceable": false,
+  "personality": "34歳。カイルの孫娘。白夜村の設計者であり、新幹線誘致の旗振り役。会ったことのない祖父の言葉を、書き起こしたノートで暗記して育った。祖父の口癖をそのまま使う。人当たりがよく、有能な人間を育てるのもうまい——そこまで祖父に似ている。",
+  "motive": "祖父が果たせなかった「完全に管理された街」を完成させること。",
+  "weakness": "祖父の理屈を一度も疑ったことがない。自分の言葉を持っていない。",
+  "catchphrase": "合理的でしょう?",
+  "relations": [
+    {
+      "characterId": "umizawa-cecil",
+      "kind": "parent",
+      "note": "父"
+    },
+    {
+      "characterId": "umizawa",
+      "kind": "grandparent",
+      "note": "祖父。会ったことはない。ノートで育てられた"
+    }
+  ],
+  "smallTalk": {
+    "default": [
+      "祖父のノートは、いまも全部そらで言えます。",
+      "この村、道が曲がっていますね。まっすぐ引けば七分短縮できます。",
+      "……祖父に会ってみたかったか、ですか。会う必要はありません。全部書いてありますから。"
+    ]
+  }
+}

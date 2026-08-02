@@ -62,6 +62,7 @@ content/
   "id": "ev-minpo-souzoku",              // 一意。ファイル名と一致させる
   "topicId": "minpo-souzoku",            // content/topics.md の論点ID
   "title": "遺産の分け方",                 // メモ・試験結果画面での見出し
+  "summary": "遺言を残さず祖父が亡くなり、祖母と父と叔母で遺産を分けることになる", // 推奨(下記)
   "generation": 1,                        // 対象世代。フォルダ gen<N> と一致させる
   "kind": "trouble",                      // イベントの種類。フォルダ名と一致させる(下表)
   "category": ["kenri"],                  // 分野。複数該当してよい kenri|gyoho|hourei|zei
@@ -101,6 +102,22 @@ content/
   "reward": 1,                            // 報酬(万円)。省略時は既定値
   "resolvedLine": "あのときはありがとう。おかげで兄妹ともめずに済みましたのよ。"
 }
+```
+
+### `summary`(推奨・全イベントに入れる)
+ゲームには出さない、**開発者が中身を一目で見分けるための一文**。
+`docs/events-by-household.md` の「どんな話か」列にそのまま使われる。
+
+- **1文・30〜45文字**。長くしない
+- **誰が・何をして・何が問題になるか**を書く。**セリフの引用は不可**(出来事の説明にする)
+- **法律用語を使わない**。論点名は別列に出るので重複させない
+- ネタバレ可。開発者用なので真相を書いてよい
+- 人物は名前だけでよい(リオン、メープル、ソラ)。ただし誰か分かること
+
+```
+✅ 17歳のリオンが、親に内緒で土地を借りて温室を建てようとする
+❌ …別に、たいした話じゃない。俺は十七だ。        ← セリフの切り出し
+❌ 制限行為能力者の話                              ← 論点名の言い換え
 ```
 
 ### `kind`(イベントの種類 = フォルダ名)
@@ -311,7 +328,12 @@ content/
 ```bash
 node scripts/check-coverage.mjs          # 検証のみ(不整合があれば exit 1)
 node scripts/check-coverage.mjs --write  # content/COVERAGE.md の対応表を再生成
+node scripts/gen-household-doc.mjs       # docs/events-by-household.md を再生成
+node scripts/gen-household-doc.mjs --check  # 生成物が古ければ exit 1
 ```
+`docs/events-by-household.md` は生成物なので直接編集しない。移動の型と計画行(まだ content に無いイベント)は
+**手書きの [docs/household-plan.json](household-plan.json)** にあり、生成スクリプトはこれを読むだけで書き換えない。
+`summary` が欠けたイベントがあると `gen-household-doc.mjs` は失敗する。
 検証項目: JSONがパースできるか / `id` とファイル名の一致 / id の重複 / `generation` とフォルダの一致 /
 `kind` とフォルダの一致 / `topicId` が topics.md に存在するか / `cast` の人物が実在するか /
 **イベントとキャラの世代ズレ**(gen1 のイベントが gen3 の人物を参照していないか。`appearsIn` を考慮) /
