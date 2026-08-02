@@ -1,19 +1,20 @@
 {
-  "id": "suzuki-riku2",
-  "name": "鈴木リク",
+  "id": "suzuki-pink",
+  "name": "鈴木ピンク",
   "familyName": "鈴木",
-  "givenName": "リク",
-  "sprite": "sprites/suzuki-riku2.png",
+  "givenName": "ピンク",
+  "sprite": "sprites/suzuki-pink.png",
   "generation": 4,
   "appearsIn": [
-    4
+    4,
+    5
   ],
   "age": 14,
-  "gender": "male",
+  "gender": "female",
   "family": "鈴木家",
   "romanceable": false,
   "descendantOf": "suzuki-riku",
-  "personality": "14歳。ありきた村から主人公と一緒に黒会市へ出てきた後輩で、主人公の一つ下。祖父と同じ名をもらった。祖父ゆずりで登記簿を読むのが好きで、書類の日付の違和感に最初に気づく。都会の速さについていけず、いちいち「これ、なんでこうなんすか」と聞く。その素朴な質問が、主人公に説明させることで理解を深めさせる。",
+  "personality": "14歳。ありきた村から主人公と一緒に黒会市へ出てきた後輩で、主人公の一つ下。リクの孫。祖父ゆずりで登記簿を読むのが好きで、書類の日付の違和感に最初に気づく。都会の速さについていけず、いちいち「これ、なんでこうなんすか」と聞く。その素朴な質問が、主人公に説明させることで理解を深めさせる。第5世代では村に戻り、都会で覚えた登記の読み方で村の土地を守る側に回る。",
   "motive": "村に帰ったとき、じいちゃんに「都会でちゃんとやってきた」と言えるようになること。",
   "weakness": "調べすぎて動けなくなる。祖父から「まず調べろ」と教わりすぎた。",
   "catchphrase": "これ、なんでこうなんすか?",
@@ -21,7 +22,7 @@
     {
       "characterId": "suzuki-riku",
       "kind": "grandparent",
-      "note": "祖父。同じ名前をもらった"
+      "note": "祖父。登記簿の読み方を教わった"
     },
     {
       "characterId": "hageta-mio",
