@@ -245,6 +245,19 @@ export const MONEY_START_OF_GENERATION: Readonly<Record<number, number>> = {
   4: 50,
   5: 5000,
 }
+/**
+ * 世代ごとの目標額(万円)。これを超えるとその世代クリア(docs/GAME_DESIGN.md)。
+ * 世代が進むごとに稼ぎ方が一つ増えるので、額の伸びもそれに合わせてある。
+ *   第1世代 仲介だけ / 第2世代 +株 / 第3世代 +収益物件 / 第4世代以降は全部
+ */
+export const GOAL_OF_GENERATION: Readonly<Record<number, number>> = {
+  1: 500,
+  2: 1000,
+  3: 2000,
+  4: 10000,
+  5: 20000,
+}
+
 export const EXAM_PASS_RATIO = 0.7
 export const EXAM_MONTH = 10
 export const EXAM_DAY = 15
