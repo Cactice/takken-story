@@ -637,7 +637,7 @@
   align-items: start;
   padding: 8px 10px;
   border: 2px solid var(--ink);
-  background: var(--paper);
+  background: #fff;
   box-shadow: 3px 3px 0 var(--ink);
   font-size: 0.86rem;
   line-height: 1.75;
