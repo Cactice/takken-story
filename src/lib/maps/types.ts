@@ -93,12 +93,15 @@ export function seasonOfMonth(month: number): Season {
  * 季節ごとの見た目。差分だけ書く。
  * - sheet: 冬だけタイルシートごと雪版に差し替える(scripts/make-winter-tiles.py で生成)
  * - swap:  元のタイル番号 → その季節のタイル番号(例: 緑の木 → 紅葉した木)
+ * - tileAt: マスごとにタイルを選び替える。雪のように「積もっている所と積もっていない所」を
+ *   作りたいときに使う(道は轍、雪だるまの周りは濃く、など)。undefined を返せば swap に従う
  * - decor: その季節だけ出る小物(落ち葉・雪だるまなど)
  * - filter: マップ全体の色調
  */
 export interface SeasonSkin {
   sheet?: Sheet
   swap?: Readonly<Record<number, number>>
+  tileAt?: (tile: number, x: number, y: number) => number | undefined
   decor?: readonly MapDecor[]
   filter?: string
 }
@@ -354,8 +357,11 @@ export function seasonLayers(
       continue
     }
     const swap = skin.swap ?? {}
-    const g = ground.map((row) => row.map((t) => swap[t] ?? t))
-    const o = over.map((row) => row.map((c) => (c === null ? null : { ...c, tile: swap[c.tile] ?? c.tile })))
+    const pick = (t: number, x: number, y: number) => skin.tileAt?.(t, x, y) ?? swap[t] ?? t
+    const g = ground.map((row, y) => row.map((t, x) => pick(t, x, y)))
+    const o = over.map((row, y) =>
+      row.map((c, x) => (c === null ? null : { ...c, tile: pick(c.tile, x, y) })),
+    )
     for (const d of skin.decor ?? []) {
       const under = o[d.y]?.[d.x]
       if (under) g[d.y][d.x] = under.tile
@@ -364,6 +370,19 @@ export function seasonLayers(
     out[season] = { sheet: skin.sheet ?? sheet, ground: g, over: o, filter: skin.filter }
   }
   return out
+}
+
+/** マスごとに絵柄を散らすための決定的なハッシュ(同じマスは毎回同じ絵) */
+export function cellHash(x: number, y: number): number {
+  return ((x * 73856093) ^ (y * 19349663)) >>> 0
+}
+
+/**
+ * 吹きだまり。全体の約 percent %のマスが true になり、2x2 の塊で固まる。
+ * 1マスずつ散らすと砂嵐に見えるので、必ず塊にする。
+ */
+export function drift(x: number, y: number, percent: number): boolean {
+  return cellHash(x >> 1, y >> 1) % 100 < percent
 }
 
 /** 到達できるマスを開始位置から塗る */

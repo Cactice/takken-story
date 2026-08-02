@@ -404,3 +404,46 @@ const byId = new Map(PROPERTIES.map((p) => [p.id, p]))
 export function propertyById(id: string): PropertySpec | undefined {
   return byId.get(id)
 }
+
+/**
+ * 開始時から空いている物件。docs/SYSTEMS.md「物件の空き状況」。
+ * 村は出来立てだが空っぽではなく、案内できる空きは3件前後に保つ
+ * (選択肢が多すぎるとどれを見せるか決められず苦痛になる)。
+ * ここに無い物件は満室で始まる = 内見できない。
+ */
+/**
+ * 空き3件は**性格の違う物件**を、村の中で**散らして**選んである
+ * (どれを選ぶかに意味が出るように。かつ会社からの距離が偏らないように):
+ *   - オリビア邸(中央)   : 築12年・日当たり良好だが高い  = 新しいが高い
+ *   - 第二ガストン荘(西) : 賃料2.8万だが再建築不可・浴室なし = 安いが難あり
+ *   - ポッポ農場 母屋(南) : 145㎡と広いが築52年・調整区域   = 広いが古い
+ * 値は「空き戸数」。アパートは1戸だけ空けておき、1契約で満室になるようにしてある
+ * (ずっと空きが残ると転出イベントが回らない)。
+ */
+export const INITIAL_VACANT: Readonly<Record<string, number>> = {
+  'house-misaki': 1,
+  'apart-old': 1,
+  farmhouse: 1,
+}
+
+/** 案内対象にならない物件(会社と主人公の自宅)。常に満室扱い */
+export const NOT_FOR_RENT: readonly string[] = ['hibari', 'player-home']
+
+/** 開始時の入居戸数(建物ID → 埋まっている戸数)。空き3件以外は満室 */
+export function initialOccupancy(): Record<string, number> {
+  return Object.fromEntries(
+    PROPERTIES.map((p) => [p.id, Math.max(0, p.units - (INITIAL_VACANT[p.id] ?? 0))]),
+  )
+}
+
+/** 空いている戸数 */
+export function vacantUnits(p: PropertySpec, occupied = 0): number {
+  return Math.max(0, p.units - occupied)
+}
+
+/** 案内できる(空きがある)物件か。マップ上で目立たせる対象でもある */
+export function isVacant(id: string, occupancy: Readonly<Record<string, number>>): boolean {
+  const p = byId.get(id)
+  if (!p || NOT_FOR_RENT.includes(id)) return false
+  return vacantUnits(p, occupancy[id] ?? 0) > 0
+}

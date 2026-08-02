@@ -169,9 +169,17 @@ export function toTourMember(c: {
  * 定数(調整用のつまみはここに集約)
  * ------------------------------------------------------------------ */
 export const HP_MAX = 100
-/** 時間経過: この間隔で HP_DRAIN_PER_TICK ずつ減る */
-export const HP_TICK_MS = 3000
-export const HP_DRAIN_PER_TICK = 1
+/**
+ * 時間経過: この間隔で HP_DRAIN_PER_TICK ずつ減る = 3.33/秒。
+ * のんびり歩き回っていると約30秒(ゲーム内1ヶ月半)で尽きる。
+ * 減るのは「マップを自由に歩いている間」だけで、パネルや会話を読んでいる間は止まる
+ * (読む速さで難易度が変わるのは理不尽なので)。呼び出し側 = App が止める。
+ * 難易度が保たれているかは scripts/check-tour.mjs が全世帯×全物件で検算する。
+ */
+export const HP_TICK_MS = 600
+export const HP_DRAIN_PER_TICK = 2
+/** 実測の目安: 矢印キーを押しっぱなしで歩く速さ(タイル/秒)。難易度検算に使う */
+export const TILES_PER_SEC = 3
 /** はっきり嫌がったメンバー1人につき減る量(1物件1回まで) */
 export const HP_PENALTY_DISLIKE = 8
 /** 「ピンと来ない」1人につき減る量。内見の結果が「何も起きない」にならないようにする */

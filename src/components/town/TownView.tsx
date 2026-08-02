@@ -5,7 +5,7 @@ import { characterSpriteStyle, playerSpriteStyle, sheetStyle } from '../../lib/s
 import type { Facing } from '../../lib/sprites'
 import { ARIKITA } from '../../lib/maps'
 import type { GameMap, Season } from '../../lib/maps'
-import { propertyById } from '../../lib/properties'
+import { isVacant, propertyById } from '../../lib/properties'
 import {
   SCATTER_IDLE_MS,
   advanceTrail,
@@ -49,6 +49,15 @@ interface Props {
   onTalkFollower?: (f: Follower) => void
   /** 建物・看板の物件パネルを閉じたとき(案内中なら内見するか聞く) */
   onPropertyViewed?: (propertyId: string) => void
+  /**
+   * 中に入れる建物のID(自宅・会社)。入口タイルを向いてスペースで入る。
+   * 物件パネルは出さず、そのまま内装シーンへ渡す(判断は App 側)
+   */
+  enterableIds?: ReadonlySet<string>
+  /** 入口タイルを向いてスペース(中に入る) */
+  onEnterBuilding?: (buildingId: string) => void
+  /** 物件パネルの開閉(開いている間は客の機嫌を減らさない) */
+  onPropertyPanel?: (propertyId: string | null) => void
 }
 
 /** 住民が1歩うろつく間隔 */
@@ -88,6 +97,9 @@ export function TownView({
   onTapCharacter,
   onTalkFollower,
   onPropertyViewed,
+  enterableIds,
+  onEnterBuilding,
+  onPropertyPanel,
 }: Props) {
   // 季節ごとに地面と重ね物のタイルが差し替わる(冬は雪のシート)
   const layer = map.layers?.[season] ?? map
@@ -139,6 +151,25 @@ export function TownView({
       map.spareSpots[spare++ % map.spareSpots.length]) as [number, number],
   }))
 
+  /**
+   * 空き物件(案内できる家)。建物は棟全体を囲み、土地は看板1マスを囲む。
+   * 満室・案内対象外(会社・自宅)は出さない。
+   */
+  const vacantSpots = [
+    ...map.buildings
+      .filter((b) => isVacant(b.id, occupancy))
+      .map((b) => ({
+        id: b.id,
+        x: b.rect.x0,
+        y: b.rect.y0,
+        w: b.rect.x1 - b.rect.x0 + 1,
+        h: b.rect.y1 - b.rect.y0 + 1,
+      })),
+    ...map.signs
+      .filter((s) => isVacant(s.id, occupancy))
+      .map((s) => ({ id: s.id, x: s.x, y: s.y, w: 1, h: 1 })),
+  ]
+
   /* ---------------- 演出イベント(カットシーン)の再生 ---------------- */
   const [stageActors, setStageActors] = useState<Record<string, { pos: Pos; alert?: boolean }>>({})
 
@@ -171,7 +202,8 @@ export function TownView({
         onStagingEnd?.()
         return
       }
-      if (c.cmd === 'say') return // スペース待ち(表示は下の効果が出す)
+      // say はスペース待ち、banner は時間待ち(どちらも表示は下の効果が出す)
+      if (c.cmd === 'say' || c.cmd === 'banner') return
       if (c.cmd === 'spawn') {
         setStageActors((a) => ({ ...a, [c.actor]: { pos: c.at, alert: c.alert } }))
         setPc((n) => n + 1)
@@ -192,6 +224,7 @@ export function TownView({
         return
       }
       // walkTo / lead: 1タイルだけ進む
+      if (c.cmd !== 'walkTo' && c.cmd !== 'lead') return
       const cur = actors[c.actor]?.pos
       if (!cur || (cur[0] === c.to[0] && cur[1] === c.to[1])) {
         setPc((n) => n + 1)
@@ -216,6 +249,18 @@ export function TownView({
   // say は表示だけ(送るのは下のキー処理)
   useEffect(() => {
     if (cmd?.cmd === 'say') setSayLine({ actor: cmd.actor, text: cmd.text })
+  }, [cmd])
+
+  // banner: 画面中央に大きな見出しを短く出し、時間が来たら勝手に次へ進む
+  const [banner, setBanner] = useState<{ text: string; sub?: string } | null>(null)
+  useEffect(() => {
+    if (cmd?.cmd !== 'banner') return
+    setBanner({ text: cmd.text, sub: cmd.sub })
+    const id = setTimeout(() => {
+      setBanner(null)
+      setPc((n) => n + 1)
+    }, cmd.ms ?? 1800)
+    return () => clearTimeout(id)
   }, [cmd])
 
   // セリフはスペースで送る
@@ -256,6 +301,12 @@ export function TownView({
   }, [frozen, characters, alertIds]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const panelOpen = openProperty !== null
+
+  // 物件パネルの開閉を外へ知らせる(読んでいる間は客の機嫌を止めるため)
+  useEffect(() => {
+    onPropertyPanel?.(openProperty)
+    // onPropertyPanel は App 側で毎回作られるので依存に入れない(開閉のたびだけ通知する)
+  }, [openProperty]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (inputLocked || panelOpen || stageLock) return
@@ -299,13 +350,21 @@ export function TownView({
           onTalkFollower?.(facedFollower)
           return [x, y]
         }
-        // 3. 向いている先が建物 or 空き地の看板 → 物件ステータス
+        // 3. 向いている先が入口タイル、かつ中に入れる建物 → そのまま中へ
+        const door = map.buildings.find(
+          (b) => b.entrance[0] === fx && b.entrance[1] === fy && enterableIds?.has(b.id),
+        )
+        if (door) {
+          onEnterBuilding?.(door.id)
+          return [x, y]
+        }
+        // 4. 向いている先が建物 or 空き地の看板 → 物件ステータス
         const propId = map.propertyIdAt(fx, fy)
         if (propId) {
           setOpenProperty(propId)
           return [x, y]
         }
-        // 4. 向きが合っていなくても隣の住民・追従キャラとは話せる(取り回し優先)
+        // 5. 向きが合っていなくても隣の住民・追従キャラとは話せる(取り回し優先)
         const around = [
           [x, y - 1],
           [x, y + 1],
@@ -335,7 +394,7 @@ export function TownView({
 
   return (
     <section className="town" aria-label="町">
-      <div className="town-viewport" style={{ background: map.outsideColor }}>
+      <div className="town-viewport">
         {/* カメラ: 主人公が常に中央。--px/--py でマップ側を逆方向に translate */}
         <div
           className="town-grid"
@@ -391,6 +450,14 @@ export function TownView({
               }}
               aria-label="土地の看板"
             />
+          ))}
+
+          {/* 空き物件は「空」の札を出して枠を光らせる。ひと目で案内できる家が分かること
+              (docs/SYSTEMS.md「物件の空き状況」) */}
+          {vacantSpots.map(({ id, x, y, w, h }) => (
+            <div key={`v${id}`} className="building-vacant" style={{ gridColumn: `${x + 1} / span ${w}`, gridRow: `${y + 1} / span ${h}` }}>
+              <span className="building-vacant-tag">空</span>
+            </div>
           ))}
 
           {companyAlert && (
@@ -479,20 +546,29 @@ export function TownView({
             <span className="char-sprite player-sprite" style={playerSpriteStyle(gender, facing, step)} />
           </div>
         </div>
-      </div>
+        {banner && (
+          <div className="stage-banner" role="status">
+            <div className="stage-banner-band">
+              <strong className="stage-banner-title">{banner.text}</strong>
+              {banner.sub && <span className="stage-banner-sub">{banner.sub}</span>}
+            </div>
+          </div>
+        )}
 
-      {sayLine && (
-        <div className="stage-say" role="status">
-          <span className="char-sprite stage-say-face" style={characterSpriteStyle(sayLine.actor)} />
-          <p>
-            <strong>{staging?.actors.find((x) => x.id === sayLine.actor)?.name ?? ''}</strong>
-            「{sayLine.text}」
-            <span className="tour-next" aria-hidden="true">
-              ▼
-            </span>
-          </p>
-        </div>
-      )}
+        {sayLine && (
+          <div className="stage-say" role="status">
+            <span className="char-sprite stage-say-face" style={characterSpriteStyle(sayLine.actor)} />
+            <p>
+              <strong>{staging?.actors.find((x) => x.id === sayLine.actor)?.name ?? ''}</strong>
+              「{sayLine.text}」
+              <span className="tour-next" aria-hidden="true">
+                ▼
+              </span>
+            </p>
+          </div>
+        )}
+
+      </div>
 
       <p className="town-help">
         矢印キーで移動 / 住民・連れのとなりでスペースで会話 / 建物・看板を向いてスペースで物件情報

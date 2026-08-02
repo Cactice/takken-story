@@ -28,7 +28,15 @@ import type {
   TourState,
 } from './lib/tour'
 import type { Follower } from './lib/follower'
-import { propertyById } from './lib/properties'
+import {
+  PROPERTIES,
+  initialOccupancy,
+  isVacant,
+  propertyById,
+  vacantUnits,
+} from './lib/properties'
+import { OfficeInterior } from './components/office/OfficeInterior'
+import { moveOutLines, moveOutReasonFor } from './lib/moveout'
 import { FollowerTalk } from './components/tour/FollowerTalk'
 import { MemoBook } from './components/memo/MemoBook'
 import { HomeInterior } from './components/home/HomeInterior'
@@ -39,7 +47,7 @@ import type { Staging } from './lib/staging'
 import { GenerationSelect } from './components/generation/GenerationSelect'
 import { seasonOfMonth } from './lib/maps'
 import { useGameClock } from './hooks/useGameClock'
-import { characters, events, households, loadGeneration } from './lib/content'
+import { characters, eventForTopic, events, households, loadGeneration } from './lib/content'
 import { availableConsultations, buildYearSchedule } from './lib/schedule'
 import { RomanceOverlay } from './components/romance/RomanceOverlay'
 import { romanceContentFor, romanceStateOf, talkOnce } from './lib/romance'
@@ -53,8 +61,11 @@ import {
   EXAM_DAY,
   EXAM_MONTH,
   REWARD_CONSULT,
-  MONEY_START,
+  REWARD_MEETING,
+  MONEY_START_OF_GENERATION,
+  HOME_OF_GENERATION,
   INITIAL_RESIDENTS,
+  INITIAL_HOMES,
   REWARD_EXAM_FAIL,
   REWARD_EXAM_PASS,
   START_YEAR,
@@ -92,6 +103,25 @@ function frontOfBuilding(
 
 /** 後ろに連なるハゲ田のメモの最大数(これ以上は棚に置いてある扱い) */
 const MAX_BOOKS = 6
+
+/** 案内できる空き物件をこの数に保つ(多すぎると選べず苦痛、少なすぎると詰む) */
+const VACANCY_TARGET = 3
+
+/** 主人公が住んでいる物件。世代ごとに違い、引越しでも変わりうるので状態から引く */
+function homePropertyIdOf(s: GameState): string {
+  return s.homePropertyId ?? HOME_OF_GENERATION[s.generation ?? 1] ?? 'player-home'
+}
+
+/**
+ * 次に村へ来る転入世帯。すでに村に住んでいる人の世帯は来ない(同じ人が二重に現れないように)。
+ * 3ヶ月ごとに1組ずつ、順番に来る。
+ */
+function nextHousehold(s: GameState): TourHousehold | undefined {
+  const residents = new Set(s.residents ?? INITIAL_RESIDENTS)
+  const waiting = households.filter((h) => h.members.every((m) => !residents.has(m.id)))
+  if (waiting.length === 0) return undefined
+  return waiting[Math.floor(s.daysElapsed / (3 * DAYS_PER_MONTH)) % waiting.length]
+}
 
 const MOOD_FACE = { like: '😊', meh: '😐', dislike: '😖' } as const
 
@@ -200,6 +230,8 @@ export default function App() {
   })
   /** 物件パネルを閉じた直後の物件ID(案内中なら内見/契約を聞く) */
   const [viewedProperty, setViewedProperty] = useState<string | null>(null)
+  /** いま開いている物件パネル(TownView 側の状態のミラー。読んでいる間は機嫌を減らさない) */
+  const [panelProperty, setPanelProperty] = useState<string | null>(null)
   /** 内見した結果(メンバー全員の反応) */
   const [inspected, setInspected] = useState<{
     property: TourProperty
@@ -216,6 +248,20 @@ export default function App() {
   const [insideHome, setInsideHome] = useState(false)
   /** 自宅の本棚を開いて復習中 */
   const [shelfOpen, setShelfOpen] = useState(false)
+  /** 会社(ひばり不動産)の中にいるか。ここが試験会場 */
+  const [insideOffice, setInsideOffice] = useState(false)
+  /** 会社でハゲ田に話しかけたときの一言 */
+  const [bossTalk, setBossTalk] = useState<string | null>(null)
+  /** 試験を受けている最中(会場=会社に入って始める。割り込みでは始まらない) */
+  const [examOpen, setExamOpen] = useState(false)
+  /** 案内中に建物へ入ろうとした(客を待たせて帰るのは無し) */
+  const [blockedEnter, setBlockedEnter] = useState(false)
+  /** 転出する住民(頭上に「!」。話しかけると理由を聞ける) */
+  const [movingOut, setMovingOut] = useState<{ characterId: string; propertyId: string } | null>(null)
+  /** お金が動いたことをその場で見せる吹き出し(「-5万(家賃)」) */
+  const [moneyFlashes, setMoneyFlashes] = useState<
+    { id: number; amount: number; label: string }[]
+  >([])
 
   const dispatchTour = useCallback(
     (a: TourAction) => setTour((t) => (t === null ? t : tourReducer(t, a))),
@@ -252,31 +298,122 @@ export default function App() {
     [update],
   )
 
+  /**
+   * 何かのダイアログ・演出・屋内シーンが出ていて、マップを自由に歩けない状態。
+   * 客の機嫌を減らすかどうかの判定にも使う(読んでいる間は減らさない)。
+   */
+  // ponytail: staging(カットシーン)はここに入れない。lead 中は主人公が
+  // ついていく必要があり、入力を止めると先導が永久に止まる
+  const uiBusy =
+    talkingTo !== null ||
+    panelProperty !== null ||
+    viewedProperty !== null ||
+    inspected !== null ||
+    followerTalk !== null ||
+    memoPrompt ||
+    memoOpen ||
+    shelfOpen ||
+    insideHome ||
+    insideOffice ||
+    examOpen ||
+    blockedEnter ||
+    bossTalk !== null ||
+    (tour !== null && tour.phase.kind !== 'map' && tour.phase.kind !== 'arriving')
+
+  /** お金が動く場所はすべてここを通す(名目つき。HUDにその場で出す) */
+  const changeMoney = useCallback(
+    (amount: number, label: string) => {
+      if (amount === 0) return
+      update((s) => ({ ...s, money: s.money + amount, monthNet: (s.monthNet ?? 0) + amount }))
+      const id = Date.now() + Math.random()
+      setMoneyFlashes((f) => [...f, { id, amount, label }])
+      setTimeout(() => setMoneyFlashes((f) => f.filter((x) => x.id !== id)), 2200)
+    },
+    [update],
+  )
+
   const cal = state ? calendarOf(state) : null
-  const examDue =
+  /**
+   * 試験は割り込まない。試験日を過ぎたら「会場(ひばり不動産)へ行けば受けられる」状態になり、
+   * プレイヤーが自分で会社に入って受験する(docs/SYSTEMS.md「試験は会場へ行って受ける」)
+   */
+  const examPending =
     state !== null &&
     cal !== null &&
-    cal.month === EXAM_MONTH &&
-    cal.day >= EXAM_DAY &&
-    state.lastExamYear < cal.year
+    state.lastExamYear < cal.year &&
+    (cal.month > EXAM_MONTH || (cal.month === EXAM_MONTH && cal.day >= EXAM_DAY))
+  /** 試験まであと何日か(予告に使う。過ぎていたら負) */
+  const daysToExam =
+    cal === null ? 0 : (EXAM_MONTH - cal.month) * DAYS_PER_MONTH + (EXAM_DAY - cal.day)
 
-  // 試験・面談/35条のオーバーレイ中は時計を止める(マップを歩いている間は進む)
+  // 屋内・カットシーン・試験中は時計を止める(マップを歩いている間は進む)
   useGameClock(
     state !== null &&
-      !examDue &&
+      !examOpen &&
+      !insideHome &&
+      !insideOffice &&
       staging === null &&
       (tour === null || tour.phase.kind === 'map' || tour.phase.kind === 'arriving'),
     tickDay,
   )
 
-  // 客の機嫌は時間で減っていく(マップを回っている間と35条の読み上げ中)
-  const tourRunning =
-    tour !== null && (tour.phase.kind === 'map' || tour.phase.kind === 'disclosure')
+  /**
+   * 客の機嫌は時間で減る。減るのは**マップを自由に歩いている間だけ**で、
+   * 物件パネルや会話を読んでいる間は止まる(読む速さで難易度が変わるのは理不尽)。
+   * 1秒あたり約3.3ずつ減り、のんびり歩き回っていると30秒ほどで尽きる。
+   */
+  const tourRunning = tour !== null && tour.phase.kind === 'map'
   useEffect(() => {
-    if (!tourRunning) return
+    if (!tourRunning || uiBusy) return
     const id = setInterval(() => dispatchTour({ type: 'tick' }), HP_TICK_MS)
     return () => clearInterval(id)
-  }, [tourRunning, dispatchTour])
+  }, [tourRunning, uiBusy, dispatchTour])
+
+  // 毎月1日に自宅の家賃を引く。家賃は定数ではなく「住んでいる物件の賃料」(世代で変わる)
+  useEffect(() => {
+    if (state === null) return
+    const { year, month } = calendarOf(state)
+    const key = year * 12 + month
+    if (state.lastRentMonth === undefined) {
+      update((s) => ({ ...s, lastRentMonth: key }))
+      return
+    }
+    if (state.lastRentMonth >= key) return
+    const home = propertyById(homePropertyIdOf(state))
+    const rent = home ? Math.max(0, Math.round(toTourProperty(home).rent)) : 0
+    update((s) => ({
+      ...s,
+      money: s.money - rent,
+      // 月が変わったので今月の収支は仕切り直し(家賃はその最初の1件)
+      monthNet: -rent,
+      lastRentMonth: key,
+    }))
+    if (rent > 0) {
+      const id = Date.now() + Math.random()
+      setMoneyFlashes((f) => [...f, { id, amount: -rent, label: `家賃(${home?.name ?? '自宅'})` }])
+      setTimeout(() => setMoneyFlashes((f) => f.filter((x) => x.id !== id)), 2200)
+    }
+  }, [state, update])
+
+  // 空きが3件を下回ったら、住民の誰かが村を出ていく(転入と転出で空きが3件前後に保たれる)。
+  // 出ていくのは「次に来る世帯が気に入りそうな家」に住んでいる人を優先する = 詰みを作らない
+  useEffect(() => {
+    if (state === null || movingOut !== null || tour !== null || staging !== null) return
+    const occ = state.occupancy ?? {}
+    if (PROPERTIES.filter((p) => isVacant(p.id, occ)).length >= VACANCY_TARGET) return
+    const homes = state.residentHomes ?? {}
+    const leavers = (state.residents ?? INITIAL_RESIDENTS).filter(
+      (id) => id !== 'tencho-gozo' && homes[id],
+    )
+    if (leavers.length === 0) return
+    const next = nextHousehold(state)
+    const suits = (id: string) => {
+      const spec = propertyById(homes[id])
+      return spec && next ? householdReaction(next, toTourProperty(spec)).candidate : false
+    }
+    const leaver = leavers.find(suits) ?? leavers[0]
+    setMovingOut({ characterId: leaver, propertyId: homes[leaver] })
+  }, [state, movingOut, tour, staging])
 
   // 3ヶ月に1度、転入希望者が村にやってくる。
   // 会社でモーダルを出すのではなく、画面外から歩いてきて勝手についてくる(docs/SYSTEMS.md)
@@ -284,7 +421,7 @@ export default function App() {
     if (state === null || tour !== null || arriving !== null || staging !== null) return
     const { month: m, day: d } = calendarOf(state)
     if (d !== 1 || m % 3 !== 1 || tourDismissedDay === state.daysElapsed) return
-    const hh = households[Math.floor(state.daysElapsed / (3 * DAYS_PER_MONTH)) % households.length]
+    const hh = nextHousehold(state)
     if (hh === undefined) return
     setArriving(hh)
     const map = MAP_OF_GENERATION[state.generation ?? 1] ?? ARIKITA
@@ -299,11 +436,13 @@ export default function App() {
 
   const startGame = useCallback(
     (gender: Gender) => {
+      const generation = chosenGeneration ?? 1
       const fresh: GameState = {
         gender,
-        generation: chosenGeneration ?? 1,
+        generation,
         daysElapsed: 0,
-        money: MONEY_START,
+        money: MONEY_START_OF_GENERATION[generation] ?? 10,
+        homePropertyId: HOME_OF_GENERATION[generation] ?? 'player-home',
         experiencedEvents: [],
         scheduleYear: START_YEAR,
         yearSchedule: buildYearSchedule(events, new Set(), []),
@@ -311,7 +450,10 @@ export default function App() {
         appliedExamYear: 0,
         lastExamYear: 0,
         examResults: [],
+        // 村は出来立てだが空っぽではない。ほとんどの物件は埋まっていて、空きは3件前後
         residents: INITIAL_RESIDENTS,
+        residentHomes: { ...INITIAL_HOMES },
+        occupancy: initialOccupancy(),
       }
       saveState(fresh)
       setState(fresh)
@@ -321,7 +463,7 @@ export default function App() {
       const home = frontOfBuilding(map, 'player-home')
       const office = frontOfBuilding(map, 'hibari')
       if ((chosenGeneration ?? 1) !== 1 || !home || !office) return
-      const first = households[0]
+      const first = nextHousehold(fresh)
       if (first) setArriving(first)
       setStaging(
         openingStaging(
@@ -367,15 +509,45 @@ export default function App() {
       .filter((e) => e !== undefined)
       .map((e) => e.characterId),
   )
+  // 転出する住民にも「!」を出す(話しかけると引っ越す理由を聞ける)
+  if (movingOut) alertIds.add(movingOut.characterId)
+
+  /* ---------------- 転出イベント ---------------- */
+  const leavingCharacter =
+    movingOut && talkingTo?.id === movingOut.characterId ? talkingTo : null
+  const leavingReason = leavingCharacter ? moveOutReasonFor(leavingCharacter) : null
+  const leavingEvent = leavingReason ? eventForTopic(leavingReason.topicId) : undefined
+  /** 話が終わると住民が去り、その物件が空きになる */
+  const finishMoveOut = () => {
+    if (!movingOut) return
+    const { characterId, propertyId } = movingOut
+    update((s) => {
+      const homes = { ...(s.residentHomes ?? {}) }
+      delete homes[characterId]
+      const occ = s.occupancy ?? {}
+      const memos = s.memos ?? [...new Set(s.experiencedEvents.map((e) => e.eventId))]
+      return {
+        ...s,
+        residents: (s.residents ?? INITIAL_RESIDENTS).filter((id) => id !== characterId),
+        residentHomes: homes,
+        occupancy: { ...occ, [propertyId]: Math.max(0, (occ[propertyId] ?? 1) - 1) },
+        memos:
+          leavingEvent && !memos.includes(leavingEvent.id) ? [...memos, leavingEvent.id] : memos,
+      }
+    })
+    setMovingOut(null)
+    setTalkingTo(null)
+  }
 
   const pendingEvent =
-    talkingTo === null
+    talkingTo === null || leavingCharacter !== null
       ? null
       : (events.find((e) => e.characterId === talkingTo.id && available.includes(e.id)) ?? null)
 
   // 恋愛: 異性かつ romanceable な相手で、今日の相談がないときは恋愛会話に入る
-  const romanceContent = talkingTo ? romanceContentFor(talkingTo.id, state.gender) : null
-  const romanceOpen = romanceContent !== null && pendingEvent === null && !examDue
+  const romanceContent =
+    talkingTo && leavingCharacter === null ? romanceContentFor(talkingTo.id, state.gender) : null
+  const romanceOpen = romanceContent !== null && pendingEvent === null
   /** 相手ごとの恋愛状態を差し替える */
   const updateRomance = (characterId: string, fn: (prev: RomanceState) => RomanceState) =>
     update((s) => ({
@@ -393,7 +565,7 @@ export default function App() {
   // 1年目はハゲタ社長が自動申込。2年目以降は6月の確認ダイアログで応募
   const applied = year === START_YEAR || state.appliedExamYear === year
   const applyPromptOpen =
-    !examDue &&
+    !uiBusy &&
     talkingTo === null &&
     year > START_YEAR &&
     month === APPLY_DEADLINE_MONTH &&
@@ -510,7 +682,11 @@ export default function App() {
     if (f.kind === 'book') return setMemoPrompt(true)
     if (tour === null) return
     // 面談前(ついてきているだけ)なら、話しかけると要望のヒアリングが始まる
-    if (tour.phase.kind === 'arriving') return dispatchTour({ type: 'meet' })
+    if (tour.phase.kind === 'arriving') {
+      dispatchTour({ type: 'meet' })
+      changeMoney(REWARD_MEETING, '面談の謝礼金')
+      return
+    }
     setFollowerTalk(
       tour.household.members.map((member) => ({ member, text: followerLine(tour, member) })),
     )
@@ -533,16 +709,58 @@ export default function App() {
     }))
   }
 
+  /**
+   * 建物に入る(入口を向いてスペース)。
+   * 案内中は入れない — 客を待たせて自分の家に帰るのは不自然だし、機嫌が減るだけで得もない
+   */
+  const enterBuilding = (id: string) => {
+    if (tour !== null) return setBlockedEnter(true)
+    if (id === 'hibari') return setInsideOffice(true)
+    if (id === homePropertyIdOf(state)) return enterHome()
+  }
+
+  /** 会社でハゲ田に話しかける。試験日なら受験、ふだんは一言 */
+  const talkToBoss = () => {
+    if (examPending && applied) {
+      setInsideOffice(false)
+      setExamOpen(true)
+      return
+    }
+    if (examPending && !applied) {
+      setBossTalk('今日は試験日だが…お前、応募しとらんだろう。来年は6月末までに出せ')
+      update((s) => ({ ...s, lastExamYear: year }))
+      return
+    }
+    setBossTalk(
+      daysToExam > 0 && daysToExam <= 30
+        ? `試験まであと${daysToExam}日だ。当日はこの事務所が会場になる。忘れるなよ`
+        : '客を連れてこい。物件を見せて、契約を取る。それがうちの仕事だ',
+    )
+  }
+
+  /** 中に入れる建物: 自宅と会社(ひばり不動産) */
+  const enterableIds = new Set([homePropertyIdOf(state), 'hibari'])
+
+  /** いま案内できる空き物件(会社の物件ボードに貼ってある) */
+  const vacantListings = PROPERTIES.filter((p) => isVacant(p.id, occupancy)).map((p) => ({
+    id: p.id,
+    name: p.name,
+    category: p.category,
+    price: p.price,
+    vacancy: `空き ${vacantUnits(p, occupancy[p.id] ?? 0)}/${p.units}戸`,
+  }))
+
   const finishExam = (answers: ExamAnswer[]) => {
     const correct = answers.filter((a) => a.correct).length
     const passed = correct >= passLine(answers.length)
     update((s) => ({
       ...s,
-      money: s.money + (passed ? REWARD_EXAM_PASS : REWARD_EXAM_FAIL),
       lastExamYear: year,
       retryEventIds: answers.filter((a) => !a.correct).map((a) => a.event.id),
       examResults: [...s.examResults, { year, correct, total: answers.length, passed }],
     }))
+    changeMoney(passed ? REWARD_EXAM_PASS : REWARD_EXAM_FAIL, passed ? '合格ボーナス' : '参加賞')
+    setExamOpen(false)
   }
 
   return (
@@ -552,8 +770,32 @@ export default function App() {
           <span className="hud-avatar" style={playerSpriteStyle(state.gender)} /> {ageOf(state)}歳
         </span>
         <span className="hud-item">📅 {year}年目</span>
-        <span className="hud-item hud-money">💰 {state.money.toLocaleString()}万円</span>
+        <span className={`hud-item hud-money${state.money < 10 ? ' is-broke' : ''}`}>
+          💰 {state.money.toLocaleString()}万円
+          <span className={`hud-net ${(state.monthNet ?? 0) < 0 ? 'is-minus' : 'is-plus'}`}>
+            今月 {(state.monthNet ?? 0) >= 0 ? '+' : ''}
+            {state.monthNet ?? 0}万
+          </span>
+          {/* お金が動いたら、その場で名目つきに出す */}
+          <span className="hud-flashes" aria-live="polite">
+            {moneyFlashes.map((f) => (
+              <span key={f.id} className={`hud-flash ${f.amount < 0 ? 'is-minus' : 'is-plus'}`}>
+                {f.amount > 0 ? '+' : ''}
+                {f.amount}万({f.label})
+              </span>
+            ))}
+          </span>
+        </span>
         {year > START_YEAR && applied && <span className="hud-item">✅ 応募済み</span>}
+        {/* 試験の予告。不意打ちにしない(会場=会社へ自分で行く) */}
+        {daysToExam > 0 && daysToExam <= 3 && state.lastExamYear < year && (
+          <span className="hud-item hud-exam">⚠️ あと{daysToExam}日で試験だ</span>
+        )}
+        {examPending && (
+          <span className="hud-item hud-exam is-today">
+            📝 {applied ? '試験日! ひばり不動産へ行こう' : '試験日(未応募)'}
+          </span>
+        )}
         <span className="hud-item hud-date">
           <DateMeter month={month} day={day} />
         </span>
@@ -571,24 +813,18 @@ export default function App() {
         characters={residentCharacters}
         gender={state.gender}
         alertIds={alertIds}
-        companyAlert={arriving !== null || tour !== null}
+        companyAlert={arriving !== null || tour !== null || examPending}
         followers={followers}
         occupancy={occupancy}
         homeSpots={homeSpots}
         inputLocked={
-          talkingTo !== null ||
-          examDue ||
+          uiBusy ||
           applyPromptOpen ||
           tourOverlayOpen ||
           inspectPromptOpen ||
           contractPromptOpen ||
           rejectedPromptOpen ||
-          viewedFull ||
-          memoPrompt ||
-          memoOpen ||
-          insideHome ||
-          inspected !== null ||
-          followerTalk !== null
+          viewedFull
         }
         onTapCharacter={openTalk}
         staging={staging}
@@ -604,29 +840,36 @@ export default function App() {
           if (!state.openingDone) update((s) => ({ ...s, openingDone: true }))
         }}
         onTalkFollower={talkToFollower}
-        // ponytail: 自宅は「向いてスペース → 物件パネル(ボロ屋のスペック)→ 閉じると中へ」。
-        // TownView は別作業中で触れないので、既存の物件パネルの導線に相乗りしている
-        onPropertyViewed={(id) => (id === 'player-home' ? enterHome() : setViewedProperty(id))}
+        onPropertyViewed={setViewedProperty}
+        onPropertyPanel={setPanelProperty}
+        // 自宅と会社は入口を向いてスペースで中に入る(物件パネルは出さない)
+        enterableIds={enterableIds}
+        onEnterBuilding={enterBuilding}
       />
 
-      {talkingTo && !examDue && !romanceOpen && (
+      {talkingTo && !romanceOpen && leavingCharacter === null && (
         <DialogueBox
           key={talkingTo.id + (pendingEvent?.id ?? '')}
           character={talkingTo}
           event={pendingEvent}
           gender={state.gender}
           smallTalk={solvedLine}
-          onComplete={(eventId) =>
+          onComplete={(eventId) => {
             update((s) => ({
               ...s,
-              money: s.money + REWARD_CONSULT,
               experiencedEvents: s.experiencedEvents.some(
                 (x) => x.eventId === eventId && x.year === year,
               )
                 ? s.experiencedEvents
                 : [...s.experiencedEvents, { eventId, year }],
+              memos: (s.memos ?? [...new Set(s.experiencedEvents.map((e) => e.eventId))]).includes(
+                eventId,
+              )
+                ? s.memos
+                : [...(s.memos ?? [...new Set(s.experiencedEvents.map((e) => e.eventId))]), eventId],
             }))
-          }
+            changeMoney(REWARD_CONSULT, '相談の謝礼金')
+          }}
           onClose={() => setTalkingTo(null)}
         />
       )}
@@ -669,7 +912,6 @@ export default function App() {
                 const homes = s.residentHomes ?? {}
                 return {
                   ...s,
-                  money: s.money + reward,
                   residents: [...residents, ...residentIds.filter((id) => !residents.includes(id))],
                   occupancy: propertyId ? { ...occ, [propertyId]: (occ[propertyId] ?? 0) + 1 } : occ,
                   residentHomes: propertyId
@@ -681,6 +923,7 @@ export default function App() {
                   },
                 }
               })
+            if (success) changeMoney(reward, '仲介手数料')
             setTourDismissedDay(state.daysElapsed)
             setTour(null)
           }}
@@ -778,24 +1021,70 @@ export default function App() {
 
       {shelfOpen && <MemoBook memos={shelfEvents} onClose={() => setShelfOpen(false)} />}
 
-      {examDue && applied && (
+      {/* 会社(ひばり不動産)の中。試験会場であり、物件ボードで空き物件を確認できる */}
+      {insideOffice && (
+        <OfficeInterior
+          gender={state.gender}
+          listings={vacantListings}
+          locked={bossTalk !== null}
+          onTalkBoss={talkToBoss}
+          onLeave={() => setInsideOffice(false)}
+        />
+      )}
+
+      {bossTalk && (
+        <PromptOverlay
+          title="🧑‍🦲 ハゲタ社長"
+          body={`ハゲタ「${bossTalk}」`}
+          options={[{ label: 'わかった', onPick: () => setBossTalk(null) }]}
+        />
+      )}
+
+      {/* 案内中は自宅にも会社にも入れない */}
+      {blockedEnter && (
+        <PromptOverlay
+          title="🚫 いまはやめておこう"
+          body={
+            tour
+              ? `ハゲタ「おい、${tour.household.label}を待たせてるぞ。\n用が済んでからにしろ」`
+              : 'いまは入れない。'
+          }
+          options={[{ label: 'そうする', onPick: () => setBlockedEnter(false) }]}
+        />
+      )}
+
+      {/* 転出イベント: 理由を聞く → ハゲ田のアドバイス → 住民が去り、物件が空きになる */}
+      {leavingCharacter && leavingReason && (
+        <PromptOverlay
+          title={`🚚 ${leavingCharacter.name}が村を出ていく`}
+          body={moveOutLines(
+            leavingCharacter,
+            leavingReason,
+            leavingEvent
+              ? { title: leavingEvent.title ?? leavingReason.topicId, text: leavingEvent.explanation }
+              : undefined,
+          ).join('\n\n')}
+          options={[
+            {
+              label: leavingEvent ? '見送る(メモを1冊もらった)' : '見送る',
+              onPick: finishMoveOut,
+            },
+          ]}
+        />
+      )}
+
+      {/* 試験。会場(会社)でハゲ田に話しかけたときだけ始まる = 割り込まない */}
+      {examOpen && (
         <ExamScreen
           year={year}
           firstYear={year === START_YEAR}
           questions={examQuestions}
           experiencedIds={experiencedIds}
           onFinish={finishExam}
-          onDecline={() => update((s) => ({ ...s, lastExamYear: year }))}
-        />
-      )}
-
-      {examDue && !applied && (
-        <PromptOverlay
-          title="📝 宅建試験(10月15日)"
-          body={'今日は試験日だが…応募していないので今年は受けられない。\n来年は6月末までに応募しよう。'}
-          options={[
-            { label: 'わかった…', onPick: () => update((s) => ({ ...s, lastExamYear: year })) },
-          ]}
+          onDecline={() => {
+            update((s) => ({ ...s, lastExamYear: year }))
+            setExamOpen(false)
+          }}
         />
       )}
     </div>

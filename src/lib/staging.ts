@@ -24,6 +24,8 @@ export type StageCommand =
   | { cmd: 'follow'; actor: string }
   /** セリフ(スペースで送る) */
   | { cmd: 'say'; actor: string; text: string }
+  /** 画面中央に大きな見出しを短く出す(「転入者登場!」など)。ms 後に自動で次へ */
+  | { cmd: 'banner'; text: string; sub?: string; ms?: number }
   /** 一定時間待つ */
   | { cmd: 'wait'; ms: number }
   /** カメラを一時的に指定キャラへ寄せる(actor 省略で主人公に戻す) */
@@ -116,6 +118,17 @@ export interface OpeningPlaces {
 }
 
 /**
+ * 転入者が来ることを、歩いてくる前に大きく告知する見出し(docs/SYSTEMS.md「転入者の登場演出」)。
+ * 何が起きたか分からないうちに人が増えている、という状態を避ける。
+ */
+export const BANNER: StageCommand = {
+  cmd: 'banner',
+  text: '転入者、登場!',
+  sub: '村に越してきたい人がやって来た',
+  ms: 1800,
+}
+
+/**
  * @param members 最初の転入世帯。世帯IDは決め打ちしない(コンテンツが差し替わっても壊れない)
  */
 export function openingStaging(places: OpeningPlaces, members: StageActor[]): Staging {
@@ -142,6 +155,7 @@ export function openingStaging(places: OpeningPlaces, members: StageActor[]): St
       },
       ...(newcomers
         ? [
+            BANNER,
             ...members.map((m, i): StageCommand => ({
               cmd: 'spawn',
               actor: m.id,
@@ -168,6 +182,7 @@ export function arrivalStaging(members: StageActor[], near: Pos, gate: Pos = [12
     id: `arrival/${members.map((m) => m.id).join('+')}`,
     actors: members,
     script: [
+      BANNER,
       ...members.map((m, i): StageCommand => ({
         cmd: 'spawn',
         actor: m.id,

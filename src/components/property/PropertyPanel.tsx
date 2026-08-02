@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { NOT_FOR_RENT, vacantUnits } from '../../lib/properties'
 import type { PropertySpec } from '../../lib/properties'
 import './property.css'
 
@@ -14,6 +15,35 @@ export function occupancyLabel(spec: PropertySpec, occupied: number): string {
   if (occupied <= 0) return spec.units > 1 ? `空き家(全${spec.units}戸)` : '空き家'
   if (occupied >= spec.units) return spec.units > 1 ? `満室(${spec.units}/${spec.units}戸)` : '入居中(満室)'
   return `${occupied}/${spec.units}戸 入居中`
+}
+
+/**
+ * 空き状況の見出し。案内できるかどうかが一番大事な情報なので、
+ * パネルの一番上に大きく色付きで出す(満室ははっきりグレーアウト)。
+ */
+function VacancyBadge({ spec, occupied }: { spec: PropertySpec; occupied: number }) {
+  const vacant = vacantUnits(spec, occupied)
+  const forRent = !NOT_FOR_RENT.includes(spec.id)
+  if (!forRent)
+    return (
+      <p className="prop-vacancy is-full">
+        <span className="prop-vacancy-main">案内対象外</span>
+        <span className="prop-vacancy-sub">{spec.id === 'hibari' ? '職場だ' : 'あなたの住まいだ'}</span>
+      </p>
+    )
+  if (vacant <= 0)
+    return (
+      <p className="prop-vacancy is-full">
+        <span className="prop-vacancy-main">満室</span>
+        <span className="prop-vacancy-sub">{occupancyLabel(spec, occupied)} — 内見できない</span>
+      </p>
+    )
+  return (
+    <p className="prop-vacancy is-vacant">
+      <span className="prop-vacancy-main">空き {vacant}/{spec.units}戸</span>
+      <span className="prop-vacancy-sub">案内できる物件だ</span>
+    </p>
+  )
 }
 
 type Row = [label: string, value: string]
@@ -59,6 +89,8 @@ export function PropertyPanel({ spec, occupied = 0, onClose }: Props) {
           <span className="prop-icon">{spec.kind === 'land' ? '🪧' : '🏠'}</span>
           {spec.name}
         </h2>
+
+        <VacancyBadge spec={spec} occupied={occupied} />
 
         <dl className="prop-rows">
           {[['入居状況', occupancyLabel(spec, occupied)] as Row, ...rowsOf(spec)].map(([label, value]) => (

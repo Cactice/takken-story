@@ -26,4 +26,11 @@ for (const b of KUROKAI.buildings) {
   assert.equal(KUROKAI.propertyIdAt(...b.entrance), b.id, `${b.name} の入口が物件に紐づいていない`);
 }
 
+// 冬は「全体を薄くする」のではなく、雪のタイルに差し替えて雪だるまを置く
+const { winter, summer } = KUROKAI.layers;
+assert.notEqual(winter.sheet.url, summer.sheet.url, '冬だけ雪版のシートを使うこと');
+assert.equal(winter.filter, undefined, '冬に全体フィルタをかけないこと(色は元のまま)');
+const snowy = winter.ground.flat().filter((t, i) => t !== summer.ground.flat()[i]).length;
+assert.ok(snowy > 200, `雪に差し替わったマスが ${snowy} しかない`);
+
 console.log(`OK: 黒会市 ${KUROKAI.cols}x${KUROKAI.rows} / 建物 ${KUROKAI.buildings.length}棟 / 看板 ${KUROKAI.signs.length}本`);

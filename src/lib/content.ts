@@ -59,9 +59,14 @@ export function characterById(id: string): Character | undefined {
   return characters.find((c) => c.id === id)
 }
 
-/** 引越し理由の論点を解説するイベントを探し、ハゲタのアドバイスに仕立てる */
-function adviceForTopic(topicId: string): { title: string; text: string } | undefined {
-  const e = events.find((x) => x.topicId === topicId)
+/** その論点を解説しているイベント(引越し理由・転出理由のアドバイス元) */
+export function eventForTopic(topicId: string): GameEvent | undefined {
+  return events.find((x) => x.topicId === topicId)
+}
+
+/** 引越し理由・転出理由の論点を解説するイベントを探し、ハゲタのアドバイスに仕立てる */
+export function adviceForTopic(topicId: string): { title: string; text: string } | undefined {
+  const e = eventForTopic(topicId)
   if (!e) return undefined
   return { title: e.title ?? topicId, text: e.explanation }
 }

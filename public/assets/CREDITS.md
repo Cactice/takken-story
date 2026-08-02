@@ -35,8 +35,10 @@
 - 用途: 第2世代の舞台「黒会市」の都会タイル (`city/tilemap_packed.png`、16x16px、37x28タイル)
 
 ## 冬(雪)版タイル ― 上記2つからの派生
-- `tiny-town/tilemap_winter.png` と `city/tilemap_winter.png` は、上記 Kenney (CC0) のシートを
-  `scripts/make-winter-tiles.py` で機械的に色変換して作った派生物。タイル番号は元シートと同一。
+- `tiny-town/tilemap_winter.png` と `city/tilemap_winter.png` は、上記 Kenney (CC0) のシートに
+  `scripts/make-winter-tiles.py` で**雪を乗せて**作った派生物(色は変換していない。屋根や木の上端に
+  積雪を乗せ、地面はまだらの雪パッチ、道は轍を残す)。元からあるタイル番号は元シートと同一で、
+  シートを数行ぶん拡張して雪だるまと積雪パターン違いを追加している(番号は `src/lib/maps/winter-tiles.ts`)。
 - ライセンス: 元が CC0 のため派生物も自由に利用可。
 - 用途: 季節が冬のあいだ、参照するシートをこちらに差し替える(`src/lib/maps/types.ts` の SeasonSkin.sheet)
 

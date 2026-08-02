@@ -4,12 +4,17 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { basename, join } from 'node:path';
-import { PROPERTIES } from '../src/lib/properties.ts';
+import { PROPERTIES, initialOccupancy, isVacant } from '../src/lib/properties.ts';
+import { BUILDINGS, LAND_SIGNS, START_POS, inBounds, isSolid } from '../src/lib/map.ts';
+import { INITIAL_HOMES, INITIAL_RESIDENTS } from '../src/types.ts';
 import {
   HP_BONUS_ALL_LIKE,
+  HP_DRAIN_PER_TICK,
   HP_MAX,
   HP_PENALTY_DISLIKE,
   HP_PENALTY_MEH,
+  HP_TICK_MS,
+  TILES_PER_SEC,
   toTourMember,
   briefingLines,
   followerLine,
@@ -161,7 +166,7 @@ const mansion = {
   assert.equal(c.contracted.id, mansion.id);
 
   // 時間経過ではHPが減り続ける
-  assert.equal(tourReducer(c, { type: 'tick' }).hp, c.hp - 1);
+  assert.equal(tourReducer(c, { type: 'tick' }).hp, c.hp - HP_DRAIN_PER_TICK);
 }
 
 // --- 6b. 追従キャラのセリフは人によって違い、状況で出し分ける -------------------
@@ -253,7 +258,9 @@ const mansion = {
   assert.notEqual(two.each[0].reaction.line, two.each[1].reaction.line, '同席者と同じ文にしない');
 }
 
-// --- 6e. 難易度: どの世帯も契約に辿り着けるか(実データで通しの検算) ----------
+// --- 6e. 難易度: 機嫌が10倍速く減っても理不尽にならないか(実データで通しの検算) ---
+// 機嫌は「マップを自由に歩いている間」だけ減る(パネルや会話を読む時間は減らない)。
+// だから難易度 = 歩く距離。実際のマップ上の距離を測って、HPが保つかを検算する。
 {
   const chars = new Map(
     readdirSync('content/gen1/characters')
@@ -262,30 +269,128 @@ const mansion = {
       .map((c) => [c.id, c]),
   );
   const props = PROPERTIES.map(toTourProperty);
-  /** 1件見て回るあいだに時間で減るぶん(約15秒) */
-  const DRAIN_PER_VISIT = 5;
 
-  for (const f of readdirSync('content/gen1/households').filter((x) => x.endsWith('.json'))) {
-    const raw = JSON.parse(readFileSync(join('content/gen1/households', f), 'utf8'));
-    const members = raw.memberIds.map((id) => chars.get(id)).filter(Boolean).map(toTourMember);
-    if (members.length === 0) continue;
-    const h = { ...raw, members };
+  /** 1タイル歩くのに減る機嫌 */
+  const DRAIN_PER_TILE = (HP_DRAIN_PER_TICK / HP_TICK_MS) * 1000 / TILES_PER_SEC;
 
+  // 物件までの歩行距離(タイル)。開始位置=自宅前の道からのBFS
+  const key = (x, y) => `${x},${y}`;
+  const dist = new Map([[key(...START_POS), 0]]);
+  const queue = [[...START_POS]];
+  while (queue.length > 0) {
+    const [x, y] = queue.shift();
+    const d = dist.get(key(x, y));
+    for (const [dx, dy] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) {
+      const nx = x + dx;
+      const ny = y + dy;
+      if (!inBounds(nx, ny) || isSolid(nx, ny) || dist.has(key(nx, ny))) continue;
+      dist.set(key(nx, ny), d + 1);
+      queue.push([nx, ny]);
+    }
+  }
+  /** その物件に話しかけられる位置までの歩数 */
+  const walkTo = (x, y) =>
+    Math.min(...[[0, -1], [0, 1], [-1, 0], [1, 0]].map(([dx, dy]) => dist.get(key(x + dx, y + dy)) ?? Infinity));
+  const tilesTo = new Map([
+    ...BUILDINGS.map((b) => [b.id, walkTo(...b.entrance)]),
+    ...LAND_SIGNS.map((s) => [s.id, walkTo(s.x, s.y)]),
+  ]);
+  for (const [id, t] of tilesTo) assert.ok(Number.isFinite(t), `物件 ${id} に歩いて行けない`);
+
+  const households = readdirSync('content/gen1/households')
+    .filter((x) => x.endsWith('.json'))
+    .map((f) => JSON.parse(readFileSync(join('content/gen1/households', f), 'utf8')))
+    .map((raw) => ({
+      ...raw,
+      members: raw.memberIds.map((id) => chars.get(id)).filter(Boolean).map(toTourMember),
+    }))
+    .filter((h) => h.members.length > 0);
+
+  for (const h of households) {
     const candidates = props.filter((p) => householdReaction(h, p).candidate);
     assert.ok(candidates.length > 0, `${h.label}: 気に入る物件が1件も無い(契約不可能)`);
 
-    // 端から総当たりする一番下手なプレイでも、契約候補に辿り着くまでHPが保つか
+    // (1) 要望に合う物件へ最短で向かえば、余裕をもって契約できること
+    const nearest = Math.min(...candidates.map((p) => tilesTo.get(p.id) ?? Infinity));
+    const straight = HP_MAX - nearest * DRAIN_PER_TILE;
+    assert.ok(
+      straight >= 50,
+      `${h.label}: 一番近い候補(${nearest}タイル)へ直行しても機嫌が ${Math.round(straight)} しか残らない`,
+    );
+
+    // (2) 近い順に見て回る「ふつうのプレイ」でも契約に辿り着けること。
+    //     外れを引くたびに機嫌が減り、そのぶん歩く距離も積み上がる
+    const byDistance = [...props].sort(
+      (a, b) => (tilesTo.get(a.id) ?? 1e9) - (tilesTo.get(b.id) ?? 1e9),
+    );
     let hp = HP_MAX;
-    for (const p of props) {
+    let at = 0;
+    let visits = 0;
+    for (const p of byDistance) {
+      const tiles = tilesTo.get(p.id) ?? 0;
+      hp -= Math.abs(tiles - at) * DRAIN_PER_TILE;
+      at = tiles;
       const hr = householdReaction(h, p);
-      hp += hpDeltaFor(hr) - DRAIN_PER_VISIT;
+      hp += hpDeltaFor(hr);
+      visits++;
       if (hr.candidate) break;
     }
     assert.ok(
       hp > 0,
-      `${h.label}: 順番に見て回ると契約前に機嫌が尽きる(残りHP ${hp})。HP_PENALTY_* を緩めること`,
+      `${h.label}: 近い順に${visits}件見て回ると契約前に機嫌が尽きる(残り ${Math.round(hp)})。` +
+        'HP_DRAIN_PER_TICK か HP_PENALTY_* を緩めること',
     );
   }
+
+  console.log(
+    `難易度: 1タイルあたり機嫌 -${DRAIN_PER_TILE.toFixed(2)} / 全力で歩ける距離 ${Math.floor(HP_MAX / DRAIN_PER_TILE)}タイル`,
+  );
+}
+
+// --- 6f. 開始時の空きは3件前後で、来る世帯が必ず1件は気に入ること -----------------
+{
+  const chars = new Map(
+    readdirSync('content/gen1/characters')
+      .filter((f) => f.endsWith('.json'))
+      .map((f) => JSON.parse(readFileSync(join('content/gen1/characters', f), 'utf8')))
+      .map((c) => [c.id, c]),
+  );
+  const occ = initialOccupancy();
+  const vacant = PROPERTIES.filter((p) => isVacant(p.id, occ));
+  assert.ok(
+    vacant.length >= 2 && vacant.length <= 4,
+    `開始時の空きが ${vacant.length} 件(3件前後に保つこと)`,
+  );
+
+  // 空きが一箇所に固まっていないこと(村を歩いて回る意味が出るように)
+  const spots = vacant.map((p) => {
+    const b = BUILDINGS.find((x) => x.id === p.id);
+    const s = LAND_SIGNS.find((x) => x.id === p.id);
+    return b ? b.entrance : s ? [s.x, s.y] : null;
+  });
+  assert.ok(spots.every(Boolean), '空き物件がマップ上に存在しない');
+  const pairs = spots.flatMap((a, i) => spots.slice(i + 1).map((b) => Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1])));
+  assert.ok(Math.min(...pairs) >= 4, `空き物件が固まっている(最短 ${Math.min(...pairs)} タイル)`);
+
+  // 開始時から村にいる住民の家は埋まっていること
+  for (const [charId, propId] of Object.entries(INITIAL_HOMES)) {
+    assert.ok(!isVacant(propId, occ), `${charId} が住んでいる ${propId} が空き扱いになっている`);
+  }
+
+  // これから来る世帯(=開始時の住民でない人)は、空き3件のどれかを気に入ること
+  const residents = new Set(INITIAL_RESIDENTS);
+  const vacantTour = vacant.map(toTourProperty);
+  for (const f of readdirSync('content/gen1/households').filter((x) => x.endsWith('.json'))) {
+    const raw = JSON.parse(readFileSync(join('content/gen1/households', f), 'utf8'));
+    const members = raw.memberIds.map((id) => chars.get(id)).filter(Boolean).map(toTourMember);
+    if (members.length === 0 || raw.memberIds.some((id) => residents.has(id))) continue;
+    const h = { ...raw, members };
+    assert.ok(
+      vacantTour.some((p) => householdReaction(h, p).candidate),
+      `${h.label}: 開始時の空き物件に気に入るものが1件も無い(案内が詰む)`,
+    );
+  }
+  console.log(`開始時の空き: ${vacant.map((p) => p.name).join(' / ')}`);
 }
 
 // --- 7. コンテンツ: 世帯の memberIds が実在の人物を指しているか ---------------

@@ -20,13 +20,43 @@ import {
 } from '../map'
 import { TOWN_SHEET } from '../sprites'
 import type { Sheet } from '../sprites'
-import { seasonLayers } from './types.ts'
+import { cellHash, drift, seasonLayers } from './types.ts'
+import {
+  TOWN_RUT_H,
+  TOWN_RUT_V,
+  TOWN_SNOW,
+  TOWN_SNOWMAN,
+  TOWN_WINTER_SIZE,
+} from './winter-tiles.ts'
 import type { GameMap, OverCell, PlacedBuilding, Season, SeasonSkin } from './types.ts'
 
 /** 雪が積もった版のタイルシート(scripts/make-winter-tiles.py で生成) */
 export const TOWN_WINTER_SHEET: Sheet = {
-  ...TOWN_SHEET,
   url: `${import.meta.env?.BASE_URL ?? '/'}assets/tiny-town/tilemap_winter.png`,
+  ...TOWN_WINTER_SIZE,
+}
+
+/** 雪だるまを置いた場所。この周りだけ雪が濃くなる(誰かが雪をかき集めた跡) */
+const SNOWMEN: readonly (readonly [number, number])[] = [
+  [5, 3],
+  [14, 8],
+  [5, 18],
+  [19, 16],
+]
+
+/**
+ * 冬の地面。道は轍が残った雪。草地は3割くらいのマスに雪が積もり、残りのマスは雪なし。
+ * 積もるマスは吹きだまりで塊になり、雪だるまの周りは必ず積もる(雪をかき集めた跡)。
+ */
+function snowAt(tile: number, x: number, y: number): number | undefined {
+  // 道は轍を残す。左右に道が続いていれば横向き、そうでなければ縦向き
+  const isPath = (px: number, py: number) => GROUND[py]?.[px] === 'P'
+  const rut = (isPath(x - 1, y) || isPath(x + 1, y) ? TOWN_RUT_H : TOWN_RUT_V)[tile]
+  if (rut) return rut[0]
+  const near = SNOWMEN.some(([sx, sy]) => Math.abs(sx - x) + Math.abs(sy - y) <= 2)
+  if (!near && !drift(x, y, 30)) return undefined // このマスは雪なし
+  const vs = TOWN_SNOW[tile]
+  return vs?.[cellHash(x, y) % vs.length]
 }
 
 /**
@@ -46,11 +76,13 @@ const SEASONS_ARIKITA: Partial<Record<Season, SeasonSkin>> = {
     swap: { [T.treeGreen]: T.treeOrange, [T.flowers]: T.grassTuft, [T.bush]: T.mushroom },
     filter: 'sepia(0.18) saturate(1.25) hue-rotate(-12deg)',
   },
-  // 冬: 雪。タイルシートごと差し替えるので一目で分かる
+  // 冬: 雪。屋根・木・地面に雪を「足した」シートに差し替える(色は元のまま)。
+  // 道端に雪だるまを置くのが一番「冬だ」と伝わる
   winter: {
     sheet: TOWN_WINTER_SHEET,
     swap: { [T.flowers]: T.grassTuft, [T.sprout]: T.grassTuft },
-    filter: 'contrast(0.96)',
+    tileAt: snowAt,
+    decor: SNOWMEN.map(([x, y]) => ({ x, y, tile: TOWN_SNOWMAN })),
   },
 }
 

@@ -16,7 +16,14 @@
 // 行の長さ・凡例に無い文字・入口・道の繋がりは checkMap() が機械的に検証する。
 
 import type { Sheet } from '../sprites'
-import { assertMap, defineMap } from './types.ts'
+import { assertMap, cellHash, defineMap, drift } from './types.ts'
+import {
+  CITY_RUT_H,
+  CITY_RUT_V,
+  CITY_SNOW,
+  CITY_SNOWMAN,
+  CITY_WINTER_SIZE,
+} from './winter-tiles.ts'
 import type { BuildingStyle, GameMap, Legend, MapSpec, Season, SeasonSkin } from './types.ts'
 
 export const CITY_SHEET: Sheet = {
@@ -27,13 +34,35 @@ export const CITY_SHEET: Sheet = {
 
 /** 雪が積もった版(街路樹と土だけ白くした控えめ版。scripts/make-winter-tiles.py で生成) */
 export const CITY_WINTER_SHEET: Sheet = {
-  ...CITY_SHEET,
   url: `${import.meta.env?.BASE_URL ?? '/'}assets/city/tilemap_winter.png`,
+  ...CITY_WINTER_SIZE,
 }
 
 /** 街路樹 */
 const TREE_GREEN = 440
 const TREE_AUTUMN = 402
+
+/** 雪だるま(広場に2体)。この周りだけ雪が濃い */
+const SNOWMEN: readonly (readonly [number, number])[] = [
+  [2, 24],
+  [17, 23],
+]
+
+/** 横の道(行)と縦の道(列)。轍の向きを決める */
+const ROAD_ROWS = new Set([14, 15])
+const ROAD_COLS = new Set([11, 12])
+
+/**
+ * 冬の地面。道は轍が残った雪。歩道や広場は3割くらいのマスに雪が積もる(吹きだまりで塊になる)。
+ */
+function snowAt(tile: number, x: number, y: number): number | undefined {
+  const rut = (ROAD_ROWS.has(y) ? CITY_RUT_H : ROAD_COLS.has(x) ? CITY_RUT_V : undefined)?.[tile]
+  if (rut) return rut[0]
+  const near = SNOWMEN.some(([sx, sy]) => Math.abs(sx - x) + Math.abs(sy - y) <= 2)
+  if (!near && !drift(x, y, 30)) return undefined // このマスは雪なし
+  const vs = CITY_SNOW[tile]
+  return vs?.[cellHash(x, y) % vs.length]
+}
 
 /**
  * 都会の季節。アスファルトは変わらないので変化は控えめ。
@@ -43,7 +72,11 @@ const SEASONS_KUROKAI: Partial<Record<Season, SeasonSkin>> = {
   spring: { filter: 'saturate(1.05) brightness(1.03)' },
   summer: { filter: 'saturate(1.18) contrast(1.03)' },
   autumn: { swap: { [TREE_GREEN]: TREE_AUTUMN }, filter: 'sepia(0.14) saturate(1.15) hue-rotate(-10deg)' },
-  winter: { sheet: CITY_WINTER_SHEET, filter: 'brightness(1.02) saturate(0.92)' },
+  winter: {
+    sheet: CITY_WINTER_SHEET,
+    tileAt: snowAt,
+    decor: SNOWMEN.map(([x, y]) => ({ x, y, tile: CITY_SNOWMAN })),
+  },
 }
 
 /** 屋上 [奥, 手前] × [左, 中, 右] */

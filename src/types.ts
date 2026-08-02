@@ -29,6 +29,18 @@ export interface Character {
     likedFeatures: string[]
     dislikedFeatures: string[]
   }
+  /**
+   * 転出(村を出ていく)理由。content 側で書けるようにした差し込み口。
+   * 無ければ src/lib/moveout.ts の既定文で動く(コンテンツ担当が後から書ける)。
+   */
+  moveOut?: {
+    /** 引っ越す理由(住民のセリフ。法律用語は使わない) */
+    reason: string
+    /** 理由に対応する宅建の論点。ハゲ田のアドバイス(メモ)を引くのに使う */
+    topicId: string
+    /** 去り際の一言 */
+    farewell?: string
+  }
 }
 
 export type DiagramType =
@@ -137,24 +149,71 @@ export interface GameState {
   openingDone?: boolean
   /** 選んだ世代(いまは第1世代のみ実装) */
   generation?: number
+  /** 主人公が住んでいる物件ID。ここから毎月の家賃を引く(引越しで変わりうるので状態で持つ) */
+  homePropertyId?: string
+  /** 家賃を引いた最後の月(year*12+month)。同じ月に二重で引かないための目印 */
+  lastRentMonth?: number
+  /** 今月の収支(万円)。月が変わると0に戻る。HUDに出す */
+  monthNet?: number
 }
 
-/** 開始時から村にいる住民(ハゲ田社長のみ) */
-// 村は出来立てで住民ゼロ。いるのはハゲ田社長と主人公だけ
-export const INITIAL_RESIDENTS = ['tencho-gozo']
+/**
+ * 開始時から村にいる住民。村は出来立てだが空っぽではない(docs/SYSTEMS.md「村の人口」)。
+ * ハゲ田社長 + すでに住んでいる3世帯。この3人は転入者としては現れない(App が除外する)。
+ */
+export const INITIAL_RESIDENTS = ['tencho-gozo', 'misaki', 'ren', 'kr-yoshie']
+
+/**
+ * 開始時の住民の住まい(住民ID → 物件ID)。
+ * この家は「埋まっている」= 案内できない。転出イベントで空きに戻る。
+ */
+export const INITIAL_HOMES: Readonly<Record<string, string>> = {
+  misaki: 'clinic',
+  ren: 'flower',
+  'kr-yoshie': 'kimono',
+}
 
 export const START_AGE = 15
 export const START_YEAR = 1
 export const DAYS_PER_MONTH = 30
 export const DAYS_PER_YEAR = 12 * DAYS_PER_MONTH
 
-/** 金額はすべて「万円」単位で保持する */
-export const REWARD_CONSULT = 1
+/**
+ * 金額はすべて「万円」単位の整数。
+ * 収支のバランス(1年=12ヶ月):
+ *   出ていく: 自宅の家賃(第1世代は5万)× 12ヶ月 = 60万/年
+ *   入ってくる: 相談の謝礼 8万 × 年3〜4件 + 面談の謝礼 3万 × 年4組 + 仲介手数料(賃料1ヶ月分)× 成約
+ * → まじめに働けば少し黒字、何もしなければ数ヶ月で苦しくなる。
+ */
+export const REWARD_CONSULT = 8
+/** 転入者の話を聞く(面談)ともらえる謝礼 */
+export const REWARD_MEETING = 3
 export const REWARD_EXAM_PASS = 100
 export const REWARD_EXAM_FAIL = 5
-/** 自宅の家賃(毎月) */
-export const RENT_MONTHLY = 5
-export const MONEY_START = 10
+
+/**
+ * 主人公の自宅(物件ID)。**世代ごとに違う物件**で、家賃はその物件データの賃料を毎月引く
+ * (定数にしない。docs/SYSTEMS.md「自宅と家賃」)。
+ * 第2世代の「掴まされた高い物件」のように、家賃そのものが物語の実感になる。
+ * ponytail: いまは第1世代のボロ屋しか物件データが無いので他世代は暫定で同じものを指している。
+ * その世代の自宅にあたる物件を properties.ts に足したら、ここを差し替えるだけでよい。
+ */
+export const HOME_OF_GENERATION: Readonly<Record<number, string>> = {
+  1: 'player-home',
+  2: 'player-home',
+  3: 'player-home',
+  4: 'player-home',
+  5: 'player-home',
+}
+
+/** 所持金の初期値も世代ごとに違う(docs/STORY.md) */
+export const MONEY_START_OF_GENERATION: Readonly<Record<number, number>> = {
+  1: 10,
+  2: 300,
+  3: 500,
+  4: 50,
+  5: 5000,
+}
 export const EXAM_PASS_RATIO = 0.7
 export const EXAM_MONTH = 10
 export const EXAM_DAY = 15
