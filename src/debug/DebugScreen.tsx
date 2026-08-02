@@ -317,7 +317,8 @@ function speakerOf(event: DebugEvent, who: string | undefined): DebugCharacter |
 function Line({ event, line, as }: { event: DebugEvent; line: string; as?: string }) {
   const { who, text } = splitLine(line)
   const speaker = speakerOf(event, as ?? who)
-  const name = as ?? who
+  // content のセリフは「リク「…」」と短く書いてあるが、表示はフルネームにする
+  const name = as ?? speaker?.name ?? who
   if (!name) return <li className="dbg-line note">{text}</li>
   return (
     <li className="dbg-line">
