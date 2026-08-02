@@ -289,7 +289,7 @@ function EventList({ events, selected, onPick }: EventListProps) {
 function splitLine(line: string): { who?: string; text: string } {
   const m = line.match(/^(.+?)「([\s\S]*)」\s*$/)
   // 「地の文のなかの「引用」」を話者と読み違えないように、名前らしい短さだけ通す
-  if (!m || m[1].length > 10 || /[、。!?…「」]/.test(m[1])) return { text: line }
+  if (!m || m[1].length > 16 || /[、。!?…「」]/.test(m[1])) return { text: line }
   return { who: m[1], text: m[2] }
 }
 
@@ -316,8 +316,8 @@ function speakerOf(event: DebugEvent, who: string | undefined): DebugCharacter |
 /** 会話1行。本編の DialogueBox と同じ見た目(顔 + 名前 + 本文)にする */
 function Line({ event, line, as }: { event: DebugEvent; line: string; as?: string }) {
   const { who, text } = splitLine(line)
-  const speaker = speakerOf(event, as ?? who)
-  // content のセリフは「リク「…」」と短く書いてあるが、表示はフルネームにする
+  // 名前が付いていない行は、そのイベントの主役が喋っている(古いイベントはこの書き方)
+  const speaker = speakerOf(event, as ?? who) ?? (as || who ? undefined : characterById(event.characterId))
   const name = as ?? speaker?.name ?? who
   if (!name) return <li className="dbg-line note">{text}</li>
   return (
