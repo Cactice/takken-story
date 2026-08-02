@@ -43,5 +43,9 @@
     "beforeExam": [
       "勉強しとるんかい。おじいちゃんもね、若い頃は夜通し紙を睨んどったよ"
     ]
+  },
+  "birthYear": 1001,
+  "agesByGeneration": {
+    "3": 74
   }
 }

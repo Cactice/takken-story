@@ -63,5 +63,9 @@
       "築古",
       "隣が近い"
     ]
+  },
+  "birthYear": 1016,
+  "agesByGeneration": {
+    "2": 29
   }
 }

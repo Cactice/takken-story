@@ -79,5 +79,9 @@
       "エレベーターなし"
     ]
   },
-  "family": "都倉家"
+  "family": "都倉家",
+  "birthYear": 1004,
+  "agesByGeneration": {
+    "2": 41
+  }
 }

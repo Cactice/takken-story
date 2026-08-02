@@ -54,5 +54,9 @@
     "beforeExam": [
       "試験、受かってくださいね。次に相談するときは資格のある方がいい"
     ]
+  },
+  "birthYear": 1017,
+  "agesByGeneration": {
+    "2": 28
   }
 }

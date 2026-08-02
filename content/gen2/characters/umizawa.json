@@ -59,5 +59,9 @@
       ]
     }
   },
-  "family": "海沢家"
+  "family": "海沢家",
+  "birthYear": 1021,
+  "agesByGeneration": {
+    "2": 24
+  }
 }

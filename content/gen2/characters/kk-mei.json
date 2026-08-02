@@ -68,5 +68,9 @@
       "ペット可",
       "築古"
     ]
+  },
+  "birthYear": 1019,
+  "agesByGeneration": {
+    "2": 26
   }
 }

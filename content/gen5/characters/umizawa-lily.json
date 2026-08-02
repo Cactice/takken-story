@@ -50,5 +50,9 @@
       "駅近",
       "築浅"
     ]
+  },
+  "birthYear": 1101,
+  "agesByGeneration": {
+    "5": 34
   }
 }

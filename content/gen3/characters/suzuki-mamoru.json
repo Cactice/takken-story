@@ -51,5 +51,9 @@
     "beforeExam": [
       "試験ですか。図面と条文は似ています。読める人にしか読めない"
     ]
+  },
+  "birthYear": 1020,
+  "agesByGeneration": {
+    "3": 55
   }
 }

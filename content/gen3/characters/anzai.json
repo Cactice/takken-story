@@ -43,5 +43,9 @@
     "beforeExam": [
       "試験ですか。知識は、身内を守るときに一番効きます。しっかり"
     ]
+  },
+  "birthYear": 1031,
+  "agesByGeneration": {
+    "3": 44
   }
 }

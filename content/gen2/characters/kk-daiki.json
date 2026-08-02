@@ -80,5 +80,10 @@
       "広い"
     ]
   },
-  "family": "都倉家"
+  "family": "都倉家",
+  "birthYear": 1021,
+  "agesByGeneration": {
+    "2": 24,
+    "3": 54
+  }
 }

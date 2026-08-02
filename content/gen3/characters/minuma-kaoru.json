@@ -46,5 +46,9 @@
     "beforeExam": [
       "試験だと? ……ふん。紙で決まる時代だからな。せいぜいやれ"
     ]
+  },
+  "birthYear": 1017,
+  "agesByGeneration": {
+    "3": 58
   }
 }

@@ -45,5 +45,9 @@
     ]
   },
   "family": "都倉家",
-  "descendantOf": "kk-shindo"
+  "descendantOf": "kk-shindo",
+  "birthYear": 1105,
+  "agesByGeneration": {
+    "5": 30
+  }
 }
