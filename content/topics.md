@@ -49,6 +49,7 @@
 | gyoho-37jo | 37条書面(契約書面の記載事項・交付義務) | A | 中盤 | ev-gyoho-37jo |
 | gyoho-tetsuke-seigen | 手付の性質・額の制限(代金の2割) | A | 中盤 | ev-gyoho-tetsuke-seigen |
 | gyoho-tetsuke-hozen | 手付金等の保全措置(未完成5%・完成10%) | A | 中盤 | — |
+| gyoho-fujitsu | 重要な事項の不告知・不実告知の禁止(47条) | A | 中盤 | ev-gen3-taiho |
 | gyoho-kokoku | 広告規制・業務上の規制(誇大広告・取引態様明示) | B | 中盤 | ev-gyoho-kokoku |
 | gyoho-jimusho | 事務所・案内所等の規制(標識・専任宅建士の設置) | B | 中盤 | ev-gyoho-jimusho |
 | gyoho-kantoku | 監督処分・罰則(指示・業務停止・免許取消) | B | 終盤 | ev-gyoho-kantoku |
