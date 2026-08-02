@@ -50,9 +50,9 @@ const FAMILY_SEED: Record<string, string | CharSprite> = {
   // 既に画面に出ている人に合わせる(その人の見た目は変えない)
   禿鷹: 'hageta-hageta',
   都倉: 'togura-yonnan',
-  葉山: 'hayama-oji',
   黒瀬: 'kurose-hagane',
   // 家の性格で選ぶ
+  葉山: { tile: 99 }, // 金髪の女性。王家の血筋(と本人たちは言う)
   白石: { tile: 108 }, // 青い宇宙人みたいなやつ
   織部: { tile: 84 }, // 魔法使い(織部シルビア)
   見沼: { tile: 100 }, // 白髪の女性
