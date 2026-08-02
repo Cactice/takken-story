@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { basename, join } from 'node:path';
-import { PROPERTIES, initialOccupancy, isVacant } from '../src/lib/properties.ts';
+import { NOT_FOR_RENT, PROPERTIES, initialOccupancy, isVacant } from '../src/lib/properties.ts';
 import { BUILDINGS, LAND_SIGNS, START_POS, inBounds, isSolid } from '../src/lib/map.ts';
 import { INITIAL_HOMES, INITIAL_RESIDENTS } from '../src/types.ts';
 import {
@@ -15,6 +15,9 @@ import {
   HP_PENALTY_MEH,
   HP_TICK_MS,
   TILES_PER_SEC,
+  disclosureFor,
+  missKindFor,
+  pickVacancies,
   toTourMember,
   briefingLines,
   followerLine,
@@ -391,6 +394,103 @@ const mansion = {
     );
   }
   console.log(`開始時の空き: ${vacant.map((p) => p.name).join(' / ')}`);
+}
+
+// --- 6g. 案内する3件は「合うのはちょうど1件」で、外れる理由が別々か ------------
+// 3件とも似た物件だと、最初に見た1件で決まってしまい選ぶ意味が無くなる。
+{
+  const chars = new Map(
+    readdirSync('content/gen1/characters')
+      .filter((f) => f.endsWith('.json'))
+      .map((f) => JSON.parse(readFileSync(join('content/gen1/characters', f), 'utf8')))
+      .map((c) => [c.id, c]),
+  );
+  const props = PROPERTIES.map(toTourProperty);
+  const forbidden = new Set([...NOT_FOR_RENT, ...Object.values(INITIAL_HOMES)]);
+  const residents = new Set(INITIAL_RESIDENTS);
+
+  for (const f of readdirSync('content/gen1/households').filter((x) => x.endsWith('.json'))) {
+    const raw = JSON.parse(readFileSync(join('content/gen1/households', f), 'utf8'));
+    const members = raw.memberIds.map((id) => chars.get(id)).filter(Boolean).map(toTourMember);
+    if (members.length === 0 || raw.memberIds.some((id) => residents.has(id))) continue;
+    const h = { ...raw, members };
+    const slots = pickVacancies(h, props, forbidden, 3);
+    assert.equal(slots.length, 3, `${h.label}: 案内できる物件が3件そろわない`);
+
+    const shown = slots.map((v) => props.find((p) => p.id === v.id));
+    const fits = shown.filter((p) => householdReaction(h, p).candidate);
+    assert.equal(
+      fits.length,
+      1,
+      `${h.label}: 要望に合う物件が ${fits.length} 件ある(ちょうど1件にすること): ${fits.map((p) => p.name).join(',')}`,
+    );
+    // 外れる2件は、選べる範囲でできるだけ違う理由にする
+    const kinds = slots.filter((v) => !v.fit).map((v) => v.miss);
+    const availableKinds = new Set(
+      props
+        .filter((p) => !forbidden.has(p.id) && !householdReaction(h, p).candidate)
+        .map((p) => missKindFor(h, p)),
+    );
+    assert.equal(
+      new Set(kinds).size,
+      Math.min(kinds.length, availableKinds.size),
+      `${h.label}: 外れる理由が偏っている(${kinds} / 選べたのは ${[...availableKinds]})`,
+    );
+    console.log(
+      `  ${h.label}: ◎${shown[0].name} / ${slots.slice(1).map((v, i) => `✗${shown[i + 1].name}(${v.miss})`).join(' ')}`,
+    );
+  }
+}
+
+// --- 6h. 35条クイズ: 連打で正解できないこと / 選択肢が重複しないこと -------------
+{
+  const props = PROPERTIES.map(toTourProperty);
+  const positions = new Set();
+  for (const p of props) {
+    const items = disclosureFor(p);
+    assert.equal(items.length, 3, `${p.name}: 重説が3問ない`);
+    for (const it of items) {
+      const cs = it.question.choices;
+      assert.equal(new Set(cs).size, cs.length, `${p.name}「${it.heading}」: 選択肢が重複している`);
+      assert.ok(it.question.correct >= 0 && it.question.correct < cs.length, '正解の位置が範囲外');
+      positions.add(it.question.correct);
+    }
+  }
+  assert.ok(positions.size > 1, '正解がいつも同じ位置にある(連打で全問正解できてしまう)');
+
+  // 物件が違えば設問も違う(全物件で同じ3問の使い回しにしない)
+  const first = disclosureFor(props[0]).map((i) => i.heading).join('|');
+  assert.ok(
+    props.some((p) => disclosureFor(p).map((i) => i.heading).join('|') !== first),
+    '全物件で同じ設問が出ている',
+  );
+}
+
+// --- 6i. その年に相談できる相手が村にいるか(勉強していない問題で受験させない) ----
+{
+  const events = readdirSync('content/gen1/events', { recursive: true })
+    .filter((f) => typeof f === 'string' && f.endsWith('.json'))
+    .map((f) => JSON.parse(readFileSync(join('content/gen1/events', f), 'utf8')));
+  const chars = new Set(
+    readdirSync('content/gen1/characters')
+      .filter((f) => f.endsWith('.json'))
+      .map((f) => JSON.parse(readFileSync(join('content/gen1/characters', f), 'utf8')).id),
+  );
+  // 相談の相手は「開始時の住民」か「転入してくる世帯の誰か」= いつか村に来る人であること
+  const arrivals = new Set(
+    readdirSync('content/gen1/households')
+      .filter((f) => f.endsWith('.json'))
+      .flatMap((f) => JSON.parse(readFileSync(join('content/gen1/households', f), 'utf8')).memberIds),
+  );
+  const reachable = new Set([...INITIAL_RESIDENTS, ...arrivals]);
+  const unreachable = events
+    .filter((e) => chars.has(e.characterId) && !reachable.has(e.characterId))
+    .map((e) => `${e.id}(${e.characterId})`);
+  assert.deepEqual(
+    unreachable,
+    [],
+    `村に来ない人物の相談があり、体験できないまま試験に出る: ${unreachable.join(', ')}`,
+  );
 }
 
 // --- 7. コンテンツ: 世帯の memberIds が実在の人物を指しているか ---------------

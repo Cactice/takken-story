@@ -320,3 +320,43 @@
     box-shadow: 0 0 0 2px rgb(0 0 0 / 0.35), 0 0 16px rgb(255 217 59 / 0.95);
   }
 }
+
+/* 演出中、追うべきキャラが画面外にいるときの道しるべ */
+.stage-guide {
+  position: absolute;
+  z-index: 5;
+  padding: 0.15rem 0.5rem;
+  background: #241d2e;
+  color: #ffe066;
+  border: 3px solid #ffd93b;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: bob 0.6s infinite alternate;
+}
+
+.stage-guide.is-up {
+  top: 0.4rem;
+  left: 50%;
+  translate: -50% 0;
+}
+
+.stage-guide.is-down {
+  bottom: 3rem;
+  left: 50%;
+  translate: -50% 0;
+}
+
+.stage-guide.is-left {
+  left: 0.4rem;
+  top: 50%;
+  translate: 0 -50%;
+}
+
+.stage-guide.is-right {
+  right: 0.4rem;
+  top: 50%;
+  translate: 0 -50%;
+}

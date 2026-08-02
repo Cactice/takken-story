@@ -190,8 +190,8 @@ export const HP_PENALTY_DISLIKE = 8
 export const HP_PENALTY_MEH = 4
 /** 気に入ったメンバー1人につき回復する量 */
 export const HP_BONUS_ALL_LIKE = 6
-/** 35条の質問に誤答したときのダメージ */
-export const HP_PENALTY_WRONG = 20
+/** 35条の質問に誤答したときのダメージ。3問中2問外すと契約が飛ぶくらいの重さにしてある */
+export const HP_PENALTY_WRONG = 35
 /** ハゲタが法的解説をする確率 */
 export const HAGETA_COMMENT_RATE = 0.5
 
@@ -371,6 +371,77 @@ export function hpDeltaFor(hr: HouseholdReaction): number {
 }
 
 /* ------------------------------------------------------------------ *
+ * 案内できる空き物件を選ぶ
+ *
+ * 空きが3件あっても、そのうち2件も3件も要望に合っていたら「最初に見た家で決まり」に
+ * なってしまい、プレイヤーの判断が要らなくなる。
+ * そこで、転入世帯が来るたびに「**合うのはちょうど1件**、残り2件は**別々の理由で外れる**」
+ * ように空きを組み直す(外れる理由そのものが学習になる)。
+ * ------------------------------------------------------------------ */
+
+/** 外れる理由。2件が同じ理由で外れないようにするために持つ */
+export type MissKind = 'budget' | 'disliked' | 'legal' | 'nothing'
+
+export interface VacancySlot {
+  id: string
+  /** その世帯にとって唯一の当たりか */
+  fit: boolean
+  /** 外れる理由(当たりなら 'nothing') */
+  miss: MissKind
+}
+
+/** その物件がこの世帯にとって外れる理由(いちばん強い1つ) */
+export function missKindFor(h: TourHousehold, p: TourProperty): MissKind {
+  if (p.rent > h.budget) return 'budget'
+  const hr = householdReaction(h, p)
+  if (hr.candidate) return 'nothing'
+  // 法的な難あり(再建築不可・調整区域・農地…)は、単に好みが合わないより学びが大きいので先に見る
+  if (p.legalNotes.some((n) => /再建築|調整区域|農地|借地|旧耐震|浸水|未登記|共有/.test(n)))
+    return 'legal'
+  return 'disliked'
+}
+
+/**
+ * この世帯に見せる空き物件(3件)を選ぶ。
+ * @param forbidden 空きにできない物件(住民が住んでいる家・会社・主人公の自宅)
+ * @returns 当たり1件 + 別々の理由で外れる2件。当たりが無ければ空配列(呼び出し側で判断)
+ */
+export function pickVacancies(
+  h: TourHousehold,
+  props: readonly TourProperty[],
+  forbidden: ReadonlySet<string> = new Set(),
+  count = 3,
+): VacancySlot[] {
+  const usable = props.filter((p) => !forbidden.has(p.id))
+  const fits = usable.filter((p) => householdReaction(h, p).candidate)
+  if (fits.length === 0) return []
+  // 当たりは世帯ごとに散らす(毎回同じ物件が答えにならないように)
+  const fit = fits[hash(`fit/${h.id}`) % fits.length]
+
+  const misses = usable.filter((p) => p.id !== fit.id && !householdReaction(h, p).candidate)
+  const picked: TourProperty[] = []
+  const usedKinds = new Set<MissKind>()
+  // まず違う理由で外れるものを1件ずつ、足りなければ理由の重複を許して埋める
+  for (const kind of ['budget', 'disliked', 'legal'] as const) {
+    if (picked.length >= count - 1) break
+    const p = misses.find((x) => !picked.includes(x) && missKindFor(h, x) === kind)
+    if (p) {
+      picked.push(p)
+      usedKinds.add(kind)
+    }
+  }
+  for (const p of misses) {
+    if (picked.length >= count - 1) break
+    if (!picked.includes(p)) picked.push(p)
+  }
+
+  return [
+    { id: fit.id, fit: true, miss: 'nothing' as MissKind },
+    ...picked.map((p) => ({ id: p.id, fit: false, miss: missKindFor(h, p) })),
+  ]
+}
+
+/* ------------------------------------------------------------------ *
  * ハゲタの法的解説(毎回ではない)
  * ------------------------------------------------------------------ */
 export interface HagetaComment {
@@ -391,11 +462,13 @@ function seeded(seed: string): number {
 }
 
 function commentCandidates(p: TourProperty): HagetaComment[] {
-  const maxFloorArea = Math.round((p.area * p.floorAreaRatio) / 100)
-  const maxBuildArea = Math.round((p.area * p.buildingCoverage) / 100)
+  // 建蔽率・容積率は**敷地面積**にかける(延床ではない)
+  const land = Math.max(1, p.landArea)
+  const maxFloorArea = Math.round((land * p.floorAreaRatio) / 100)
+  const maxBuildArea = Math.round((land * p.buildingCoverage) / 100)
   const list: HagetaComment[] = [
     {
-      text: `ハゲタ「この土地は建蔽率${p.buildingCoverage}%・容積率${p.floorAreaRatio}%だ。敷地${p.area}平米なら建築面積は${maxBuildArea}平米、延べ面積は${maxFloorArea}平米まで。これ以上は増築できん」`,
+      text: `ハゲタ「この土地は建蔽率${p.buildingCoverage}%・容積率${p.floorAreaRatio}%だ。敷地${land}平米なら建築面積は${maxBuildArea}平米、延べ面積は${maxFloorArea}平米まで。これ以上は増築できん」`,
       topicId: 'hourei-kenpei',
       title: '建蔽率と容積率の上限',
     },
@@ -457,17 +530,161 @@ export interface DisclosureItem {
   question: DisclosureQuestion
 }
 
-export function disclosureFor(p: TourProperty): DisclosureItem[] {
-  const maxFloorArea = Math.round((p.area * p.floorAreaRatio) / 100)
-  const maxBuildArea = Math.round((p.area * p.buildingCoverage) / 100)
-  return [
+/** 1回の重説で読む項目数 */
+export const DISCLOSURE_COUNT = 3
+
+/**
+ * 選択肢を並べ替える(正解の位置を散らす)。
+ * 種は物件と設問から作るので、同じ場面なら毎回同じ並びになる = 理不尽なブレは無い。
+ * これが無いと「スペース連打で全問正解」できてしまい、唯一の学習要素が死ぬ。
+ */
+export function shuffleChoices(
+  q: DisclosureQuestion,
+  seed: string,
+): DisclosureQuestion {
+  const order = q.choices.map((c, i) => ({ c, i, k: hash(`${seed}/${i}/${c}`) }))
+  order.sort((a, b) => a.k - b.k)
+  return {
+    ...q,
+    choices: order.map((o) => o.c),
+    correct: order.findIndex((o) => o.i === q.correct),
+  }
+}
+
+/**
+ * その物件で読む重要事項の候補。**物件データから作る**ので、物件ごとに違う項目が出る。
+ * 法的な注意点(再建築不可・調整区域・農地・区分所有・借地…)がある物件では、
+ * その論点が優先して選ばれる。
+ */
+function disclosurePool(p: TourProperty): DisclosureItem[] {
+  const notes = p.legalNotes.join('。')
+  const land = Math.max(1, p.landArea)
+  const maxFloorArea = Math.round((land * p.floorAreaRatio) / 100)
+  const maxBuildArea = Math.round((land * p.buildingCoverage) / 100)
+  const specific: DisclosureItem[] = []
+  const push = (item: DisclosureItem) => specific.push(item)
+
+  if (notes.includes('再建築'))
+    push({
+      heading: '① 法令に基づく制限 — 接道義務',
+      text: `この物件は「${p.legalNotes.find((n) => n.includes('再建築'))}」という状態です。`,
+      question: {
+        ask: '安いのは嬉しいんですけど…建て替えができないってどういうことですか?',
+        choices: [
+          '幅4m以上の道路に2m以上接していないので、今の建物を壊すと新しく建てられません',
+          '古い建物なので、リフォームもできません',
+          '役所に届け出れば、いつでも建て替えられます',
+        ],
+        correct: 0,
+        explain:
+          '建築基準法の接道義務(幅員4m以上の道路に2m以上接する)を満たさない敷地には建物を建てられない。今ある建物は使えるが、建て替えはできない。',
+      },
+    })
+  if (notes.includes('調整区域') || notes.includes('開発許可'))
+    push({
+      heading: '① 法令に基づく制限 — 市街化調整区域',
+      text: `この物件の用途地域は${p.zoning}です。${p.legalNotes.find((n) => n.includes('調整区域') || n.includes('開発許可')) ?? ''}`,
+      question: {
+        ask: '市街化調整区域って、家を建てるのに何か手続きがいるんですか?',
+        choices: [
+          '市街化を抑える区域なので、開発行為には原則として知事の許可がいります',
+          '住宅なら何を建てても自由です',
+          '建物はいっさい建てられません',
+        ],
+        correct: 0,
+        explain:
+          '市街化調整区域は市街化を抑制すべき区域。開発行為は原則として都道府県知事の許可が必要(農林漁業を営む者の住宅・農業用倉庫などは例外)。',
+      },
+    })
+  if (notes.includes('農地'))
+    push({
+      heading: '① 法令に基づく制限 — 農地法',
+      text: `この土地は農地です。${p.legalNotes.find((n) => n.includes('農地')) ?? ''}`,
+      question: {
+        ask: '畑を借りて、そのまま野菜を作るだけでも許可がいるんですか?',
+        choices: [
+          '農地を農地のまま貸し借り・売買するには農地法3条の許可がいります',
+          '自分で耕すだけなら許可はいりません',
+          '市役所に事後報告すれば足ります',
+        ],
+        correct: 0,
+        explain:
+          '農地のままの権利移動は3条許可(農業委員会)。転用は4条、転用目的の権利移動は5条(知事等)。許可のない契約は効力を生じない。',
+      },
+    })
+  if (notes.includes('区分所有'))
+    push({
+      heading: '① 区分所有建物についての事項',
+      text: `この物件は区分所有建物です。${p.legalNotes.find((n) => n.includes('区分所有')) ?? ''}`,
+      question: {
+        ask: '毎月の管理費や修繕積立金の話は、契約のときに聞けるんですか?',
+        choices: [
+          '管理費・修繕積立金の額と、滞納があればその額まで説明します',
+          '管理組合のことなので、宅建業者は説明しません',
+          '入居後に管理会社から案内があります',
+        ],
+        correct: 0,
+        explain:
+          '区分所有建物では、管理費・修繕積立金の額と滞納額、規約の定め、管理の委託先などが35条の説明事項になっている。',
+      },
+    })
+  if (notes.includes('借地'))
+    push({
+      heading: '① 借地権について',
+      text: `この建物は借地の上に建っています。${p.legalNotes.find((n) => n.includes('借地')) ?? ''}`,
+      question: {
+        ask: '土地を借りたまま、この建物を人に売ることはできますか?',
+        choices: [
+          '地主の承諾(または裁判所の許可)がいります',
+          '建物は自分のものなので自由に売れます',
+          '借地上の建物は売買できません',
+        ],
+        correct: 0,
+        explain:
+          '借地上の建物を第三者に譲渡すると借地権も移転するため、地主の承諾が必要。承諾が得られないときは裁判所の許可で代えられる。',
+      },
+    })
+  if (notes.includes('浸水') || notes.includes('ハザード'))
+    push({
+      heading: '① 水害ハザードマップにおける位置',
+      text: `${p.legalNotes.find((n) => n.includes('浸水') || n.includes('ハザード')) ?? ''}`,
+      question: {
+        ask: '川が近いのは見れば分かりますけど、わざわざ説明することなんですか?',
+        choices: [
+          '水害ハザードマップ上の所在地は、35条で必ず説明する事項です',
+          '聞かれたときだけ答えれば足ります',
+          '賃貸では説明しなくてよい事項です',
+        ],
+        correct: 0,
+        explain:
+          '水防法にもとづく水害ハザードマップにおける対象物件の所在地は、売買・賃貸を問わず35条の説明事項(令和2年8月から)。',
+      },
+    })
+  if (notes.includes('旧耐震') || p.ageYears >= 40)
+    push({
+      heading: '① 建物の耐震診断について',
+      text: `この建物は築${p.ageYears}年です。${p.legalNotes.find((n) => n.includes('耐震')) ?? '耐震診断の記録はありません。'}`,
+      question: {
+        ask: '古い建物なんですね。地震のことは説明してもらえるんですか?',
+        choices: [
+          '昭和56年5月以前の建物は、耐震診断を受けていればその内容を説明します',
+          '古い建物は説明の対象外です',
+          '必ず耐震診断を受けてから引き渡します',
+        ],
+        correct: 0,
+        explain:
+          '昭和56年5月31日以前に新築工事に着手した建物は、耐震診断を受けたものであればその内容が35条の説明事項。診断そのものは義務ではない。',
+      },
+    })
+
+  const generic: DisclosureItem[] = [
     {
-      heading: '① 登記された権利について',
+      heading: '② 登記された権利について',
       text: `「${p.name}」の登記記録に記載された所有者は貸主本人で、所有権以外の権利の登記はありません。`,
       question: {
         ask: 'この説明って、契約したあとに聞くものじゃないんですか?',
         choices: [
-          '契約する前に説明を受けるものです',
+          '契約が成立するまでの間に説明を受けるものです',
           '契約したあと1週間以内に説明します',
           '引っ越したあとで大丈夫です',
         ],
@@ -477,17 +694,32 @@ export function disclosureFor(p: TourProperty): DisclosureItem[] {
       },
     },
     {
-      heading: '② 法令に基づく制限',
-      text: `用途地域は${p.zoning}、建蔽率${p.buildingCoverage}%、容積率${p.floorAreaRatio}%です。${p.legalNotes.join('。')}。`,
+      heading: '② 法令に基づく制限 — 容積率',
+      text: `用途地域は${p.zoning}、建蔽率${p.buildingCoverage}%、容積率${p.floorAreaRatio}%です。敷地面積は${land}平米です。`,
       question: {
-        ask: `敷地は${p.area}平米ですよね。延べ床は何平米まで建てられるんですか?`,
+        ask: `敷地は${land}平米ですよね。延べ床は何平米まで建てられるんですか?`,
         choices: [
           `${maxFloorArea}平米まで`,
           `${maxBuildArea}平米まで`,
-          `${p.area}平米まで`,
+          // 建蔽率と容積率が同じ物件だと上2つが同じ文になるので、別の外し方を混ぜる
+          `${Math.round(land)}平米まで(敷地と同じ)`,
         ],
         correct: 0,
-        explain: `延べ面積の上限は敷地面積×容積率。${p.area}×${p.floorAreaRatio}%=${maxFloorArea}平米。${maxBuildArea}平米は建蔽率から出る建築面積(真上から見た面積)の上限だ。`,
+        explain: `延べ面積の上限は敷地面積×容積率。${land}×${p.floorAreaRatio}%=${maxFloorArea}平米。${maxBuildArea}平米は建蔽率から出る建築面積(真上から見た面積)の上限だ。`,
+      },
+    },
+    {
+      heading: '② 法令に基づく制限 — 建蔽率',
+      text: `敷地${land}平米、建蔽率${p.buildingCoverage}%、用途地域は${p.zoning}です。`,
+      question: {
+        ask: '建蔽率って、何の面積の上限なんですか?',
+        choices: [
+          '真上から見た建築面積の上限で、この敷地なら' + maxBuildArea + '平米までです',
+          '各階の床を合計した延べ面積の上限です',
+          '庭を含めた敷地全体の上限です',
+        ],
+        correct: 0,
+        explain: `建蔽率は建築面積(真上から見た面積)÷敷地面積。${land}×${p.buildingCoverage}%=${maxBuildArea}平米が上限。延べ面積の上限は容積率で決まる。`,
       },
     },
     {
@@ -505,7 +737,43 @@ export function disclosureFor(p: TourProperty): DisclosureItem[] {
           '敷金は預り金。通常損耗や経年変化の原状回復費用は借主の負担ではないので、未払賃料や借主の故意・過失による損傷の分だけ差し引いて返還される。',
       },
     },
+    {
+      heading: `③ ${p.zoning}で建てられるもの`,
+      text: `この物件の用途地域は${p.zoning}です。`,
+      question: {
+        ask: 'ここで小さなお店を開くことはできますか?',
+        choices: p.zoning.includes('低層住居')
+          ? [
+              '第一種低層住居専用地域なので、単独の店舗は建てられません(兼用住宅なら一定の範囲で可)',
+              '住宅地なら、どんなお店でも開けます',
+              '役所へ届け出れば、どんな店でも開けます',
+            ]
+          : [
+              'この用途地域なら店舗を建てられます。用途地域ごとに建てられる建物が決まっています',
+              '用途地域に関係なく、どこでも店は開けます',
+              '店舗は工業専用地域にしか建てられません',
+            ],
+        correct: 0,
+        explain:
+          '用途地域ごとに建てられる建物が決まっている。第一種低層住居専用地域では単独の店舗は不可だが、床面積50平米以下かつ建物の1/2未満の兼用住宅なら建てられる。',
+      },
+    },
   ]
+
+  return [...specific, ...generic]
+}
+
+/**
+ * その物件で読む3項目。物件ごとに違う組み合わせになり、選択肢の並びも入れ替わる。
+ * (連打で正解できると、唯一の学習要素が無効になるため)
+ */
+export function disclosureFor(p: TourProperty): DisclosureItem[] {
+  const pool = disclosurePool(p)
+  const picked = pool.slice(0, DISCLOSURE_COUNT)
+  return picked.map((item, i) => ({
+    ...item,
+    question: shuffleChoices(item.question, `${p.id}/${i}`),
+  }))
 }
 
 /* ------------------------------------------------------------------ *

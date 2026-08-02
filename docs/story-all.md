@@ -1,6 +1,6 @@
 # 宅建story ——五代のあらすじ
 
-各世代1ページ。詳しい短編は [story-gen3.md](story-gen3.md)(第3世代のみ)。
+各世代1ページ。イベント単位の一覧は [events-by-generation.md](events-by-generation.md)。
 
 ---
 

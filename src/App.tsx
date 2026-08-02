@@ -15,6 +15,7 @@ import {
   initTour,
   isCandidate,
   isInspected,
+  pickVacancies,
   toTourProperty,
   tourReducer,
 } from './lib/tour'
@@ -29,6 +30,7 @@ import type {
 } from './lib/tour'
 import type { Follower } from './lib/follower'
 import {
+  NOT_FOR_RENT,
   PROPERTIES,
   initialOccupancy,
   isVacant,
@@ -114,13 +116,32 @@ function homePropertyIdOf(s: GameState): string {
 
 /**
  * 次に村へ来る転入世帯。すでに村に住んでいる人の世帯は来ない(同じ人が二重に現れないように)。
- * 3ヶ月ごとに1組ずつ、順番に来る。
+ * 1ヶ月ごとに1組ずつ、順番に来る。
  */
 function nextHousehold(s: GameState): TourHousehold | undefined {
   const residents = new Set(s.residents ?? INITIAL_RESIDENTS)
   const waiting = households.filter((h) => h.members.every((m) => !residents.has(m.id)))
   if (waiting.length === 0) return undefined
-  return waiting[Math.floor(s.daysElapsed / (3 * DAYS_PER_MONTH)) % waiting.length]
+  return waiting[Math.floor(s.daysElapsed / DAYS_PER_MONTH) % waiting.length]
+}
+
+/**
+ * その世帯を案内するときの空き物件を決める(docs/SYSTEMS.md「物件の空き状況」)。
+ * 合うのは**ちょうど1件**で、残り2件は**別々の理由**(予算オーバー/嫌う条件/法的な難あり)で外れる。
+ * 3件とも似た物件だと「最初に見た家で決まり」になり、選ぶ意味が消えるため。
+ * 住民が住んでいる家・会社・主人公の自宅は空きにしない。
+ */
+function vacanciesFor(h: TourHousehold, s: GameState): Record<string, number> {
+  const occupied = new Set([
+    ...NOT_FOR_RENT,
+    homePropertyIdOf(s),
+    ...Object.values(s.residentHomes ?? {}),
+  ])
+  const slots = pickVacancies(h, PROPERTIES.map(toTourProperty), occupied, VACANCY_TARGET)
+  const vacant = new Set(slots.map((v) => v.id))
+  return Object.fromEntries(
+    PROPERTIES.map((p) => [p.id, vacant.has(p.id) ? Math.max(0, p.units - 1) : p.units]),
+  )
 }
 
 const MOOD_FACE = { like: '😊', meh: '😐', dislike: '😖' } as const
@@ -150,11 +171,24 @@ interface PromptOption {
 }
 
 /** 矢印+スペースだけで操作できる確認ダイアログ(exam.css のスタイルを流用) */
+/** 開いた直後にキーを受け付けない時間。前の画面の連打が次の選択に飛ぶのを防ぐ */
+const PROMPT_INPUT_DELAY_MS = 350
+
 function PromptOverlay({ title, body, options }: { title: string; body: string; options: PromptOption[] }) {
   const [sel, setSel] = useState(0)
+  /** 表示直後は入力を捨てる(物件パネルを閉じたスペースが「内見する」に流れないように) */
+  const [ready, setReady] = useState(false)
+  useEffect(() => {
+    const id = setTimeout(() => setReady(true), PROMPT_INPUT_DELAY_MS)
+    return () => clearTimeout(id)
+  }, [])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (!ready) {
+        e.preventDefault()
+        return
+      }
       if (['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(e.key)) {
         e.preventDefault()
         const delta = e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? options.length - 1 : 1
@@ -192,13 +226,24 @@ function PromptOverlay({ title, body, options }: { title: string; body: string; 
 }
 
 /**
- * URLクエリで選択画面をスキップする(デバッグ用)。
+ * URLクエリでデバッグする。
  * 例: ?generation=1&gender=boy  → 世代選択と性別選択を飛ばして開始
+ *     ?speed=10                 → ゲーム内時間を10倍で進める
+ *     ?month=10&day=14          → その日付から始める(10月の試験の確認用)
  * gender は boy/girl / male/female / 男/女 を受ける
  */
-function debugParams(): { generation: number | null; gender: Gender | null } {
+function debugParams(): {
+  generation: number | null
+  gender: Gender | null
+  speed: number
+  startDay: number
+} {
   const q = new URLSearchParams(window.location.search)
   const g = Number(q.get('generation'))
+  const speed = Math.min(60, Math.max(1, Number(q.get('speed')) || 1))
+  const month = Math.min(12, Math.max(1, Number(q.get('month')) || 1))
+  const day = Math.min(DAYS_PER_MONTH, Math.max(1, Number(q.get('day')) || 1))
+  const startDay = (month - 1) * DAYS_PER_MONTH + (day - 1)
   const raw = (q.get('gender') ?? '').toLowerCase()
   const gender: Gender | null =
     raw === 'boy' || raw === 'male' || raw === '男'
@@ -206,7 +251,7 @@ function debugParams(): { generation: number | null; gender: Gender | null } {
       : raw === 'girl' || raw === 'female' || raw === '女'
         ? 'female'
         : null
-  return { generation: g >= 1 && g <= 5 ? g : null, gender }
+  return { generation: g >= 1 && g <= 5 ? g : null, gender, speed, startDay }
 }
 
 export default function App() {
@@ -355,6 +400,7 @@ export default function App() {
       staging === null &&
       (tour === null || tour.phase.kind === 'map' || tour.phase.kind === 'arriving'),
     tickDay,
+    debug.speed,
   )
 
   /**
@@ -424,15 +470,17 @@ export default function App() {
     setMovingOut({ characterId: leaver, propertyId: homes[leaver] })
   }, [state, movingOut, tour, staging])
 
-  // 3ヶ月に1度、転入希望者が村にやってくる。
-  // 会社でモーダルを出すのではなく、画面外から歩いてきて勝手についてくる(docs/SYSTEMS.md)
+  // 毎月1日、転入希望者が村にやってくる(手持ち無沙汰な時間を作らない)。
+  // 会社でモーダルを出すのではなく、画面外から歩いてきて勝手についてくる(docs/SYSTEMS.md)。
+  // このとき空き物件を組み直す = その世帯に合うのはちょうど1件、残りは別々の理由で外れる
   useEffect(() => {
     if (state === null || tour !== null || arriving !== null || staging !== null) return
-    const { month: m, day: d } = calendarOf(state)
-    if (d !== 1 || m % 3 !== 1 || tourDismissedDay === state.daysElapsed) return
+    const { day: d } = calendarOf(state)
+    if (d !== 1 || tourDismissedDay === state.daysElapsed) return
     const hh = nextHousehold(state)
     if (hh === undefined) return
     setArriving(hh)
+    update((s) => ({ ...s, occupancy: vacanciesFor(hh, s) }))
     const map = MAP_OF_GENERATION[state.generation ?? 1] ?? ARIKITA
     setStaging(
       arrivalStaging(
@@ -441,7 +489,7 @@ export default function App() {
         gateOf(map),
       ),
     )
-  }, [state, tour, arriving, staging, tourDismissedDay])
+  }, [state, tour, arriving, staging, tourDismissedDay, update])
 
   const startGame = useCallback(
     (gender: Gender) => {
@@ -449,7 +497,7 @@ export default function App() {
       const fresh: GameState = {
         gender,
         generation,
-        daysElapsed: 0,
+        daysElapsed: debug.startDay,
         money: MONEY_START_OF_GENERATION[generation] ?? 10,
         homePropertyId: HOME_OF_GENERATION[generation] ?? 'player-home',
         experiencedEvents: [],
@@ -473,7 +521,13 @@ export default function App() {
       const office = frontOfBuilding(map, 'hibari')
       if ((chosenGeneration ?? 1) !== 1 || !home || !office) return
       const first = nextHousehold(fresh)
-      if (first) setArriving(first)
+      if (first) {
+        setArriving(first)
+        // 最初の客にも「合うのは1件」の空き3件を用意する
+        const withVacancies = { ...fresh, occupancy: vacanciesFor(first, fresh) }
+        saveState(withVacancies)
+        setState(withVacancies)
+      }
       setStaging(
         openingStaging(
           { homeFront: home, officeFront: office, gate: gateOf(map) },
@@ -481,7 +535,7 @@ export default function App() {
         ),
       )
     },
-    [chosenGeneration],
+    [chosenGeneration, debug.startDay],
   )
 
   // デバッグ: ?gender= が指定されていれば性別選択を飛ばして開始
@@ -815,6 +869,25 @@ export default function App() {
           </span>
         )}
       </header>
+
+      {/* いま何をすればいいか。迷子にさせない(1行だけ) */}
+      <p className="objective" role="status">
+        {staging !== null
+          ? '🎯 ハゲタについていく(矢印キー)'
+          : tour?.phase.kind === 'arriving'
+            ? '🎯 ついてきた転入者に話しかける(となりでスペース)'
+            : tour !== null
+              ? '🎯 枠が光っている空き物件を案内する — 要望に合うのは1件だけだ'
+              : movingOut !== null
+                ? '🎯 頭に「!」が出ている住民に話を聞く'
+                : examPending && applied
+                  ? '🎯 今日は試験日! 禿鷹不動産に入って受験しよう'
+                  : daysToExam > 0 && daysToExam <= 3
+                    ? `🎯 あと${daysToExam}日で試験。会場は禿鷹不動産だ`
+                    : alertIds.size > 0
+                      ? '🎯 頭に「!」が出ている住民に話しかける'
+                      : '🎯 村を歩いて、住民の相談や転入者を待とう'}
+      </p>
 
       <TownView
         season={seasonOfMonth(month)}

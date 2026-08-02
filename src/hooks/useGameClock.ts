@@ -11,10 +11,13 @@ export const MS_PER_SEASON = MS_PER_YEAR / 4
 export const MS_PER_MONTH = MS_PER_YEAR / 12
 export const MS_PER_DAY = Math.round(MS_PER_MONTH / 30)
 
-export function useGameClock(running: boolean, onDay: () => void): void {
+/**
+ * @param speed 時間の倍率(デバッグ用。?speed=10 で10倍速)
+ */
+export function useGameClock(running: boolean, onDay: () => void, speed = 1): void {
   useEffect(() => {
     if (!running) return
-    const id = setInterval(onDay, MS_PER_DAY)
+    const id = setInterval(onDay, Math.max(16, MS_PER_DAY / Math.max(1, speed)))
     return () => clearInterval(id)
-  }, [running, onDay])
+  }, [running, onDay, speed])
 }

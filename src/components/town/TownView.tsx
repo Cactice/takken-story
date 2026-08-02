@@ -112,6 +112,9 @@ export function TownView({
   useEffect(() => {
     setPlayer([map.start[0], map.start[1]])
   }, [map])
+  /** 現在地の最新値。キー処理から副作用なしで読む */
+  const playerRef = useRef(player)
+  playerRef.current = player
   const [facing, setFacing] = useState<Facing>('up')
   /** 歩数。1歩ごとに増やして足を踏み替える */
   const [step, setStep] = useState(0)
@@ -133,9 +136,14 @@ export function TownView({
   }, [player, followers.length])
 
   const followerAt = new Map<string, Follower>()
-  const followerSpots = idle
-    ? scatterPositions(player, followers.length, (x, y) => inBounds(x, y) && !isSolid(x, y))
-    : followerPositions(trail, followers.length)
+  const trailSpots = followerPositions(trail, followers.length)
+  // 主人公と同じマスに重なるとスプライトが隠れて話しかけられない(足跡が短い= 出てきた直後)。
+  // そのときは待たずに主人公の周りへ散らす
+  const overlapping = trailSpots.some(([x, y]) => x === player[0] && y === player[1])
+  const followerSpots =
+    idle || overlapping
+      ? scatterPositions(player, followers.length, (x, y) => inBounds(x, y) && !isSolid(x, y))
+      : trailSpots
   followers.forEach((f, i) => {
     const [fx, fy] = followerSpots[i]
     // 先頭を優先(団子のときは先頭の1人と話す)
@@ -276,6 +284,22 @@ export function TownView({
     return () => window.removeEventListener('keydown', onKey)
   }, [sayLine])
 
+  /**
+   * 演出中、追うべきキャラが画面の外に出たときに指す矢印。
+   * 「誰について行けばいいのか分からない」で迷子になるのを防ぐ
+   */
+  const guide = (() => {
+    if (!staging || !cmd || (cmd.cmd !== 'lead' && cmd.cmd !== 'walkTo')) return null
+    const pos = stageActors[cmd.actor]?.pos
+    if (!pos) return null
+    const dx = pos[0] - player[0]
+    const dy = pos[1] - player[1]
+    if (Math.abs(dx) + Math.abs(dy) <= 3) return null
+    const side = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up'
+    const arrow = { up: '▲', down: '▼', left: '◀', right: '▶' }[side]
+    return { side, arrow, name: staging.actors.find((a) => a.id === cmd.actor)?.name ?? '' }
+  })()
+
   /** カットシーン中は原則動けない(lead 中だけは主人公が追いかける必要がある) */
   const stageLock = staging !== null && (sayLine !== null || !playerCanMove(cmd))
 
@@ -322,69 +346,57 @@ export function TownView({
       if (dir) {
         e.preventDefault()
         setFacing(dir[2])
-        setPlayer(([x, y]) => {
-          const nx = x + dir[0]
-          const ny = y + dir[1]
-          if (!inBounds(nx, ny)) return [x, y]
-          if (isSolid(nx, ny) || residentAt.has(`${nx},${ny}`)) return [x, y]
-          setStep((s) => s + 1)
-          return [nx, ny]
-        })
+        const [px, py] = playerRef.current
+        const nx = px + dir[0]
+        const ny = py + dir[1]
+        if (!inBounds(nx, ny) || isSolid(nx, ny) || residentAt.has(`${nx},${ny}`)) return
+        setPlayer([nx, ny])
+        setStep((n) => n + 1)
         return
       }
       if (e.key !== ' ' && e.key !== 'Enter') return
       e.preventDefault()
-      setPlayer(([x, y]) => {
-        const [dx, dy] = FACE_DELTA[facing]
-        const fx = x + dx
-        const fy = y + dy
-        // 1. 向いている先に住民 → 会話
-        const faced = residentAt.get(`${fx},${fy}`)
-        if (faced) {
-          onTapCharacter(faced)
-          return [x, y]
-        }
-        // 2. 向いている先に追従キャラ → 会話
-        const facedFollower = followerAt.get(`${fx},${fy}`)
-        if (facedFollower) {
-          onTalkFollower?.(facedFollower)
-          return [x, y]
-        }
-        // 3. 向いている先が入口タイル、かつ中に入れる建物 → そのまま中へ
-        const door = map.buildings.find(
-          (b) => b.entrance[0] === fx && b.entrance[1] === fy && enterableIds?.has(b.id),
-        )
-        if (door) {
-          onEnterBuilding?.(door.id)
-          return [x, y]
-        }
-        // 4. 向いている先が建物 or 空き地の看板 → 物件ステータス
-        const propId = map.propertyIdAt(fx, fy)
-        if (propId) {
-          setOpenProperty(propId)
-          return [x, y]
-        }
-        // 5. 向きが合っていなくても隣の住民・追従キャラとは話せる(取り回し優先)
-        const around = [
-          [x, y - 1],
-          [x, y + 1],
-          [x - 1, y],
-          [x + 1, y],
-        ] as const
-        const neighbor = around
-          .map(([nx, ny]) => residentAt.get(`${nx},${ny}`))
-          .find((c) => c !== undefined)
-        if (neighbor) {
-          onTapCharacter(neighbor)
-          return [x, y]
-        }
-        const nearFollower = around
-          .map(([nx, ny]) => followerAt.get(`${nx},${ny}`))
-          .find((f) => f !== undefined)
-        if (nearFollower) onTalkFollower?.(nearFollower)
-        return [x, y]
-      })
+      // ponytail: ここは setPlayer の更新関数の中でやっていた。React は更新関数を
+      // 2回呼ぶことがあるので(StrictMode)、会話や入場・報酬が二重に走っていた。
+      // 現在地は ref から読み、副作用はイベントハンドラのまま起こす
+      const [x, y] = playerRef.current
+      const [dx, dy] = FACE_DELTA[facing]
+      const fx = x + dx
+      const fy = y + dy
+      // 1. 向いている先に住民 → 会話
+      const faced = residentAt.get(`${fx},${fy}`)
+      if (faced) return onTapCharacter(faced)
+      // 2. 向いている先に追従キャラ → 会話
+      const facedFollower = followerAt.get(`${fx},${fy}`)
+      if (facedFollower) return onTalkFollower?.(facedFollower)
+      // 3. 向いている先が入口タイル、かつ中に入れる建物 → そのまま中へ
+      const door = map.buildings.find(
+        (b) => b.entrance[0] === fx && b.entrance[1] === fy && enterableIds?.has(b.id),
+      )
+      if (door) return onEnterBuilding?.(door.id)
+      // 4. 向いている先が建物 or 空き地の看板 → 物件ステータス
+      const propId = map.propertyIdAt(fx, fy)
+      if (propId) return setOpenProperty(propId)
+      // 5. 向きが合っていなくても隣となら話せる(取り回し優先)。
+      //    連れ(追従キャラ)を住民より先に見る — 面談を始めたいのに、
+      //    たまたま隣にいた住民が会話を横取りするのが一番の詰まりどころだった
+      const around = [
+        [x, y - 1],
+        [x, y + 1],
+        [x - 1, y],
+        [x + 1, y],
+      ] as const
+      const nearFollower = around
+        .map(([nx, ny]) => followerAt.get(`${nx},${ny}`))
+        .find((f) => f !== undefined)
+      if (nearFollower) return onTalkFollower?.(nearFollower)
+      const neighbor = around
+        .map(([nx, ny]) => residentAt.get(`${nx},${ny}`))
+        .find((c) => c !== undefined)
+      if (neighbor) onTapCharacter(neighbor)
     }
+
+
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
     // residents は characters から導出で毎回同値
@@ -547,6 +559,12 @@ export function TownView({
             <span className="char-sprite player-sprite" style={playerSpriteStyle(gender, facing, step)} />
           </div>
         </div>
+        {guide && (
+          <div className={`stage-guide is-${guide.side}`} role="status">
+            <span aria-hidden="true">{guide.arrow}</span> {guide.name}はこっちだ
+          </div>
+        )}
+
         {banner && (
           <div className="stage-banner" role="status">
             <div className="stage-banner-band">

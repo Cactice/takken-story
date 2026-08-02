@@ -1,7 +1,7 @@
 # 世代ごとの主要イベント
 
 物語の流れがつかめる形で、実際に入っているイベントを並べたもの。
-あらすじは [story-all.md](story-all.md)、第3世代の短編は [story-gen3.md](story-gen3.md)。
+あらすじは [story-all.md](story-all.md)。
 
 ---
 

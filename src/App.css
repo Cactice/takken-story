@@ -134,3 +134,17 @@
   background-repeat: no-repeat;
   image-rendering: pixelated;
 }
+
+/* いま何をすればいいかの1行。迷子にさせないための道しるべ */
+.objective {
+  align-self: center;
+  margin: 0.25rem 0 0;
+  padding: 0.2rem 0.7rem;
+  background: #fdf8e8;
+  border: 3px solid var(--color-ink);
+  border-radius: 999px;
+  box-shadow: 2px 2px 0 rgb(0 0 0 / 0.3);
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-align: center;
+}
