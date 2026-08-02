@@ -50,10 +50,13 @@ function fullName<T extends Character>(c: T): T {
 
 export const ALL_EVENTS: DebugEvent[] = Object.values(eventModules)
   .map((m) => m.default)
+  // 世代 → 発生時期の順。上から順に再生すれば物語として読める。
+  // 時期未設定(year なし)は世代の末尾へ送る
   .sort(
     (a, b) =>
       a.generation - b.generation ||
-      a.kind.localeCompare(b.kind) ||
+      (a.year ?? 99) - (b.year ?? 99) ||
+      (a.month ?? 99) - (b.month ?? 99) ||
       a.id.localeCompare(b.id),
   )
 

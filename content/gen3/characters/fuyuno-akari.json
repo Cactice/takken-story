@@ -6,7 +6,8 @@
   "sprite": "sprites/fuyuno-akari.png",
   "generation": 3,
   "appearsIn": [
-    3
+    3,
+    5
   ],
   "age": 32,
   "gender": "female",
@@ -85,7 +86,8 @@
   },
   "birthYear": 1043,
   "agesByGeneration": {
-    "3": 32
+    "3": 32,
+    "5": 92
   },
   "job": "会社員"
 }

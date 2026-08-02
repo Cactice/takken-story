@@ -609,3 +609,9 @@
   line-height: 1.75;
   margin-bottom: 8px;
 }
+
+.dbg-when {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}

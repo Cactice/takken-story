@@ -6,7 +6,8 @@
   "sprite": "sprites/hayama-himeka.png",
   "generation": 4,
   "appearsIn": [
-    4
+    4,
+    5
   ],
   "age": 25,
   "gender": "female",
@@ -25,11 +26,17 @@
       "characterId": "hayama-oji",
       "kind": "grandparent",
       "note": "祖父。同じ話を同じ順番で心配する人"
+    },
+    {
+      "characterId": "sakurai-koppe",
+      "kind": "client",
+      "note": "村のパン屋。勝手にブログに書いて客を押し寄せさせた"
     }
   ],
   "job": "俳優",
   "birthYear": 1080,
   "agesByGeneration": {
-    "4": 25
+    "4": 25,
+    "5": 55
   }
 }

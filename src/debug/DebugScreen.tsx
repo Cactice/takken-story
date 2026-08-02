@@ -250,6 +250,7 @@ function EventList({ events, selected, onPick }: EventListProps) {
           <thead>
             <tr>
               <th>世代</th>
+              <th>時期</th>
               <th>種類</th>
               <th>タイトル</th>
               <th>あらすじ</th>
@@ -264,6 +265,7 @@ function EventList({ events, selected, onPick }: EventListProps) {
                 onClick={() => onPick(e)}
               >
                 <td className="dbg-num">{e.generation}</td>
+                <td className="dbg-when">{e.year ? `${e.year}年${e.month ?? 1}月` : '—'}</td>
                 <td>
                   <span className={`dbg-kind kind-${e.kind}`}>{KIND_LABEL[e.kind] ?? e.kind}</span>
                 </td>

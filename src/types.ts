@@ -12,6 +12,10 @@ export interface Character {
   givenName?: string
   sprite: string
   personality: string
+  /** JSONの置き場所の世代 */
+  generation?: number
+  /** 実際に登場する世代。第4世代の人が第5世代にも出る、というのがある */
+  appearsIn?: number[]
   age?: number
   gender?: Gender
   romanceable?: boolean
@@ -60,6 +64,9 @@ export interface DiagramSpec {
 }
 
 export interface GameEvent {
+  /** 発生時期。世代内の何年目・何月に起きるか。上から読むと物語になる */
+  year?: number
+  month?: number
   id: string
   characterId: string
   topicId: string

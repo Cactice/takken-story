@@ -52,8 +52,15 @@ function withFullName(c: Character): Character {
   return full ? { ...c, name: full } : c
 }
 
-export const characters: Character[] = ofGeneration(characterModules).map(withFullName)
-export const events: GameEvent[] = ofGeneration(eventModules)
+// 人物は appearsIn で拾う。第4世代の人が第5世代にも出る、というのが普通にあるため
+export const characters: Character[] = Object.values(characterModules)
+  .map((m) => m.default)
+  .filter((c) => (c.appearsIn ?? [c.generation]).includes(GENERATION))
+  .map(withFullName)
+// 発生時期の順に並べる。上から読めば物語になる
+export const events: GameEvent[] = ofGeneration(eventModules).sort(
+  (a, b) => (a.year ?? 99) - (b.year ?? 99) || (a.month ?? 99) - (b.month ?? 99),
+)
 
 export function characterById(id: string): Character | undefined {
   return characters.find((c) => c.id === id)
