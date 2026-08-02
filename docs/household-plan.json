@@ -132,7 +132,7 @@
           "type": "都会に留まる",
           "who": "海沢カイル(初代)",
           "ids": [
-            "umizawa-kyle-kyle"
+            "umizawa-kyle"
           ],
           "note": "地方の実家を捨て、黒会市から一歩も動かなかった"
         },
@@ -140,7 +140,7 @@
           "type": "都会→白夜村",
           "who": "海沢セシル(二代目)",
           "ids": [
-            "umizawa-kyle-cecil"
+            "umizawa-cecil"
           ],
           "note": "都会でも足りず、管理し切れる街を自分で作った"
         },
@@ -148,7 +148,7 @@
           "type": "白夜村→村",
           "who": "海沢リリー(三代目)",
           "ids": [
-            "umizawa-kyle-lily"
+            "umizawa-lily"
           ],
           "note": "自分が設計した街から人が出ていくのを見て、村へ移った"
         }
@@ -219,7 +219,7 @@
             "suzuki-takeo",
             "suzuki-nao",
             "suzuki-sora",
-            "suzuki-mamoru"
+            "suzuki-riku"
           ],
           "note": "越してきて以来、村から出ていない。柵を立て直したのもこの代"
         },
@@ -621,7 +621,7 @@
           "type": "村に留まる",
           "who": "田中ポッポ→岸和田ポンポン",
           "ids": [
-            "tanaka-poppo-poppo",
+            "tanaka-poppo",
             "kishiwada-ponpon"
           ],
           "note": "石ころだらけの土地を畑にして以来、村から出ていない"
@@ -649,7 +649,7 @@
           "type": "都会に留まる",
           "who": "安西ホチキ(第2世代・事務員)",
           "ids": [
-            "anzai-rumi-mei"
+            "anzai-hochiki"
           ],
           "note": "主二の事務所で書類を守った。捨てなかった紙が六十年後に効く"
         },
@@ -657,7 +657,7 @@
           "type": "村に留まる",
           "who": "安西ロッポー(第3世代・弁護士)とその孫",
           "ids": [
-            "anzai-rumi-rumi"
+            "anzai-roppo"
           ],
           "gens": [
             5
@@ -668,7 +668,7 @@
           "type": "都会→村",
           "who": "安西ハンコ(第4世代・都市計画課、安西ロッポーの息子)",
           "ids": [
-            "anzai-rumi-hajime"
+            "anzai-hanko"
           ],
           "note": "黒会市の窓口から県へ移り、測りに行った村に住み着く"
         }

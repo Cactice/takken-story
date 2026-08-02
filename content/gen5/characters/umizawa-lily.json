@@ -1,9 +1,9 @@
 {
-  "id": "umizawa-kyle-lily",
+  "id": "umizawa-lily",
   "name": "海沢リリー",
   "familyName": "海沢",
   "givenName": "リリー",
-  "sprite": "sprites/umizawa-kyle-lily.png",
+  "sprite": "sprites/umizawa-lily.png",
   "generation": 5,
   "appearsIn": [
     5
@@ -18,12 +18,12 @@
   "catchphrase": "……合理的でしょう? って、父なら言うと思います。",
   "relations": [
     {
-      "characterId": "umizawa-kyle-cecil",
+      "characterId": "umizawa-cecil",
       "kind": "parent",
       "note": "父。袂を分かった"
     },
     {
-      "characterId": "umizawa-kyle-kyle",
+      "characterId": "umizawa-kyle",
       "kind": "grandparent",
       "note": "祖父。会ったことはない。ノートで育てられた"
     }

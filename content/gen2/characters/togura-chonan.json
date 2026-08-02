@@ -17,7 +17,7 @@
   "catchphrase": "他社に先を越されたら終わりだ。今すぐだ!",
   "relations": [
     {
-      "characterId": "umizawa-kyle-kyle",
+      "characterId": "umizawa-kyle",
       "kind": "business",
       "note": "販売戦略を任せている"
     },

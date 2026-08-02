@@ -1,5 +1,5 @@
 {
-  "id": "umizawa-kyle-kyle",
+  "id": "umizawa-kyle",
   "name": "海沢カイル",
   "familyName": "海沢",
   "givenName": "カイル",
@@ -22,7 +22,7 @@
       "note": "何度も邪魔をされてきた相手。内心では認めている"
     },
     {
-      "characterId": "umizawa-kyle-cecil",
+      "characterId": "umizawa-cecil",
       "kind": "child",
       "note": "第2世代の時点ではまだ生まれていない息子。二十年あまり後に生まれる"
     }

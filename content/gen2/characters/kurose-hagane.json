@@ -17,12 +17,12 @@
   "catchphrase": "勝ち負けの話じゃないの。免許の話をしてるの。",
   "relations": [
     {
-      "characterId": "umizawa-kyle-kyle",
+      "characterId": "umizawa-kyle",
       "kind": "rival",
       "note": "手口を知り尽くしている相手"
     },
     {
-      "characterId": "anzai-rumi-mei",
+      "characterId": "anzai-hochiki",
       "kind": "friend",
       "note": "事務員のホチキを気にかけている"
     },

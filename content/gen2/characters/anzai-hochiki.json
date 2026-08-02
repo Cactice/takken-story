@@ -1,9 +1,9 @@
 {
-  "id": "anzai-rumi-mei",
+  "id": "anzai-hochiki",
   "name": "安西ホチキ",
   "familyName": "安西",
   "givenName": "ホチキ",
-  "sprite": "sprites/anzai-rumi-mei.png",
+  "sprite": "sprites/anzai-hochiki.png",
   "generation": 2,
   "appearsIn": [
     2
@@ -22,12 +22,12 @@
       "note": "協会の黒瀬テッコーに手続きを教わっている"
     },
     {
-      "characterId": "umizawa-kyle-kyle",
+      "characterId": "umizawa-kyle",
       "kind": "distrust",
       "note": "言うことを鵜呑みにしないと決めた相手"
     },
     {
-      "characterId": "anzai-rumi-rumi",
+      "characterId": "anzai-roppo",
       "kind": "sibling",
       "note": "十二歳下の妹。のちに村へ通う弁護士になる"
     }

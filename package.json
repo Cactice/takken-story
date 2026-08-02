@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "check": "node scripts/check-tour.mjs && node scripts/check-places.mjs && node scripts/check-follower.mjs && node scripts/check-staging.mjs && node scripts/check-coverage.mjs && node scripts/check-maps.mjs && node scripts/calc-birth-years.mjs",
+    "check": "node scripts/check-ids.mjs && node scripts/check-tour.mjs && node scripts/check-places.mjs && node scripts/check-follower.mjs && node scripts/check-staging.mjs && node scripts/check-coverage.mjs && node scripts/check-maps.mjs && node scripts/calc-birth-years.mjs",
     "preview": "vite preview",
     "docs": "node scripts/gen-household-doc.mjs && node scripts/gen-story-subplot-doc.mjs && node scripts/gen-character-list.mjs"
   },

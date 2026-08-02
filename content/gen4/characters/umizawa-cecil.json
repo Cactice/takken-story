@@ -1,9 +1,9 @@
 {
-  "id": "umizawa-kyle-cecil",
+  "id": "umizawa-cecil",
   "name": "海沢セシル",
   "familyName": "海沢",
   "givenName": "セシル",
-  "sprite": "sprites/umizawa-kyle-cecil.png",
+  "sprite": "sprites/umizawa-cecil.png",
   "generation": 4,
   "appearsIn": [
     4,
@@ -19,12 +19,12 @@
   "catchphrase": "父なら、こう言います。",
   "relations": [
     {
-      "characterId": "umizawa-kyle-kyle",
+      "characterId": "umizawa-kyle",
       "kind": "parent",
       "note": "父。第2世代のころはまだ独身だった"
     },
     {
-      "characterId": "umizawa-kyle-lily",
+      "characterId": "umizawa-lily",
       "kind": "child",
       "note": "娘。村へ去った。理由が分かっていない"
     }

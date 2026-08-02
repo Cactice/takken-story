@@ -1,5 +1,5 @@
 {
-  "id": "anzai-rumi-rumi",
+  "id": "anzai-roppo",
   "name": "安西ロッポー",
   "familyName": "安西",
   "givenName": "ロッポー",
@@ -22,12 +22,12 @@
       "note": "証拠集めで組む相手"
     },
     {
-      "characterId": "anzai-rumi-mei",
+      "characterId": "anzai-hochiki",
       "kind": "sibling",
       "note": "十二歳上の姉。黒会市の事務所で書類を守っていた"
     },
     {
-      "characterId": "anzai-rumi-hajime",
+      "characterId": "anzai-hanko",
       "kind": "child",
       "note": "息子。のちに黒会市役所の都市計画課に入る"
     }

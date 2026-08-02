@@ -17,7 +17,7 @@
   "catchphrase": "商売を始める前に、まず法律の話を覚えなさい。",
   "relations": [
     {
-      "characterId": "umizawa-kyle-kyle",
+      "characterId": "umizawa-kyle",
       "kind": "distrust",
       "note": "何人も若手を持っていかれた相手"
     },
