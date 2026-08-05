@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# 過去問PDF(著作権があるので配布しない。傾向分析にだけ使う)
+kakomon/
