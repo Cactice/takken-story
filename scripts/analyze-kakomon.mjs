@@ -14,7 +14,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const DIR = path.join(ROOT, '.cache/kakomon')
+const DIR = path.join(ROOT, 'kakomon')
 
 /** 論点id → 本文に出たら1票入れる手がかり。順番に見て最初に当たったものを採る */
 const CLUES = {
@@ -24,12 +24,12 @@ const CLUES = {
   'gyoho-juyojiko': ['重要事項の説明', '第三十五条', '35条'],
   'gyoho-37jo': ['第三十七条', '37条書面'],
   'gyoho-cooling': ['クーリング・オフ', '事務所等以外の場所'],
-  'gyoho-tetsuke-seigen': ['手付の額', '代金の額の十分の二を超える手付'],
+  'gyoho-tetsuke-seigen': ['手付の額', '手付金の額', '代金の額の十分の二を超える'],
   'gyoho-tetsuke-hozen': ['手付金等の保全'],
-  'gyoho-tanpo-tokuyaku': ['担保責任についての特約', '契約不適合を担保すべき責任に関する特約'],
+  'gyoho-tanpo-tokuyaku': ['担保すべき責任に関する特約', '担保責任についての特約'],
   'gyoho-baishou-yotei': ['損害賠償額の予定', '違約金'],
   'gyoho-tanin-bukken': ['自己の所有に属しない'],
-  'gyoho-shoyuken-ryuho': ['所有権留保', '割賦販売'],
+  'gyoho-shoyuken-ryuho': ['所有権留保', '割賦'],
   'gyoho-hoshu': ['報酬', '報酬額の制限'],
   'gyoho-eigyo-hosho': ['営業保証金'],
   'gyoho-hosho-kyokai': ['保証協会', '弁済業務保証金'],
@@ -38,7 +38,7 @@ const CLUES = {
   'gyoho-kantoku': ['指示処分', '業務停止', '免許の取消し', '聴聞'],
   'gyoho-kashi-tanpo': ['住宅販売瑕疵担保保証金', '資力確保'],
   'gyoho-meibo': ['従業者名簿', '帳簿', '従業者証明書'],
-  'gyoho-fujitsu': ['故意に事実を告げず', '不実のことを告げる'],
+  'gyoho-fujitsu': ['故意に事実を告げ', '不実のことを告げ', '断定的判断'],
 
   'minpo-seinen': ['制限行為能力者', '未成年者', '成年被後見人'],
   'minpo-ishihyoji': ['意思表示', '錯誤', '詐欺又は強迫'],
@@ -71,6 +71,7 @@ const CLUES = {
   'hourei-moridokisei': ['宅地造成', '盛土', '特定盛土'],
   'hourei-kokudo': ['国土利用計画法', '事後届出'],
 
+  'zei-fudosan': ['不動産取得税'],
   'zei-koteishisan': ['固定資産税'],
   'zei-futokuzei': ['不動産取得税'],
   'zei-inshi': ['印紙税'],
@@ -79,52 +80,46 @@ const CLUES = {
   'zei-jutaku-loan': ['住宅借入金等特別控除', '住宅ローン控除'],
   'sonota-chika': ['地価公示', '公示価格'],
   'sonota-kantei': ['不動産の鑑定評価', '鑑定評価'],
-  'sonota-keihin': ['不当景品類', '公正競争規約'],
+  'sonota-keihin': ['不当景品', '公正競争規約', '表示規約'],
   'sonota-kiko': ['住宅金融支援機構'],
   'sonota-toukei': ['地価公示によれば', '建築着工統計'],
   'sonota-tochi': ['土地に関する次の記述', '宅地として'],
   'sonota-tatemono': ['建物の構造', '木造', '鉄筋コンクリート'],
 }
 
-async function readPdf(file) {
-  const { PDFParse } = await import('pdf-parse')
-  const parser = new PDFParse({ data: new Uint8Array(fs.readFileSync(file)) })
-  const r = await parser.getText()
-  await parser.destroy()
-  return r.text
-}
-
-const files = fs.existsSync(DIR) ? fs.readdirSync(DIR).filter((f) => f.endsWith('.pdf')).sort() : []
+const files = fs.existsSync(path.join(DIR, 'json'))
+  ? fs.readdirSync(path.join(DIR, 'json')).filter((f) => f.endsWith('.json')).sort()
+  : []
 if (files.length === 0) {
-  console.error('.cache/kakomon/ にPDFがありません')
+  console.error('kakomon/json/ が空です。先に node scripts/extract-kakomon.mjs を実行してください')
   process.exit(1)
 }
 
+// 広い語(「都市計画」「賃貸借」「免許」など)は具体的な論点を横取りするので最後に見る
+const BROAD = new Set([
+  'hourei-toshikeikaku', 'minpo-chintai', 'gyoho-menkyo', 'minpo-baibai',
+  'gyoho-juyojiko', 'toki-ho', 'minpo-tanpo', 'gyoho-kokoku', 'minpo-furikou',
+])
+const ordered = [
+  ...Object.entries(CLUES).filter(([id]) => !BROAD.has(id)),
+  ...Object.entries(CLUES).filter(([id]) => BROAD.has(id)),
+]
+
 const count = {}
-const perYear = {}
 for (const f of files) {
-  const year = path.basename(f, '.pdf')
-  let text
-  try {
-    text = await readPdf(path.join(DIR, f))
-  } catch (e) {
-    console.error(`${year}: 読めません (${e.message})`)
-    continue
-  }
-  // 「問 1」〜「問 50」で切って、設問ごとに1論点だけ数える
-  const blocks = text.split(/【問\s*\d+】|問\s*\d{1,2}\s/)
-  perYear[year] = 0
-  for (const b of blocks) {
-    if (b.length < 80) continue
-    for (const [id, clues] of Object.entries(CLUES)) {
-      if (clues.some((c) => b.includes(c))) {
+  const { year, questions } = JSON.parse(fs.readFileSync(path.join(DIR, 'json', f), 'utf8'))
+  let n = 0
+  for (const q of questions) {
+    const text = q.body + q.choices.join('')
+    for (const [id, clues] of ordered) {
+      if (clues.some((c) => text.includes(c))) {
         count[id] = (count[id] ?? 0) + 1
-        perYear[year]++
+        n++
         break
       }
     }
   }
-  console.log(`${year}: ${perYear[year]}問を分類`)
+  console.log(`${year}: ${n}/${questions.length}問を分類`)
 }
 
 const rows = Object.entries(count).sort((a, b) => b[1] - a[1])
