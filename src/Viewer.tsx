@@ -30,14 +30,17 @@ export function Viewer() {
     setRoute({ tab, id: id ?? null })
     window.history.pushState(null, '', linkTo(tab, id))
   }
+  /** タブを移ったら、狭い画面ではまず一覧を出す。何があるか分からないまま中身だけ出ても困る */
+  const goTab = (t: Tab) => { go(t); setListOpen(true) }
   useEffect(() => {
     const back = () => setRoute(routeOf(window.location.pathname))
     window.addEventListener('popstate', back)
     return () => window.removeEventListener('popstate', back)
   }, [])
   const { tab } = route
-  // 狭い画面では一覧と詳細を切り替える。広い画面ではこの状態は効かない
-  const [listOpen, setListOpen] = useState(false)
+  // 狭い画面では一覧と詳細を切り替える。広い画面ではこの状態は効かない。
+  // 何も選ばれていなければ一覧から始める
+  const [listOpen, setListOpen] = useState(() => !routeOf(window.location.pathname).id)
   const pane = listOpen ? 'list-open' : 'list-closed'
 
   // URL にイベントidがあれば、その世代のその回を開く
@@ -57,17 +60,30 @@ export function Viewer() {
     <div className="app">
       <header>
         <h1>宅建story</h1>
-        <button className="listtoggle" onClick={() => setListOpen(!listOpen)}>
-          {listOpen ? '閉じる' : '一覧'}
-        </button>
         <nav>
           {(['story', 'cast', 'topics', 'gloss'] as Tab[]).map((t) => (
-            <button key={t} className={tab === t ? 'on' : ''} onClick={() => go(t)}>
+            <button key={t} className={tab === t ? 'on' : ''} onClick={() => goTab(t)}>
               {{ story: '物語', cast: 'キャラクター', topics: '論点', gloss: '用語' }[t]}
             </button>
           ))}
         </nav>
       </header>
+      <button
+        className="listtoggle"
+        onClick={() => setListOpen(!listOpen)}
+        aria-label={listOpen ? '一覧を閉じる' : '一覧を開く'}
+        aria-expanded={listOpen}
+      >
+        {listOpen ? (
+          <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden>
+            <path d="M4 4 16 16M16 4 4 16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden>
+            <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        )}
+      </button>
 
       {tab === 'story' && (
         <div className={`split ${pane}`}>

@@ -268,12 +268,15 @@ a:hover { border-color: var(--accent); color: var(--accent); }
 
   header { flex-wrap: wrap; gap: .6rem 1rem; align-items: center; }
   header h1 { font-size: .95rem; letter-spacing: .25em; }
-  nav { gap: 1rem; order: 3; width: 100%; }
+  nav { gap: 1rem; width: 100%; }
   nav button { font-size: .9rem; padding: .3rem 0; }
+  /* タブの下、左端。指の的として大きめに取る */
   .listtoggle {
-    display: block; margin-left: auto; font-size: .8rem; color: var(--faint);
-    border: 1px solid var(--rule); padding: .25rem .8rem;
+    display: flex; align-items: center; justify-content: center;
+    width: 2.6rem; height: 2.6rem; margin: .4rem 0 .2rem -.4rem;
+    color: var(--faint);
   }
+  .listtoggle:active { color: var(--accent); }
 
   /* 一覧か詳細か、どちらかだけ出す */
   .split, .withpane { grid-template-columns: 1fr; gap: 0; }
@@ -283,8 +286,12 @@ a:hover { border-color: var(--accent); color: var(--accent); }
   .withpane > .pane { position: static; max-height: none; }
 
   /* 押しやすさ。指の的は小さくしない */
-  .events button, .gens button, .field h3 button { padding: .55rem .5rem; }
+  .events button, .gens button, .field h3 button { padding: .5rem .4rem; }
   .events button { grid-template-columns: 4.2em 2.8em 1fr; }
+  /* 論点の一覧は名前と数を同じ行に。折ると1画面に7つしか入らない */
+  .field .events button { grid-template-columns: 1fr 2.6em; align-items: baseline; }
+  .field .events b { font-size: .88rem; line-height: 1.5; }
+  .field .events time { font-size: .75rem; }
   .quiz button, .choices button, .real ol li > .pick { cursor: pointer; min-height: 2.6rem; }
 
   /* 会話。顔と名前を上に、セリフを下に折る */
@@ -307,6 +314,8 @@ a:hover { border-color: var(--accent); color: var(--accent); }
   .events button { grid-template-columns: 3.8em 1fr; }
   .events .kind { grid-column: 2; }
   .events b { grid-column: 1 / -1; }
+  .field .events button { grid-template-columns: 1fr 2.4em; }
+  .field .events b { grid-column: 1; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); }
 }
 
