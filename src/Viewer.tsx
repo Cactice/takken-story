@@ -198,7 +198,6 @@ function Quiz({ quiz }: { quiz: NonNullable<StoryEvent['quiz']> }) {
       <p className="q">{quiz.question}</p>
       {quiz.choices?.length ? (
         <>
-        {!done && <p className="hint">選択肢を押すと ○× が出ます。</p>}
         <ol className="choices">
           {quiz.choices.map((c, i) => {
             const right = i === quiz.answer
@@ -266,9 +265,7 @@ function RealQ({ q }: { q: Question }) {
           )
         })}
       </ol>
-      {chose == null ? (
-        <p className="note">選んでみてください。押すと正解が出ます。</p>
-      ) : (
+      {chose != null && (
         <p className="note">
           {right == null
             ? 'この問は正解が一つに決まっていません(全員正解など)。'
