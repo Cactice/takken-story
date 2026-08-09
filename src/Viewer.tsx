@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
-  KIND_JA, ageAt, atAge, cast, castOf, eventsOf, familyList, familyOf,
+  KIND_JA, ageAt, atAge, cast, castOf, eventsOf, familyList,
   foreshadow, generations, topicList, topicOf, type StoryEvent,
 } from './story'
 import { Person } from './Person'
 import { fetchQuestion } from './kakomon'
 
-type Tab = 'story' | 'people' | 'families' | 'topics'
+type Tab = 'story' | 'cast' | 'topics'
 
 export function Viewer() {
   const [tab, setTab] = useState<Tab>('story')
@@ -21,9 +21,9 @@ export function Viewer() {
       <header>
         <h1>宅建story</h1>
         <nav>
-          {(['story', 'people', 'families', 'topics'] as Tab[]).map((t) => (
+          {(['story', 'cast', 'topics'] as Tab[]).map((t) => (
             <button key={t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>
-              {{ story: '物語', people: '人物', families: '家系', topics: '論点' }[t]}
+              {{ story: '物語', cast: '家系と人物', topics: '論点' }[t]}
             </button>
           ))}
         </nav>
@@ -61,8 +61,7 @@ export function Viewer() {
         </div>
       )}
 
-      {tab === 'people' && <People />}
-      {tab === 'families' && <Families />}
+      {tab === 'cast' && <Cast />}
       {tab === 'topics' && <Topics />}
     </div>
   )
@@ -164,54 +163,15 @@ function Kakomon({ topic }: { topic: { id: string; name: string; kakomonCount: n
   )
 }
 
-function People() {
-  const [gen, setGen] = useState(1)
-  const g = generations.find((x) => x.gen === gen)!
-  const list = useMemo(() => {
-    const byFam = new Map<string, typeof cast>()
-    for (const c of cast) {
-      if (!c.appearsIn.includes(gen)) continue
-      const k = c.family ?? '—'
-      byFam.set(k, [...(byFam.get(k) ?? []), c])
-    }
-    return [...byFam.entries()].map(([f, cs]) =>
-      [f, cs.sort((a, b) => (a.birthYear ?? 0) - (b.birthYear ?? 0))] as const)
-  }, [gen])
+function Cast() {
+  const [open, setOpen] = useState<string | null>(null)
+  const members = useMemo(() => {
+    const m = new Map<string, typeof cast>()
+    for (const c of cast) m.set(c.family ?? '—', [...(m.get(c.family ?? '—') ?? []), c])
+    for (const [, cs] of m) cs.sort((a, b) => (a.birthYear ?? 0) - (b.birthYear ?? 0))
+    return m
+  }, [])
 
-  return (
-    <div className="roster">
-      <div className="gens row">
-        {generations.map((x) => (
-          <button key={x.gen} className={gen === x.gen ? 'on' : ''} onClick={() => setGen(x.gen)}>
-            第{x.gen}世代
-          </button>
-        ))}
-      </div>
-      {list.map(([fam, cs]) => (
-        <section key={fam}>
-          <h3>{fam}家 <small>{familyOf.get(fam)?.cloth.why}</small></h3>
-          <div className="grid">
-            {cs.map((c0, i) => {
-              const age = ageAt(c0, g.startYear)
-              const c = atAge(c0, age)
-              return (
-                <figure key={c.id}>
-                  <Person family={c.family} gender={c.gender} age={age} seed={i * 1.7} size={90} />
-                  <figcaption>
-                    <b>{c.name}</b><small>{age != null ? `${age}歳` : ''} {c.job ?? ''}</small>
-                    {c.catchphrase && <q>{c.catchphrase}</q>}
-                  </figcaption>
-                </figure>
-              )
-            })}
-          </div>
-        </section>
-      ))}
-    </div>
-  )
-}
-
-function Families() {
   return (
     <div className="families">
       {familyList.map((f) => (
@@ -220,15 +180,63 @@ function Families() {
             <span className="sw" style={{ background: f.cloth.base, borderColor: f.cloth.accent }} />
             {f.id}家 <small>{f.cloth.why}</small>
           </h3>
-          <div className="pair">
-            <Person family={f.id} gender="male" age={30} seed={1} size={96} />
-            <Person family={f.id} gender="female" age={30} seed={2} size={96} />
-            <Person family={f.id} gender="male" age={8} seed={3} size={96} />
-            <Person family={f.id} gender="female" age={78} seed={4} size={96} />
+          <p>{f.story.replace(/\*\*/g, '')}</p>
+          {f.movement.map((mv, i) => (
+            <p key={i} className="move"><b>{mv.type}</b> — {mv.who}{mv.note ? `：${mv.note}` : ''}</p>
+          ))}
+          <div className="grid">
+            {(members.get(f.id) ?? []).map((c, i) => (
+              <figure key={c.id} className={open === c.id ? 'on' : ''}>
+                <button onClick={() => setOpen(open === c.id ? null : c.id)}>
+                  <Person family={c.family} gender={c.gender} age={30} seed={i * 1.7} size={104} />
+                  <figcaption>
+                    <b>{c.name}</b>
+                    <small>{c.birthYear}年生 ／ 第{c.appearsIn.join('・')}世代</small>
+                  </figcaption>
+                </button>
+              </figure>
+            ))}
           </div>
-          <p>{f.story.split('\n')[0].replace(/\*\*/g, '')}</p>
+          {(members.get(f.id) ?? []).filter((c) => c.id === open).map((c) => <Detail key={c.id} c={c} />)}
         </section>
       ))}
+    </div>
+  )
+}
+
+function Detail({ c }: { c: (typeof cast)[number] }) {
+  const gen = c.appearsIn[0] ?? 1
+  const year = generations.find((g) => g.gen === gen)?.startYear ?? 1015
+  const age = ageAt(c, year)
+  const v = atAge(c, age)
+  const appear = Object.entries(eventsOf)
+    .flatMap(([g, evs]) => evs.filter((e) => e.cast.includes(c.id)).map((e) => ({ g: +g, e })))
+  return (
+    <div className="detail">
+      <div className="ages">
+        {[8, 20, 45, 78].map((a) => (
+          <figure key={a}>
+            <Person family={c.family} gender={c.gender} age={a} seed={a / 7} size={110} />
+            <figcaption><small>{a}歳</small></figcaption>
+          </figure>
+        ))}
+      </div>
+      <div className="text">
+        <h4>{c.name}<small>{v.job}{age != null ? ` ／ 第${gen}世代で${age}歳` : ''}</small></h4>
+        {v.catchphrase && <q className="cp">{v.catchphrase}</q>}
+        <p>{v.personality}</p>
+        <dl>
+          {v.motive && <><dt>動機</dt><dd>{v.motive}</dd></>}
+          {v.weakness && <><dt>弱さ</dt><dd>{v.weakness}</dd></>}
+        </dl>
+        {v.smallTalk?.default && (
+          <ul className="talk">{v.smallTalk.default.map((t, i) => <li key={i}>{t}</li>)}</ul>
+        )}
+        <p className="appear">
+          出番 {appear.length}件
+          {appear.length > 0 && <>：{appear.map(({ g, e }) => `第${g}世代 ${e.title}`).join(' / ')}</>}
+        </p>
+      </div>
     </div>
   )
 }
