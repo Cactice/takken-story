@@ -35,7 +35,7 @@ export type Character = {
 export type Line = {
   who?: string
   text?: string
-  role?: 'teach' | 'quiz' | 'figure'
+  role?: 'quiz' | 'figure'
   /**
    * role: 'figure' のとき。既定ではこの回の論点の解説から1枚借りる。
    * `use` は何枚目か(0始まり)、`topicId` は別の論点から借りたいとき。

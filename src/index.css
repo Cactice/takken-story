@@ -320,11 +320,9 @@ a:hover { border-color: var(--accent); color: var(--accent); }
 .advice > .tag { position: absolute; top: -.62em; left: 1rem; background: #fbfaf6; padding: 0 .5rem; font-size: .68rem; letter-spacing: .12em; color: var(--accent); }
 .advice .panel { margin: 0; }
 .lines li.figrow { padding: 1.2rem 0 .4rem 3.4rem; }
-.advice.answerbox { margin: 1.2rem 0 0 3.4rem; }
 .advice .lines { margin: 0; }
 .advice .lines li { padding-top: .2rem; }
 @media (max-width: 820px) {
   .lines li.figrow { padding-left: 0; }
-  .advice.answerbox { margin-left: 0; }
   .advice { padding: 1.3rem .8rem .8rem; }
 }

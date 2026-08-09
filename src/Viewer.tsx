@@ -135,11 +135,10 @@ function Scene({ ev, go }: { ev: StoryEvent; go: Go }) {
   const topic = ev.topicId ? topicOf.get(ev.topicId) : null
   // 台本に「ここで問う」の目印があれば、その位置で切る。
   // 無ければ、説明の手前で切る(目印を置く前の書き方に合わせる)
+  // 台本の「ここで問う」の目印で前後に切る。目印が無ければ全部が前
   const at = ev.lines.findIndex((l) => l.role === 'quiz')
-  const cut = at >= 0 ? at : ev.lines.findIndex((l) => l.role === 'teach')
-  const say = (ls: Line[]) => ls.filter((l) => l.role !== 'quiz')
-  const drama = say(cut < 0 ? ev.lines : ev.lines.slice(0, cut))
-  const teach = say(cut < 0 ? [] : ev.lines.slice(cut + (at >= 0 ? 1 : 0)))
+  const before = at < 0 ? ev.lines : ev.lines.slice(0, at)
+  const after = at < 0 ? [] : ev.lines.slice(at + 1)
 
   const Row = ({ l, i, prev }: { l: Line; i: number; prev?: Line }) => {
     if (l.role === 'figure') {
@@ -168,16 +167,13 @@ function Scene({ ev, go }: { ev: StoryEvent; go: Go }) {
     <article className="scene">
       <h3><time>{ev.year}/{ev.month}</time> {ev.title}</h3>
       <ol className="lines">
-        {drama.map((l, i) => <Row key={i} l={l} i={i} prev={drama[i - 1]} />)}
+        {before.map((l, i) => <Row key={i} l={l} i={i} prev={before[i - 1]} />)}
       </ol>
       {ev.quiz ? <Quiz key={`q-${ev.id}`} quiz={ev.quiz} /> : <p className="todo">この回はまだ問題ができていない。</p>}
-      {teach.length > 0 && (
-        <div className="advice answerbox">
-          <span className="tag">なぜそうなるか</span>
-          <ol className="lines answer">
-            {teach.map((l, i) => <Row key={i} l={l} i={i} prev={teach[i - 1]} />)}
-          </ol>
-        </div>
+      {after.length > 0 && (
+        <ol className="lines answer">
+          {after.map((l, i) => <Row key={i} l={l} i={i} prev={after[i - 1]} />)}
+        </ol>
       )}
       {(ev.thanks || ev.later) && (
         <ol className="lines after">
