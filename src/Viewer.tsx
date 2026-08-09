@@ -90,12 +90,13 @@ export function Viewer() {
       {tab === 'story' && (
         <div className={`split ${pane}`}>
           <aside>
-            <div className="gens">
+            {/* 世代は横に並べる。縦に積むと、一覧を開くたび5行ぶん場所を取る */}
+            <div className="gentabs">
               {generations.map((g) => (
                 <button key={g.gen} className={gen === g.gen ? 'on' : ''}
                   onClick={() => { setGen(g.gen); setPick(0); go('story', eventsOf[g.gen][0]?.id) }}>
-                  第{g.gen}世代
-                  <small>{g.stage}</small>
+                  <b>{g.gen}</b>
+                  <small>{g.stage === 'ありきた村' ? '村' : '街'}</small>
                 </button>
               ))}
             </div>

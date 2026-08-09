@@ -371,3 +371,11 @@ a:hover { border-color: var(--accent); color: var(--accent); }
 .glossary dd { margin: 0; font-size: .84rem; line-height: 1.8; color: var(--faint); }
 .glossary dd a { display: inline-block; margin-left: .5rem; font-size: .78rem; color: var(--accent); }
 @media (max-width: 820px) { .glossary dl > div { grid-template-columns: 1fr; gap: .15rem; } }
+
+/* 世代は横並び。番号と、村か街かだけ */
+.gentabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: .2rem; margin-bottom: .8rem; }
+.gentabs button { display: grid; justify-items: center; gap: .05rem; padding: .4rem .2rem; color: var(--faint); border-bottom: 2px solid transparent; }
+.gentabs button b { font-weight: 400; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+.gentabs button small { font-size: .68rem; }
+.gentabs button.on { color: var(--ink); border-color: var(--accent); }
+.gentabs button:hover { color: var(--ink); }
