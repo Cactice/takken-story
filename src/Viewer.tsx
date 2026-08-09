@@ -157,11 +157,11 @@ function Scene({ ev, go }: { ev: StoryEvent; go: Go }) {
       <ol className="lines">
         {drama.map((l, i) => <Row key={i} l={l} i={i} prev={drama[i - 1]} />)}
       </ol>
+      {ev.quiz ? <Quiz key={`q-${ev.id}`} quiz={ev.quiz} /> : <p className="todo">この回はまだ問題ができていない。</p>}
       {teach.length > 0 && (
-        <aside className="teach">
-          <h4>あなたが説明する</h4>
-          {teach.map((l, i) => <p key={i}>{l.text}</p>)}
-        </aside>
+        <ol className="lines answer">
+          {teach.map((l, i) => <Row key={i} l={l} i={i} prev={teach[i - 1]} />)}
+        </ol>
       )}
       {(ev.thanks || ev.later) && (
         <ol className="lines after">
@@ -169,9 +169,6 @@ function Scene({ ev, go }: { ev: StoryEvent; go: Go }) {
           {ev.later && <Row l={ev.later} i={91} />}
         </ol>
       )}
-      {/* key にイベントidを渡して、別のイベントへ移ったら選択状態を捨てる */}
-      {/* key は兄弟どうしで重複させない（同じ値だとReactが別物と見なせず要素が積み上がる） */}
-      {ev.quiz ? <Quiz key={`q-${ev.id}`} quiz={ev.quiz} /> : <p className="todo">この回はまだ問題ができていない。</p>}
       {topic && (
         <p className="jump">
           この回の論点 <a href={linkTo('topics', topic.id)}

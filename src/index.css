@@ -142,9 +142,8 @@ figcaption q { display: block; color: var(--faint); font-size: .7rem; margin-top
 @media (max-width: 780px) { .detail { grid-template-columns: 1fr; } }
 
 /* 説明は芝居と分ける。同じ流れに混ぜると場面が間延びして読める */
-.teach { border-left: 2px solid var(--rule); padding: .1rem 0 .1rem 1rem; margin: 1rem 0 0 3.4rem; max-width: 44em; }
-.teach h4 { font-size: .72rem; font-weight: 400; color: var(--faint); letter-spacing: .1em; margin: 0 0 .3rem; }
-.teach p { font-size: .85rem; line-height: 1.9; margin: 0 0 .2rem; color: var(--faint); }
+/* 答えたあとの主人公のセリフ。芝居と同じ見た目でよい */
+.lines.answer { margin-top: 1rem; }
 .lines.after { margin-top: 1rem; }
 
 .real ol { list-style: none; padding-left: 0; }

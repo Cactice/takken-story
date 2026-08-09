@@ -48,7 +48,7 @@ const SHAPES: Record<IconName, React.ReactElement> = {
   // 保全措置・保証。守る盾
   shield: <><path d="M20 6l12 4v11c0 7-5 11-12 13-7-2-12-6-12-13V10z" /><path d="M14 20.5l4.5 4.5L27 16" fill="none" /></>,
   // 契約が成立した。握手
-  handshake: <><path d="M4 18l7-5 9 4 9-4 7 5" /><path d="M11 13v13M29 13v13" /><path d="M13 22h6l4 4 4-4h2" fill="none" /></>,
+  handshake: <><path d="M3 21h10l3 3" fill="none" /><path d="M37 21H27l-3 3" fill="none" /><rect x="12" y="19" width="16" height="11" rx="4" /><path d="M17 24.5h6" /></>,
   // 期限・基準日。日めくり
   calendar: <><rect x="6" y="10" width="28" height="24" rx="2" /><path d="M6 18h28" /><path d="M13 6v7M27 6v7" /><path d="M13 24h5M23 24h5M13 29h5" /></>,
   // 書面を発した。封書
