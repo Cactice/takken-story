@@ -6,39 +6,109 @@
       {
         "caption": "詐欺 — だまして買った人が、さらに転売した",
         "nodes": [
-          { "kind": "person", "who": "minuma-tanezo", "label": "だまされた人", "sub": "取り消せる" },
-          { "kind": "person", "who": "hageta-hageta", "label": "だました人", "sub": "禿鷹禿ゲ田" },
-          { "kind": "person", "who": "suzuki-takeo", "label": "取消し前の第三者", "sub": "善意無過失" }
+          {
+            "kind": "person",
+            "who": "minuma-tanezo",
+            "label": "だまされた人",
+            "sub": "取り消せる"
+          },
+          {
+            "kind": "person",
+            "who": "hageta-hageta",
+            "label": "だました人",
+            "sub": "禿鷹禿ゲ田"
+          },
+          {
+            "kind": "person",
+            "who": "suzuki-takeo",
+            "label": "取消し前の第三者",
+            "sub": "善意無過失"
+          }
         ],
         "links": [
-          { "from": 1, "to": 0, "label": "うそを言って買った" },
-          { "from": 1, "to": 2, "label": "さらに売った" }
+          {
+            "from": 1,
+            "to": 0,
+            "label": "うそを言って買った"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "さらに売った"
+          }
         ],
         "note": "取り消しても、善意無過失の第三者には言えない。"
       },
       {
         "caption": "強迫 — おどされた場合は、第三者にも言える",
         "nodes": [
-          { "kind": "person", "who": "minuma-wakame", "label": "おどされた人", "sub": "取り消せる" },
-          { "kind": "person", "who": "hageta-hageru", "label": "おどした人", "sub": "禿鷹ハゲル" },
-          { "kind": "person", "who": "umizawa-kyle", "label": "第三者", "sub": "善意無過失でも" }
+          {
+            "kind": "person",
+            "who": "minuma-wakame",
+            "label": "おどされた人",
+            "sub": "取り消せる"
+          },
+          {
+            "kind": "person",
+            "who": "hageta-hageru",
+            "label": "おどした人",
+            "sub": "禿鷹ハゲル"
+          },
+          {
+            "kind": "person",
+            "who": "umizawa-kyle",
+            "label": "第三者",
+            "sub": "善意無過失でも"
+          }
         ],
         "links": [
-          { "from": 1, "to": 0, "label": "おどして買った" },
-          { "from": 1, "to": 2, "label": "さらに売った" }
+          {
+            "from": 1,
+            "to": 0,
+            "label": "おどして買った"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "さらに売った"
+          }
         ],
         "note": "強迫は落ち度がない。だから第三者より本人を守る。"
       },
       {
         "caption": "虚偽表示 — 二人で口裏を合わせた、嘘の売買",
         "nodes": [
-          { "kind": "person", "who": "minuma-tanezo", "label": "本当の持ち主", "sub": "売る気はない" },
-          { "kind": "person", "who": "hageta-hageta", "label": "口裏を合わせた人", "sub": "名義だけ受けた" },
-          { "kind": "person", "who": "kurose-tetsuko", "label": "善意の第三者", "sub": "本当だと思った" }
+          {
+            "kind": "person",
+            "who": "minuma-tanezo",
+            "label": "本当の持ち主",
+            "sub": "売る気はない"
+          },
+          {
+            "kind": "person",
+            "who": "hageta-hageta",
+            "label": "口裏を合わせた人",
+            "sub": "名義だけ受けた"
+          },
+          {
+            "kind": "person",
+            "who": "kurose-tetsuko",
+            "label": "善意の第三者",
+            "sub": "本当だと思った"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "仮装の売買(無効)", "style": "dashed" },
-          { "from": 1, "to": 2, "label": "本当に売った" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "仮装の売買(無効)",
+            "style": "dashed"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "本当に売った"
+          }
         ],
         "note": "無効だが、善意の第三者には無効を言えない。ここは善意だけでよく、無過失も登記も要らない。"
       }
@@ -67,27 +137,75 @@
       {
         "caption": "未成年者が、親の同意なしに家を買った",
         "nodes": [
-          { "kind": "person", "who": "suzuki-sora", "label": "法定代理人", "sub": "親。同意していない" },
-          { "kind": "person", "who": "suzuki-riku", "label": "未成年者", "sub": "18歳未満" },
-          { "kind": "thing", "icon": "house", "label": "甲建物" }
+          {
+            "kind": "person",
+            "who": "suzuki-sora",
+            "label": "法定代理人",
+            "sub": "親。同意していない"
+          },
+          {
+            "kind": "person",
+            "who": "suzuki-riku",
+            "label": "未成年者",
+            "sub": "18歳未満"
+          },
+          {
+            "kind": "thing",
+            "icon": "house",
+            "label": "甲建物"
+          }
         ],
         "links": [
-          { "from": 1, "to": 2, "label": "同意なしに買った" },
-          { "from": 0, "to": 1, "label": "あとから取り消せる" }
+          {
+            "from": 1,
+            "to": 2,
+            "label": "同意なしに買った"
+          },
+          {
+            "from": 0,
+            "to": 1,
+            "label": "あとから取り消せる"
+          }
         ],
         "note": "相手が「未成年だと知らなかった」と言っても取り消せる。"
       },
       {
         "caption": "後見人が、本人の住んでいる家を売ろうとした",
         "nodes": [
-          { "kind": "person", "who": "minuma-tanezo", "label": "成年被後見人", "sub": "見沼タネゾウ" },
-          { "kind": "thing", "icon": "house", "label": "住んでいる家" },
-          { "kind": "person", "who": "anzai-hochiki", "label": "成年後見人", "sub": "代理して売りたい" },
-          { "kind": "thing", "icon": "paper", "label": "家庭裁判所の許可" }
+          {
+            "kind": "person",
+            "who": "minuma-tanezo",
+            "label": "成年被後見人",
+            "sub": "見沼タネゾウ"
+          },
+          {
+            "kind": "thing",
+            "icon": "house",
+            "label": "住んでいる家"
+          },
+          {
+            "kind": "person",
+            "who": "anzai-hochiki",
+            "label": "成年後見人",
+            "sub": "代理して売りたい"
+          },
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "家庭裁判所の許可"
+          }
         ],
         "links": [
-          { "from": 2, "to": 1, "label": "売る" },
-          { "from": 3, "to": 2, "label": "これがないと売れない" }
+          {
+            "from": 2,
+            "to": 1,
+            "label": "売る"
+          },
+          {
+            "from": 3,
+            "to": 2,
+            "label": "これがないと売れない"
+          }
         ],
         "note": "居住用の不動産だけは別格。売る・貸す・抵当に入れる・賃貸借を解除する、どれも許可が要る。"
       }
@@ -118,39 +236,108 @@
       {
         "caption": "代理が効くには三つ揃う。代理権・顕名・代理人の意思表示",
         "nodes": [
-          { "kind": "person", "who": "hayama-oji", "label": "本人", "sub": "葉山オージ" },
-          { "kind": "person", "who": "umizawa-kyle", "label": "代理人", "sub": "海沢カイル" },
-          { "kind": "person", "who": "kurose-tetsuko", "label": "相手方", "sub": "黒瀬テツコ" }
+          {
+            "kind": "person",
+            "who": "hayama-oji",
+            "label": "本人",
+            "sub": "葉山オージ"
+          },
+          {
+            "kind": "person",
+            "who": "umizawa-kyle",
+            "label": "代理人",
+            "sub": "海沢カイル"
+          },
+          {
+            "kind": "person",
+            "who": "kurose-tetsuko",
+            "label": "相手方",
+            "sub": "黒瀬テツコ"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "代理権を与えた" },
-          { "from": 1, "to": 2, "label": "本人のためだと示して契約" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "代理権を与えた"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "本人のためだと示して契約"
+          }
         ],
         "note": "契約の効果は本人に帰属する。代理人は行為能力者でなくてよく、未成年者を代理人にしても本人はそれを理由に取り消せない。"
       },
       {
         "caption": "無権代理 — 権限がないのに契約されてしまった",
         "nodes": [
-          { "kind": "person", "who": "hayama-oji", "label": "本人", "sub": "追認するか拒むか" },
-          { "kind": "person", "who": "umizawa-cecil", "label": "無権代理人", "sub": "権限がない" },
-          { "kind": "person", "who": "kurose-tetsuko", "label": "相手方", "sub": "催告・取消しができる" }
+          {
+            "kind": "person",
+            "who": "hayama-oji",
+            "label": "本人",
+            "sub": "追認するか拒むか"
+          },
+          {
+            "kind": "person",
+            "who": "umizawa-cecil",
+            "label": "無権代理人",
+            "sub": "権限がない"
+          },
+          {
+            "kind": "person",
+            "who": "kurose-tetsuko",
+            "label": "相手方",
+            "sub": "催告・取消しができる"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "追認すればさかのぼる" },
-          { "from": 1, "to": 2, "label": "勝手に契約した" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "追認すればさかのぼる"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "勝手に契約した"
+          }
         ],
         "note": "相手方は本人に催告でき、答えがなければ追認拒絶とみなす。善意なら取消し、善意無過失なら無権代理人へ履行か損害賠償を求められる。"
       },
       {
         "caption": "表見代理 — 相手方が信じても仕方がなかったとき",
         "nodes": [
-          { "kind": "person", "who": "hayama-oji", "label": "本人", "sub": "責任を負う" },
-          { "kind": "thing", "icon": "paper", "label": "外から見える権限", "sub": "与えた表示・元の代理権・消えた代理権" },
-          { "kind": "person", "who": "kurose-tetsuko", "label": "相手方", "sub": "善意無過失なら守られる" }
+          {
+            "kind": "person",
+            "who": "hayama-oji",
+            "label": "本人",
+            "sub": "責任を負う"
+          },
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "外から見える権限",
+            "sub": "与えた表示・元の代理権・消えた代理権"
+          },
+          {
+            "kind": "person",
+            "who": "kurose-tetsuko",
+            "label": "相手方",
+            "sub": "善意無過失なら守られる"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "本人が作り出した外観" },
-          { "from": 1, "to": 2, "label": "信じる正当な理由" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "本人が作り出した外観"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "信じる正当な理由"
+          }
         ],
         "note": "相手方が悪意または有過失なら成立しない。守るのは「信じても仕方なかった人」だけ。"
       }
@@ -182,26 +369,72 @@
       {
         "caption": "手付を打つ。まだどちらも降りられる",
         "nodes": [
-          { "kind": "person", "who": "hayama-oji", "label": "買主", "sub": "葉山オージ" },
-          { "kind": "thing", "icon": "money", "label": "手付", "sub": "解約手付と扱う" },
-          { "kind": "person", "who": "hageta-hageta", "label": "売主", "sub": "禿鷹禿ゲ田" }
+          {
+            "kind": "person",
+            "who": "hayama-oji",
+            "label": "買主",
+            "sub": "葉山オージ"
+          },
+          {
+            "kind": "thing",
+            "icon": "money",
+            "label": "手付",
+            "sub": "解約手付と扱う"
+          },
+          {
+            "kind": "person",
+            "who": "hageta-hageta",
+            "label": "売主",
+            "sub": "禿鷹禿ゲ田"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "捨てれば降りられる" },
-          { "from": 1, "to": 2, "label": "倍額を現実に渡せば" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "捨てれば降りられる"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "倍額を現実に渡せば"
+          }
         ],
         "note": "「倍返しします」と言うだけでは足りない。現実に提供して初めて解除できる。"
       },
       {
         "caption": "相手が履行に着手したら、もう降りられない",
         "nodes": [
-          { "kind": "person", "who": "hayama-oji", "label": "買主", "sub": "代金を用意して催告した" },
-          { "kind": "thing", "icon": "time", "label": "履行の着手" },
-          { "kind": "person", "who": "hageta-hageta", "label": "売主", "sub": "もう解除できない" }
+          {
+            "kind": "person",
+            "who": "hayama-oji",
+            "label": "買主",
+            "sub": "代金を用意して催告した"
+          },
+          {
+            "kind": "thing",
+            "icon": "time",
+            "label": "履行の着手"
+          },
+          {
+            "kind": "person",
+            "who": "hageta-hageta",
+            "label": "売主",
+            "sub": "もう解除できない"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "外から分かる準備をした" },
-          { "from": 2, "to": 1, "label": "倍額を出しても解除不可", "style": "dashed" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "外から分かる準備をした"
+          },
+          {
+            "from": 2,
+            "to": 1,
+            "label": "倍額を出しても解除不可",
+            "style": "dashed"
+          }
         ],
         "note": "見るのは相手方が着手したかどうか。自分が着手していても、相手がまだなら降りられる。"
       }
@@ -229,39 +462,106 @@
       {
         "caption": "敷金は、明け渡してから精算して返す",
         "nodes": [
-          { "kind": "person", "who": "togura-jinan", "label": "賃借人", "sub": "都倉ジナン" },
-          { "kind": "thing", "icon": "money", "label": "敷金" },
-          { "kind": "person", "who": "minuma-yesu", "label": "賃貸人", "sub": "見沼イエス" }
+          {
+            "kind": "person",
+            "who": "togura-jinan",
+            "label": "賃借人",
+            "sub": "都倉ジナン"
+          },
+          {
+            "kind": "thing",
+            "icon": "money",
+            "label": "敷金"
+          },
+          {
+            "kind": "person",
+            "who": "minuma-yesu",
+            "label": "賃貸人",
+            "sub": "見沼イエス"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "預けた" },
-          { "from": 2, "to": 1, "label": "明渡し後に精算して返す" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "預けた"
+          },
+          {
+            "from": 2,
+            "to": 1,
+            "label": "明渡し後に精算して返す"
+          }
         ],
         "note": "明渡しが先で、同時履行ではない。返してくれるまで居座る、はできない。"
       },
       {
         "caption": "承諾のある転貸 — 賃貸人は転借人に直接請求できる",
         "nodes": [
-          { "kind": "person", "who": "minuma-yesu", "label": "賃貸人", "sub": "月10万で貸した" },
-          { "kind": "person", "who": "togura-jinan", "label": "賃借人(転貸人)", "sub": "承諾を得て又貸し" },
-          { "kind": "person", "who": "togura-sannan", "label": "転借人", "sub": "月15万で借りた" }
+          {
+            "kind": "person",
+            "who": "minuma-yesu",
+            "label": "賃貸人",
+            "sub": "月10万で貸した"
+          },
+          {
+            "kind": "person",
+            "who": "togura-jinan",
+            "label": "賃借人(転貸人)",
+            "sub": "承諾を得て又貸し"
+          },
+          {
+            "kind": "person",
+            "who": "togura-sannan",
+            "label": "転借人",
+            "sub": "月15万で借りた"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "賃貸借(月10万)" },
-          { "from": 1, "to": 2, "label": "転貸借(月15万)" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "賃貸借(月10万)"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "転貸借(月15万)"
+          }
         ],
         "note": "賃貸人は転借人に直接請求できる。限度は賃料と転借料の低いほうで、ここでは10万。転借人は前払いを賃貸人に主張できない。"
       },
       {
         "caption": "元の契約が終わるとき、転借人はどうなるか",
         "nodes": [
-          { "kind": "person", "who": "minuma-yesu", "label": "賃貸人" },
-          { "kind": "person", "who": "togura-jinan", "label": "賃借人", "sub": "賃料を滞納した" },
-          { "kind": "person", "who": "togura-sannan", "label": "転借人", "sub": "出ていくことになる" }
+          {
+            "kind": "person",
+            "who": "minuma-yesu",
+            "label": "賃貸人"
+          },
+          {
+            "kind": "person",
+            "who": "togura-jinan",
+            "label": "賃借人",
+            "sub": "賃料を滞納した"
+          },
+          {
+            "kind": "person",
+            "who": "togura-sannan",
+            "label": "転借人",
+            "sub": "出ていくことになる"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "債務不履行で解除" },
-          { "from": 1, "to": 2, "label": "催告なしで明渡し" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "債務不履行で解除"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "催告なしで明渡し"
+          }
         ],
         "note": "話し合いでやめた(合意解除)場合は逆で、原則として転借人に対抗できない。"
       }
@@ -293,42 +593,165 @@
       {
         "caption": "取得時効 — 他人の土地でも、占い続ければ自分のものになる",
         "nodes": [
-          { "kind": "person", "who": "minuma-tanezo", "label": "本当の持ち主", "sub": "見沼タネゾウ" },
-          { "kind": "thing", "icon": "land", "label": "甲土地" },
-          { "kind": "person", "who": "suzuki-takeo", "label": "占有していた人", "sub": "所有の意思・平穏・公然" },
-          { "kind": "thing", "icon": "time", "label": "20年", "sub": "善意無過失で始めれば10年" }
+          {
+            "kind": "person",
+            "who": "minuma-tanezo",
+            "label": "本当の持ち主",
+            "sub": "見沼タネゾウ"
+          },
+          {
+            "kind": "thing",
+            "icon": "land",
+            "label": "甲土地"
+          },
+          {
+            "kind": "person",
+            "who": "suzuki-takeo",
+            "label": "占有していた人",
+            "sub": "所有の意思・平穏・公然"
+          },
+          {
+            "kind": "thing",
+            "icon": "time",
+            "label": "20年",
+            "sub": "善意無過失で始めれば10年"
+          }
         ],
         "links": [
-          { "from": 2, "to": 1, "label": "使い続けた" },
-          { "from": 3, "to": 2, "label": "経てば所有権を取得" }
+          {
+            "from": 2,
+            "to": 1,
+            "label": "使い続けた"
+          },
+          {
+            "from": 3,
+            "to": 2,
+            "label": "経てば所有権を取得"
+          }
         ],
         "note": "始めた時に善意無過失なら10年。途中で他人の物だと気づいても10年のまま。"
       },
       {
         "caption": "完成の前か後か。買った人と登記でぶつかる",
         "nodes": [
-          { "kind": "person", "who": "togura-oyaji", "label": "完成の前に買った人", "sub": "登記があっても負ける" },
-          { "kind": "person", "who": "suzuki-takeo", "label": "時効で取得した人" },
-          { "kind": "person", "who": "togura-yonnan", "label": "完成の後に買った人", "sub": "先に登記すれば勝つ" }
+          {
+            "kind": "person",
+            "who": "togura-oyaji",
+            "label": "完成の前に買った人",
+            "sub": "登記があっても負ける"
+          },
+          {
+            "kind": "person",
+            "who": "suzuki-takeo",
+            "label": "時効で取得した人"
+          },
+          {
+            "kind": "person",
+            "who": "togura-yonnan",
+            "label": "完成の後に買った人",
+            "sub": "先に登記すれば勝つ"
+          }
         ],
         "links": [
-          { "from": 1, "to": 0, "label": "登記なしで勝てる" },
-          { "from": 1, "to": 2, "label": "登記がないと負ける", "style": "dashed" }
+          {
+            "from": 1,
+            "to": 0,
+            "label": "登記なしで勝てる"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "登記がないと負ける",
+            "style": "dashed"
+          }
         ],
         "note": "完成前の買主は当事者と同じ立場。完成後の買主とは、二重譲渡と同じ登記の勝負になる。"
       },
       {
         "caption": "時効を止める二段構え — 完成猶予と更新",
         "nodes": [
-          { "kind": "thing", "icon": "paper", "label": "催告", "sub": "繰り返しても延びない" },
-          { "kind": "thing", "icon": "paper", "label": "裁判上の請求", "sub": "終わるまで完成しない" },
-          { "kind": "thing", "icon": "time", "label": "判決で確定", "sub": "そこから新たに進行" }
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "催告",
+            "sub": "繰り返しても延びない"
+          },
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "裁判上の請求",
+            "sub": "終わるまで完成しない"
+          },
+          {
+            "kind": "thing",
+            "icon": "time",
+            "label": "判決で確定",
+            "sub": "そこから新たに進行"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "6ヶ月の完成猶予" },
-          { "from": 1, "to": 2, "label": "更新" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "6ヶ月の完成猶予"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "更新"
+          }
         ],
         "note": "訴えを取り下げたら更新は起きない。終了から6ヶ月の猶予が残るだけ。"
+      },
+      {
+        "kind": "timeline",
+        "caption": "時効は「いつ始まったか」で長さが決まる",
+        "steps": [
+          {
+            "at": "始めた日",
+            "label": "自分のものだと信じて使い始めた",
+            "note": "信じたことに落ち度が無ければ(善意無過失)10年、そうでなければ20年",
+            "mark": "ok"
+          },
+          {
+            "at": "途中",
+            "label": "裁判を起こされた・借金を認めた",
+            "note": "数え直しになる(更新)。それまでの年数は消える",
+            "mark": "ng"
+          },
+          {
+            "at": "10年/20年",
+            "label": "時効が完成する",
+            "note": "完成しても自動では自分のものにならない。「時効だ」と言う(援用)必要がある",
+            "mark": "limit"
+          }
+        ],
+        "note": "長さは始めた時点で決まる。途中で気づいても10年のままである。"
+      },
+      {
+        "kind": "tiers",
+        "caption": "どちらの時効か",
+        "head": [
+          "何を",
+          "どれだけで"
+        ],
+        "rows": [
+          {
+            "when": "他人の物を自分のものにする",
+            "then": "善意無過失なら10年、そうでなければ20年",
+            "note": "取得時効"
+          },
+          {
+            "when": "払ってもらう権利が消える",
+            "then": "知ってから5年、または権利を使えるときから10年",
+            "note": "消滅時効。どちらか早いほう"
+          },
+          {
+            "when": "人の体を傷つけられた場合",
+            "then": "知ってから5年、行為のときから20年",
+            "note": "生命・身体の侵害は長い"
+          }
+        ]
       }
     ],
     "points": [
@@ -357,25 +780,73 @@
       {
         "caption": "見沼イエスが、同じ土地を二人に売ってしまった",
         "nodes": [
-          { "kind": "person", "who": "suzuki-sora", "label": "先に買った人", "sub": "3月1日に契約" },
-          { "kind": "person", "who": "minuma-yesu", "label": "売主", "sub": "見沼イエス" },
-          { "kind": "person", "who": "togura-yonnan", "label": "あとで買った人", "sub": "5月8日に契約" }
+          {
+            "kind": "person",
+            "who": "suzuki-sora",
+            "label": "先に買った人",
+            "sub": "3月1日に契約"
+          },
+          {
+            "kind": "person",
+            "who": "minuma-yesu",
+            "label": "売主",
+            "sub": "見沼イエス"
+          },
+          {
+            "kind": "person",
+            "who": "togura-yonnan",
+            "label": "あとで買った人",
+            "sub": "5月8日に契約"
+          }
         ],
         "links": [
-          { "from": 1, "to": 0, "label": "売った(3月)" },
-          { "from": 1, "to": 2, "label": "また売った(5月)" }
+          {
+            "from": 1,
+            "to": 0,
+            "label": "売った(3月)"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "また売った(5月)"
+          }
         ]
       },
       {
         "caption": "先に登記したのは、あとで買ったほうだった",
         "nodes": [
-          { "kind": "person", "who": "suzuki-sora", "label": "先に買った人", "sub": "登記していない" },
-          { "kind": "thing", "icon": "paper", "label": "登記", "sub": "5月20日" },
-          { "kind": "person", "who": "togura-yonnan", "label": "あとで買った人", "sub": "登記した" }
+          {
+            "kind": "person",
+            "who": "suzuki-sora",
+            "label": "先に買った人",
+            "sub": "登記していない"
+          },
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "登記",
+            "sub": "5月20日"
+          },
+          {
+            "kind": "person",
+            "who": "togura-yonnan",
+            "label": "あとで買った人",
+            "sub": "登記した"
+          }
         ],
         "links": [
-          { "from": 2, "to": 1, "label": "先に入れた", "style": "solid" },
-          { "from": 0, "to": 1, "label": "間に合わなかった", "style": "dashed" }
+          {
+            "from": 2,
+            "to": 1,
+            "label": "先に入れた",
+            "style": "solid"
+          },
+          {
+            "from": 0,
+            "to": 1,
+            "label": "間に合わなかった",
+            "style": "dashed"
+          }
         ],
         "note": "契約の早さでは決まらない。登記の早さで決まる。"
       }
@@ -401,15 +872,47 @@
       {
         "caption": "買ったあとで、土に汚染が見つかった",
         "nodes": [
-          { "kind": "person", "who": "hageta-hageru", "label": "売主", "sub": "禿鷹ハゲル" },
-          { "kind": "thing", "icon": "land", "label": "甲土地", "sub": "土壌汚染が判明" },
-          { "kind": "person", "who": "fuyuno-so", "label": "買主", "sub": "追完・減額・賠償・解除" },
-          { "kind": "thing", "icon": "time", "label": "知った時から1年", "sub": "通知しないと言えなくなる" }
+          {
+            "kind": "person",
+            "who": "hageta-hageru",
+            "label": "売主",
+            "sub": "禿鷹ハゲル"
+          },
+          {
+            "kind": "thing",
+            "icon": "land",
+            "label": "甲土地",
+            "sub": "土壌汚染が判明"
+          },
+          {
+            "kind": "person",
+            "who": "fuyuno-so",
+            "label": "買主",
+            "sub": "追完・減額・賠償・解除"
+          },
+          {
+            "kind": "thing",
+            "icon": "time",
+            "label": "知った時から1年",
+            "sub": "通知しないと言えなくなる"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "引き渡した" },
-          { "from": 1, "to": 2, "label": "契約と違った" },
-          { "from": 2, "to": 3, "label": "この間に通知する" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "引き渡した"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "契約と違った"
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "label": "この間に通知する"
+          }
         ],
         "note": "数えるのは「引渡しの時」ではなく「不適合を知った時」から。"
       }
@@ -435,26 +938,70 @@
       {
         "caption": "催告して、それでも履行がなければ解除できる",
         "nodes": [
-          { "kind": "person", "who": "kurose-hagane", "label": "売主", "sub": "引き渡さない" },
-          { "kind": "thing", "icon": "time", "label": "相当の期間を定めた催告" },
-          { "kind": "person", "who": "shiraishi-george", "label": "買主", "sub": "白石ジョージ" }
+          {
+            "kind": "person",
+            "who": "kurose-hagane",
+            "label": "売主",
+            "sub": "引き渡さない"
+          },
+          {
+            "kind": "thing",
+            "icon": "time",
+            "label": "相当の期間を定めた催告"
+          },
+          {
+            "kind": "person",
+            "who": "shiraishi-george",
+            "label": "買主",
+            "sub": "白石ジョージ"
+          }
         ],
         "links": [
-          { "from": 2, "to": 1, "label": "催告する" },
-          { "from": 1, "to": 0, "label": "過ぎたら解除できる" }
+          {
+            "from": 2,
+            "to": 1,
+            "label": "催告する"
+          },
+          {
+            "from": 1,
+            "to": 0,
+            "label": "過ぎたら解除できる"
+          }
         ],
         "note": "不履行が軽微なときは、催告しても解除できない。"
       },
       {
         "caption": "危険負担 — 引渡し前に、誰のせいでもなく焼けた",
         "nodes": [
-          { "kind": "person", "who": "kurose-hagane", "label": "売主" },
-          { "kind": "thing", "icon": "house", "label": "甲建物", "sub": "引渡し前に落雷で焼失" },
-          { "kind": "person", "who": "shiraishi-george", "label": "買主", "sub": "代金の支払を拒める" }
+          {
+            "kind": "person",
+            "who": "kurose-hagane",
+            "label": "売主"
+          },
+          {
+            "kind": "thing",
+            "icon": "house",
+            "label": "甲建物",
+            "sub": "引渡し前に落雷で焼失"
+          },
+          {
+            "kind": "person",
+            "who": "shiraishi-george",
+            "label": "買主",
+            "sub": "代金の支払を拒める"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "引き渡す前だった" },
-          { "from": 1, "to": 2, "label": "代金の支払を拒める" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "引き渡す前だった"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "代金の支払を拒める"
+          }
         ],
         "note": "拒めるだけで、契約は当然には終わらない。終わらせたければ解除する。"
       }
@@ -483,43 +1030,129 @@
       {
         "caption": "抵当権の効力はどこまで届くか",
         "nodes": [
-          { "kind": "person", "who": "minuma-yesu", "label": "設定者", "sub": "見沼イエス" },
-          { "kind": "thing", "icon": "land", "label": "甲土地と建物", "sub": "付合物・従物にも及ぶ" },
-          { "kind": "thing", "icon": "money", "label": "賃料・火災保険金", "sub": "物上代位" },
-          { "kind": "person", "who": "kurose-tetsuko", "label": "抵当権者", "sub": "黒瀬テツコ" }
+          {
+            "kind": "person",
+            "who": "minuma-yesu",
+            "label": "設定者",
+            "sub": "見沼イエス"
+          },
+          {
+            "kind": "thing",
+            "icon": "land",
+            "label": "甲土地と建物",
+            "sub": "付合物・従物にも及ぶ"
+          },
+          {
+            "kind": "thing",
+            "icon": "money",
+            "label": "賃料・火災保険金",
+            "sub": "物上代位"
+          },
+          {
+            "kind": "person",
+            "who": "kurose-tetsuko",
+            "label": "抵当権者",
+            "sub": "黒瀬テツコ"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "抵当に入れた" },
-          { "from": 1, "to": 2, "label": "代わりに入るお金にも及ぶ" },
-          { "from": 2, "to": 3, "label": "払われる前に差し押さえる" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "抵当に入れた"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "代わりに入るお金にも及ぶ"
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "label": "払われる前に差し押さえる"
+          }
         ],
         "note": "利息などで優先弁済を受けられるのは、満期となった最後の2年分まで。"
       },
       {
         "caption": "順位は登記の順。譲渡と放棄で取り分だけ動かせる",
         "nodes": [
-          { "kind": "person", "who": "kurose-tetsuko", "label": "一番抵当権者", "sub": "登記が先" },
-          { "kind": "person", "who": "hageta-hageta", "label": "二番抵当権者", "sub": "次の順番" },
-          { "kind": "person", "who": "togura-yonnan", "label": "三番抵当権者", "sub": "最後" }
+          {
+            "kind": "person",
+            "who": "kurose-tetsuko",
+            "label": "一番抵当権者",
+            "sub": "登記が先"
+          },
+          {
+            "kind": "person",
+            "who": "hageta-hageta",
+            "label": "二番抵当権者",
+            "sub": "次の順番"
+          },
+          {
+            "kind": "person",
+            "who": "togura-yonnan",
+            "label": "三番抵当権者",
+            "sub": "最後"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "順位の譲渡" },
-          { "from": 1, "to": 2, "label": "順位の放棄" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "順位の譲渡"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "順位の放棄"
+          }
         ],
         "note": "譲渡は二人の取り分をそっくり入れ替える。放棄は二人の取り分をまとめて債権額の比で分ける。順位そのものの変更には利害関係者全員の合意と登記が要り、設定者の同意は要らない。"
       },
       {
         "caption": "法定地上権 — 競売で土地と建物の持ち主が分かれるとき",
         "nodes": [
-          { "kind": "person", "who": "minuma-yesu", "label": "設定時は同一人の所有" },
-          { "kind": "thing", "icon": "house", "label": "建物", "sub": "設定時に存在していた" },
-          { "kind": "thing", "icon": "land", "label": "土地", "sub": "競売にかかった" },
-          { "kind": "person", "who": "togura-yonnan", "label": "買受人", "sub": "明渡しは求められない" }
+          {
+            "kind": "person",
+            "who": "minuma-yesu",
+            "label": "設定時は同一人の所有"
+          },
+          {
+            "kind": "thing",
+            "icon": "house",
+            "label": "建物",
+            "sub": "設定時に存在していた"
+          },
+          {
+            "kind": "thing",
+            "icon": "land",
+            "label": "土地",
+            "sub": "競売にかかった"
+          },
+          {
+            "kind": "person",
+            "who": "togura-yonnan",
+            "label": "買受人",
+            "sub": "明渡しは求められない"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "土地も建物も持っていた" },
-          { "from": 1, "to": 2, "label": "建物のために地上権が成立" },
-          { "from": 2, "to": 3, "label": "土地を落札" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "土地も建物も持っていた"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "建物のために地上権が成立"
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "label": "土地を落札"
+          }
         ],
         "note": "更地に抵当権を付けてから建てた建物には、成立しない。"
       }
@@ -550,41 +1183,118 @@
       {
         "caption": "保証は主債務にぶら下がる。書面でしないと効かない",
         "nodes": [
-          { "kind": "person", "who": "togura-chonan", "label": "主たる債務者", "sub": "都倉チョーナン" },
-          { "kind": "person", "who": "kurose-tetsuko", "label": "債権者", "sub": "黒瀬テツコ" },
-          { "kind": "person", "who": "togura-jinan", "label": "保証人", "sub": "都倉ジナン" },
-          { "kind": "thing", "icon": "paper", "label": "書面", "sub": "なければ無効" }
+          {
+            "kind": "person",
+            "who": "togura-chonan",
+            "label": "主たる債務者",
+            "sub": "都倉チョーナン"
+          },
+          {
+            "kind": "person",
+            "who": "kurose-tetsuko",
+            "label": "債権者",
+            "sub": "黒瀬テツコ"
+          },
+          {
+            "kind": "person",
+            "who": "togura-jinan",
+            "label": "保証人",
+            "sub": "都倉ジナン"
+          },
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "書面",
+            "sub": "なければ無効"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "主債務" },
-          { "from": 1, "to": 2, "label": "保証債務" },
-          { "from": 2, "to": 3, "label": "書面でしないと効かない" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "主債務"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "保証債務"
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "label": "書面でしないと効かない"
+          }
         ],
         "note": "主債務が消えれば保証も消える。主債務が重くなっても保証は重くならない。"
       },
       {
         "caption": "連帯保証は「まず本人に言え」が言えない",
         "nodes": [
-          { "kind": "person", "who": "kurose-tetsuko", "label": "債権者", "sub": "いきなり保証人へ" },
-          { "kind": "person", "who": "togura-jinan", "label": "連帯保証人", "sub": "催告・検索の抗弁なし" },
-          { "kind": "person", "who": "togura-chonan", "label": "主たる債務者" }
+          {
+            "kind": "person",
+            "who": "kurose-tetsuko",
+            "label": "債権者",
+            "sub": "いきなり保証人へ"
+          },
+          {
+            "kind": "person",
+            "who": "togura-jinan",
+            "label": "連帯保証人",
+            "sub": "催告・検索の抗弁なし"
+          },
+          {
+            "kind": "person",
+            "who": "togura-chonan",
+            "label": "主たる債務者"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "全額を請求できる" },
-          { "from": 1, "to": 2, "label": "先に請求しろとは言えない", "style": "dashed" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "全額を請求できる"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "先に請求しろとは言えない",
+            "style": "dashed"
+          }
         ],
         "note": "分別の利益もない。連帯保証人が複数いても、各自が全額を負う。"
       },
       {
         "caption": "連帯債務 — 他の人にも効くのは四つだけ",
         "nodes": [
-          { "kind": "person", "who": "togura-sannan", "label": "連帯債務者A" },
-          { "kind": "thing", "icon": "money", "label": "弁済・相殺・更改・混同", "sub": "他の人にも効く" },
-          { "kind": "person", "who": "togura-yonnan", "label": "連帯債務者B", "sub": "請求・免除・時効は効かない" }
+          {
+            "kind": "person",
+            "who": "togura-sannan",
+            "label": "連帯債務者A"
+          },
+          {
+            "kind": "thing",
+            "icon": "money",
+            "label": "弁済・相殺・更改・混同",
+            "sub": "他の人にも効く"
+          },
+          {
+            "kind": "person",
+            "who": "togura-yonnan",
+            "label": "連帯債務者B",
+            "sub": "請求・免除・時効は効かない"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "した" },
-          { "from": 1, "to": 2, "label": "その分だけ減る" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "した"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "その分だけ減る"
+          }
         ],
         "note": "請求されても、免除されても、時効が完成しても、他の債務者の債務はそのまま。"
       }
@@ -615,43 +1325,132 @@
       {
         "caption": "順位と割合 — 配偶者は常に相続人",
         "nodes": [
-          { "kind": "person", "who": "togura-oyaji", "label": "亡くなった人", "sub": "都倉オヤジ" },
-          { "kind": "person", "who": "togura-maman", "label": "配偶者", "sub": "常に相続人" },
-          { "kind": "person", "who": "togura-chonan", "label": "子", "sub": "第1順位" },
-          { "kind": "person", "who": "togura-jinan", "label": "子", "sub": "第1順位" }
+          {
+            "kind": "person",
+            "who": "togura-oyaji",
+            "label": "亡くなった人",
+            "sub": "都倉オヤジ"
+          },
+          {
+            "kind": "person",
+            "who": "togura-maman",
+            "label": "配偶者",
+            "sub": "常に相続人"
+          },
+          {
+            "kind": "person",
+            "who": "togura-chonan",
+            "label": "子",
+            "sub": "第1順位"
+          },
+          {
+            "kind": "person",
+            "who": "togura-jinan",
+            "label": "子",
+            "sub": "第1順位"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "配偶者に1/2" },
-          { "from": 2, "to": 3, "label": "残りの1/2を子で頭割り" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "配偶者に1/2"
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "label": "残りの1/2を子で頭割り"
+          }
         ],
         "note": "配偶者は、子となら1/2、直系尊属となら2/3、兄弟姉妹となら3/4。"
       },
       {
         "caption": "代襲相続 — 起きるのは死亡・欠格・廃除の三つだけ",
         "nodes": [
-          { "kind": "person", "who": "togura-yonnan", "label": "放棄した子", "sub": "代襲しない" },
-          { "kind": "person", "who": "togura-oyaji", "label": "亡くなった人" },
-          { "kind": "person", "who": "togura-sannan", "label": "先に死んだ子", "sub": "欠格・廃除でも同じ" },
-          { "kind": "person", "who": "togura-chonan-jr", "label": "孫", "sub": "代わりに相続する" }
+          {
+            "kind": "person",
+            "who": "togura-yonnan",
+            "label": "放棄した子",
+            "sub": "代襲しない"
+          },
+          {
+            "kind": "person",
+            "who": "togura-oyaji",
+            "label": "亡くなった人"
+          },
+          {
+            "kind": "person",
+            "who": "togura-sannan",
+            "label": "先に死んだ子",
+            "sub": "欠格・廃除でも同じ"
+          },
+          {
+            "kind": "person",
+            "who": "togura-chonan-jr",
+            "label": "孫",
+            "sub": "代わりに相続する"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "最初からいなかった扱い", "style": "dashed" },
-          { "from": 2, "to": 3, "label": "代襲する" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "最初からいなかった扱い",
+            "style": "dashed"
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "label": "代襲する"
+          }
         ],
         "note": "放棄だけは代襲しない。子の系統は下へ無限に、兄弟姉妹の系統は甥・姪の一代だけ。"
       },
       {
         "caption": "遺言と遺留分 — 兄弟姉妹には遺留分がない",
         "nodes": [
-          { "kind": "person", "who": "togura-oyaji", "label": "遺言者", "sub": "全部を第三者へ" },
-          { "kind": "thing", "icon": "paper", "label": "遺言", "sub": "自筆・公正証書・秘密証書" },
-          { "kind": "person", "who": "togura-maman", "label": "配偶者・子・直系尊属", "sub": "遺留分がある" },
-          { "kind": "person", "who": "togura-rina", "label": "兄弟姉妹", "sub": "遺留分がない" }
+          {
+            "kind": "person",
+            "who": "togura-oyaji",
+            "label": "遺言者",
+            "sub": "全部を第三者へ"
+          },
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "遺言",
+            "sub": "自筆・公正証書・秘密証書"
+          },
+          {
+            "kind": "person",
+            "who": "togura-maman",
+            "label": "配偶者・子・直系尊属",
+            "sub": "遺留分がある"
+          },
+          {
+            "kind": "person",
+            "who": "togura-rina",
+            "label": "兄弟姉妹",
+            "sub": "遺留分がない"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "書いた" },
-          { "from": 1, "to": 2, "label": "侵害額をお金で請求できる" },
-          { "from": 2, "to": 3, "label": "兄弟姉妹にはない", "style": "dashed" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "書いた"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "侵害額をお金で請求できる"
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "label": "兄弟姉妹にはない",
+            "style": "dashed"
+          }
         ],
         "note": "遺留分侵害額請求はお金の請求。物を取り戻す請求ではない。"
       }
@@ -687,37 +1486,105 @@
       {
         "caption": "存続期間は30年から。更新すると20年、次からは10年",
         "nodes": [
-          { "kind": "person", "who": "minuma-tanezo", "label": "借地権設定者", "sub": "地主" },
-          { "kind": "thing", "icon": "land", "label": "甲土地", "sub": "建物を建てる目的" },
-          { "kind": "person", "who": "suzuki-takeo", "label": "借地権者", "sub": "鈴木タケオ" },
-          { "kind": "thing", "icon": "time", "label": "30年 → 20年 → 10年" }
+          {
+            "kind": "person",
+            "who": "minuma-tanezo",
+            "label": "借地権設定者",
+            "sub": "地主"
+          },
+          {
+            "kind": "thing",
+            "icon": "land",
+            "label": "甲土地",
+            "sub": "建物を建てる目的"
+          },
+          {
+            "kind": "person",
+            "who": "suzuki-takeo",
+            "label": "借地権者",
+            "sub": "鈴木タケオ"
+          },
+          {
+            "kind": "thing",
+            "icon": "time",
+            "label": "30年 → 20年 → 10年"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "貸した" },
-          { "from": 1, "to": 2, "label": "建物を建てて使う" },
-          { "from": 2, "to": 3, "label": "短く定めても30年になる" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "貸した"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "建物を建てて使う"
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "label": "短く定めても30年になる"
+          }
         ],
         "note": "資材置場や駐車場のための賃借は借地借家法の借地ではない。民法どおり、最長50年。"
       },
       {
         "caption": "対抗力は、自分名義の建物の登記でよい",
         "nodes": [
-          { "kind": "person", "who": "suzuki-takeo", "label": "借地権者" },
-          { "kind": "thing", "icon": "house", "label": "自分名義の建物の登記", "sub": "借地権の登記でなくてよい" },
-          { "kind": "person", "who": "togura-yonnan", "label": "土地を買った人", "sub": "借地権を対抗される" }
+          {
+            "kind": "person",
+            "who": "suzuki-takeo",
+            "label": "借地権者"
+          },
+          {
+            "kind": "thing",
+            "icon": "house",
+            "label": "自分名義の建物の登記",
+            "sub": "借地権の登記でなくてよい"
+          },
+          {
+            "kind": "person",
+            "who": "togura-yonnan",
+            "label": "土地を買った人",
+            "sub": "借地権を対抗される"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "自分名義で登記した" },
-          { "from": 1, "to": 2, "label": "借地権を主張できる" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "自分名義で登記した"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "借地権を主張できる"
+          }
         ],
         "note": "家族名義ではだめ。同居の子の名義でも対抗できない。"
       },
       {
         "caption": "定期借地権は三つ。使い分けは期間と用途と書面",
         "nodes": [
-          { "kind": "thing", "icon": "paper", "label": "一般定期借地権", "sub": "50年以上・書面か電磁的記録" },
-          { "kind": "thing", "icon": "paper", "label": "事業用定期借地権", "sub": "10年以上50年未満・公正証書に限る" },
-          { "kind": "thing", "icon": "house", "label": "建物譲渡特約付借地権", "sub": "30年以上・書面不要" }
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "一般定期借地権",
+            "sub": "50年以上・書面か電磁的記録"
+          },
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "事業用定期借地権",
+            "sub": "10年以上50年未満・公正証書に限る"
+          },
+          {
+            "kind": "thing",
+            "icon": "house",
+            "label": "建物譲渡特約付借地権",
+            "sub": "30年以上・書面不要"
+          }
         ],
         "links": [],
         "note": "事業用は居住用の建物には使えない。ここが一番よく問われる。"
@@ -749,39 +1616,107 @@
       {
         "caption": "更新拒絶には、通知の時期と正当事由の両方が要る",
         "nodes": [
-          { "kind": "person", "who": "minuma-minori", "label": "賃貸人", "sub": "見沼ミノリ" },
-          { "kind": "thing", "icon": "time", "label": "1年前〜6ヶ月前", "sub": "この間に通知" },
-          { "kind": "person", "who": "sakurai-maple", "label": "賃借人", "sub": "桜井メープル" }
+          {
+            "kind": "person",
+            "who": "minuma-minori",
+            "label": "賃貸人",
+            "sub": "見沼ミノリ"
+          },
+          {
+            "kind": "thing",
+            "icon": "time",
+            "label": "1年前〜6ヶ月前",
+            "sub": "この間に通知"
+          },
+          {
+            "kind": "person",
+            "who": "sakurai-maple",
+            "label": "賃借人",
+            "sub": "桜井メープル"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "通知する" },
-          { "from": 1, "to": 2, "label": "さらに正当事由が要る" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "通知する"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "さらに正当事由が要る"
+          }
         ],
         "note": "通知しなければ同じ条件で更新され、期間は定めがないものになる。"
       },
       {
         "caption": "期間の定めがないときの、出ていくまでの長さ",
         "nodes": [
-          { "kind": "person", "who": "minuma-minori", "label": "賃貸人から", "sub": "6ヶ月・正当事由が要る" },
-          { "kind": "thing", "icon": "key", "label": "解約の申入れ" },
-          { "kind": "person", "who": "sakurai-maple", "label": "賃借人から", "sub": "3ヶ月・正当事由は不要" }
+          {
+            "kind": "person",
+            "who": "minuma-minori",
+            "label": "賃貸人から",
+            "sub": "6ヶ月・正当事由が要る"
+          },
+          {
+            "kind": "thing",
+            "icon": "key",
+            "label": "解約の申入れ"
+          },
+          {
+            "kind": "person",
+            "who": "sakurai-maple",
+            "label": "賃借人から",
+            "sub": "3ヶ月・正当事由は不要"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "6ヶ月で終了" },
-          { "from": 2, "to": 1, "label": "3ヶ月で終了" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "6ヶ月で終了"
+          },
+          {
+            "from": 2,
+            "to": 1,
+            "label": "3ヶ月で終了"
+          }
         ],
         "note": "借りている側のほうが短く、条件も軽い。守られているのは賃借人。"
       },
       {
         "caption": "定期建物賃貸借 — 契約書とは別の書面で説明する",
         "nodes": [
-          { "kind": "thing", "icon": "paper", "label": "契約は書面か電磁的記録" },
-          { "kind": "thing", "icon": "paper", "label": "別の書面で事前説明", "sub": "更新がないこと" },
-          { "kind": "person", "who": "sakurai-maple", "label": "賃借人", "sub": "説明を受ける" }
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "契約は書面か電磁的記録"
+          },
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "別の書面で事前説明",
+            "sub": "更新がないこと"
+          },
+          {
+            "kind": "person",
+            "who": "sakurai-maple",
+            "label": "賃借人",
+            "sub": "説明を受ける"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "これだけでは足りない", "style": "dashed" },
-          { "from": 1, "to": 2, "label": "あらかじめ交付して説明" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "これだけでは足りない",
+            "style": "dashed"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "あらかじめ交付して説明"
+          }
         ],
         "note": "説明を欠くと、更新がない旨の定めだけが無効になり、ふつうの借家契約になる。"
       }
@@ -814,9 +1749,24 @@
       {
         "caption": "重さで三段。単独・過半数・全員",
         "nodes": [
-          { "kind": "thing", "icon": "key", "label": "保存行為", "sub": "修理・不法占拠者の追出し・単独可" },
-          { "kind": "thing", "icon": "paper", "label": "管理行為", "sub": "持分の価格の過半数" },
-          { "kind": "thing", "icon": "land", "label": "変更行為", "sub": "著しい変更・売却は全員" }
+          {
+            "kind": "thing",
+            "icon": "key",
+            "label": "保存行為",
+            "sub": "修理・不法占拠者の追出し・単独可"
+          },
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "管理行為",
+            "sub": "持分の価格の過半数"
+          },
+          {
+            "kind": "thing",
+            "icon": "land",
+            "label": "変更行為",
+            "sub": "著しい変更・売却は全員"
+          }
         ],
         "links": [],
         "note": "過半数は「人数」ではなく「持分の価格」で数える。"
@@ -824,14 +1774,39 @@
       {
         "caption": "四人で持っている土地を、資材置場に貸す",
         "nodes": [
-          { "kind": "person", "who": "togura-chonan", "label": "持分1/4" },
-          { "kind": "person", "who": "togura-jinan", "label": "持分1/4" },
-          { "kind": "person", "who": "togura-sannan", "label": "持分1/4" },
-          { "kind": "person", "who": "togura-yonnan", "label": "持分1/4", "sub": "所在が分からない" }
+          {
+            "kind": "person",
+            "who": "togura-chonan",
+            "label": "持分1/4"
+          },
+          {
+            "kind": "person",
+            "who": "togura-jinan",
+            "label": "持分1/4"
+          },
+          {
+            "kind": "person",
+            "who": "togura-sannan",
+            "label": "持分1/4"
+          },
+          {
+            "kind": "person",
+            "who": "togura-yonnan",
+            "label": "持分1/4",
+            "sub": "所在が分からない"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "三人で過半数" },
-          { "from": 1, "to": 2, "label": "5年以内の賃貸借" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "三人で過半数"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "5年以内の賃貸借"
+          }
         ],
         "note": "所在が分からない共有者は、裁判所の決定を得れば外して決められる。"
       }
@@ -862,13 +1837,36 @@
       {
         "caption": "使用者責任 — 仕事中の事故は、雇い主も払う",
         "nodes": [
-          { "kind": "person", "who": "umizawa-kyle", "label": "使用者", "sub": "海沢カイル" },
-          { "kind": "person", "who": "fuyuno-so", "label": "従業員", "sub": "仕事中に事故" },
-          { "kind": "person", "who": "tanaka-poppo", "label": "被害者", "sub": "どちらにも全額請求できる" }
+          {
+            "kind": "person",
+            "who": "umizawa-kyle",
+            "label": "使用者",
+            "sub": "海沢カイル"
+          },
+          {
+            "kind": "person",
+            "who": "fuyuno-so",
+            "label": "従業員",
+            "sub": "仕事中に事故"
+          },
+          {
+            "kind": "person",
+            "who": "tanaka-poppo",
+            "label": "被害者",
+            "sub": "どちらにも全額請求できる"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "求償は相当な範囲まで" },
-          { "from": 1, "to": 2, "label": "損害を与えた" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "求償は相当な範囲まで"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "損害を与えた"
+          }
         ],
         "note": "使用者も責任を負う。従業員が払った場合は、逆に使用者へ求償することもできる。"
       }
@@ -894,22 +1892,60 @@
       {
         "caption": "専有部分と共用部分。持分は床面積の割合",
         "nodes": [
-          { "kind": "thing", "icon": "house", "label": "専有部分", "sub": "自分の部屋" },
-          { "kind": "person", "who": "kurose-tetsuko", "label": "区分所有者", "sub": "黒瀬テツコ" },
-          { "kind": "thing", "icon": "key", "label": "共用部分", "sub": "廊下・階段・エレベーター" }
+          {
+            "kind": "thing",
+            "icon": "house",
+            "label": "専有部分",
+            "sub": "自分の部屋"
+          },
+          {
+            "kind": "person",
+            "who": "kurose-tetsuko",
+            "label": "区分所有者",
+            "sub": "黒瀬テツコ"
+          },
+          {
+            "kind": "thing",
+            "icon": "key",
+            "label": "共用部分",
+            "sub": "廊下・階段・エレベーター"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "単独で所有" },
-          { "from": 1, "to": 2, "label": "床面積の割合で共有" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "単独で所有"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "床面積の割合で共有"
+          }
         ],
         "note": "床面積は壁その他の区画の内側線で囲まれた部分で測る。規約で別に定めてもよい。"
       },
       {
         "caption": "集会の決議 — 定足数を満たし、出席者の中で数える",
         "nodes": [
-          { "kind": "thing", "icon": "paper", "label": "ふつうの決議", "sub": "出席者の各過半数" },
-          { "kind": "thing", "icon": "paper", "label": "規約の設定・変更、共用部分の著しい変更", "sub": "出席者の各3/4以上" },
-          { "kind": "thing", "icon": "house", "label": "建替え決議", "sub": "区分所有者と議決権の各4/5以上" }
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "ふつうの決議",
+            "sub": "出席者の各過半数"
+          },
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "規約の設定・変更、共用部分の著しい変更",
+            "sub": "出席者の各3/4以上"
+          },
+          {
+            "kind": "thing",
+            "icon": "house",
+            "label": "建替え決議",
+            "sub": "区分所有者と議決権の各4/5以上"
+          }
         ],
         "links": [],
         "note": "建替えだけは出席者ではなく全体で数える。ここが他と違う。"
@@ -917,15 +1953,47 @@
       {
         "caption": "集会の手続 — 招集は1週間前、議事録は2人が署名",
         "nodes": [
-          { "kind": "person", "who": "hayama-tiara", "label": "占有者", "sub": "意見は言えるが議決権なし" },
-          { "kind": "person", "who": "anzai-hochiki", "label": "管理者", "sub": "毎年1回は招集する" },
-          { "kind": "thing", "icon": "time", "label": "1週間前までに通知", "sub": "規約で伸長のみ可" },
-          { "kind": "thing", "icon": "paper", "label": "議事録", "sub": "議長と出席者2人が署名" }
+          {
+            "kind": "person",
+            "who": "hayama-tiara",
+            "label": "占有者",
+            "sub": "意見は言えるが議決権なし"
+          },
+          {
+            "kind": "person",
+            "who": "anzai-hochiki",
+            "label": "管理者",
+            "sub": "毎年1回は招集する"
+          },
+          {
+            "kind": "thing",
+            "icon": "time",
+            "label": "1週間前までに通知",
+            "sub": "規約で伸長のみ可"
+          },
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "議事録",
+            "sub": "議長と出席者2人が署名"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "利害があれば出席して意見" },
-          { "from": 1, "to": 2, "label": "招集通知を発する" },
-          { "from": 2, "to": 3, "label": "議長が作る" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "利害があれば出席して意見"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "招集通知を発する"
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "label": "議長が作る"
+          }
         ],
         "note": "押印はもう要らない。通知期間を規約で短くすることもできない。"
       }
@@ -966,9 +2034,24 @@
       {
         "caption": "表題部と権利部。義務があるのは上の段",
         "nodes": [
-          { "kind": "thing", "icon": "paper", "label": "表題部", "sub": "どんな不動産か・1ヶ月以内に申請" },
-          { "kind": "thing", "icon": "paper", "label": "権利部 甲区", "sub": "所有権" },
-          { "kind": "thing", "icon": "paper", "label": "権利部 乙区", "sub": "抵当権・賃借権など" }
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "表題部",
+            "sub": "どんな不動産か・1ヶ月以内に申請"
+          },
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "権利部 甲区",
+            "sub": "所有権"
+          },
+          {
+            "kind": "thing",
+            "icon": "paper",
+            "label": "権利部 乙区",
+            "sub": "抵当権・賃借権など"
+          }
         ],
         "links": [],
         "note": "表示に関する登記は登記官が職権でもできる。権利の登記は職権ではしない。"
@@ -976,13 +2059,36 @@
       {
         "caption": "権利の登記は、原則として二人がかりで申請する",
         "nodes": [
-          { "kind": "person", "who": "anzai-hochiki", "label": "単独で申請できる場合", "sub": "相続・判決・保存・住所変更" },
-          { "kind": "person", "who": "minuma-wakame", "label": "登記権利者", "sub": "買った人" },
-          { "kind": "person", "who": "togura-yonnan", "label": "登記義務者", "sub": "売った人" }
+          {
+            "kind": "person",
+            "who": "anzai-hochiki",
+            "label": "単独で申請できる場合",
+            "sub": "相続・判決・保存・住所変更"
+          },
+          {
+            "kind": "person",
+            "who": "minuma-wakame",
+            "label": "登記権利者",
+            "sub": "買った人"
+          },
+          {
+            "kind": "person",
+            "who": "togura-yonnan",
+            "label": "登記義務者",
+            "sub": "売った人"
+          }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "例外は一人で申請できる" },
-          { "from": 1, "to": 2, "label": "原則は共同で申請" }
+          {
+            "from": 0,
+            "to": 1,
+            "label": "例外は一人で申請できる"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "原則は共同で申請"
+          }
         ],
         "note": "相続で取得したら3年以内、住所や氏名が変わったら2年以内。どちらも申請が義務。"
       }

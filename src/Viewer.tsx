@@ -6,31 +6,45 @@ import {
 import { Person } from './Person'
 import { Lesson } from './Lesson'
 import { lessonOf } from './lessons'
-import { pickClosest, type Question, type QueryPart } from './kakomon'
+import { pickClosest, pickRandom, type Question, type QueryPart } from './kakomon'
 
 type Tab = 'story' | 'cast' | 'topics'
+type Go = (tab: Tab, id?: string) => void
 
-// URL でも行き来できるようにする。ルータは要らない。パスを見て出し分けるだけ
+// URL でも行き来できるようにする。ルータは要らない。パスを見て出し分けるだけ。
+// 2つ目の区切りは、その画面で開くものの id。イベントidは物語の中で一意なのでそのまま使う
 const BASE = import.meta.env.BASE_URL
-const PATH: Record<Tab, string> = { story: '', cast: 'jinbutsu', topics: 'ronten' }
-const tabOf = (p: string): Tab => {
-  const rest = p.replace(BASE, '').replace(/^\/|\/$/g, '')
-  return (Object.keys(PATH) as Tab[]).find((t) => PATH[t] === rest) ?? 'story'
+const PATH: Record<Tab, string> = { story: 'monogatari', cast: 'jinbutsu', topics: 'ronten' }
+type Route = { tab: Tab; id: string | null }
+const routeOf = (p: string): Route => {
+  const [head, id] = p.replace(BASE, '').replace(/^\/|\/$/g, '').split('/')
+  const tab = (Object.keys(PATH) as Tab[]).find((t) => PATH[t] === head) ?? 'story'
+  return { tab, id: id || null }
 }
+export const linkTo = (tab: Tab, id?: string) => BASE + PATH[tab] + (id ? `/${id}` : '')
 
 export function Viewer() {
-  const [tab, setTabState] = useState<Tab>(() => tabOf(window.location.pathname))
-  const setTab = (t: Tab) => {
-    setTabState(t)
-    window.history.pushState(null, '', BASE + PATH[t])
+  const [route, setRoute] = useState<Route>(() => routeOf(window.location.pathname))
+  const go = (tab: Tab, id?: string) => {
+    setRoute({ tab, id: id ?? null })
+    window.history.pushState(null, '', linkTo(tab, id))
   }
   useEffect(() => {
-    const back = () => setTabState(tabOf(window.location.pathname))
+    const back = () => setRoute(routeOf(window.location.pathname))
     window.addEventListener('popstate', back)
     return () => window.removeEventListener('popstate', back)
   }, [])
-  const [gen, setGen] = useState(1)
-  const [pick, setPick] = useState(0)
+  const { tab } = route
+
+  // URL にイベントidがあれば、その世代のその回を開く
+  const found = route.tab === 'story' && route.id
+    ? [1, 2, 3, 4, 5].flatMap((g) => eventsOf[g].map((e, i) => ({ g, i, e }))).find((x) => x.e.id === route.id)
+    : null
+  const [gen, setGen] = useState(found?.g ?? 1)
+  const [pick, setPick] = useState(found?.i ?? 0)
+  useEffect(() => {
+    if (found) { setGen(found.g); setPick(found.i) }
+  }, [found?.e.id])
 
   const events = eventsOf[gen]
   const ev = events[Math.min(pick, events.length - 1)]
@@ -41,7 +55,7 @@ export function Viewer() {
         <h1>宅建story</h1>
         <nav>
           {(['story', 'cast', 'topics'] as Tab[]).map((t) => (
-            <button key={t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>
+            <button key={t} className={tab === t ? 'on' : ''} onClick={() => go(t)}>
               {{ story: '物語', cast: '家系と人物', topics: '論点' }[t]}
             </button>
           ))}
@@ -54,7 +68,7 @@ export function Viewer() {
             <div className="gens">
               {generations.map((g) => (
                 <button key={g.gen} className={gen === g.gen ? 'on' : ''}
-                  onClick={() => { setGen(g.gen); setPick(0) }}>
+                  onClick={() => { setGen(g.gen); setPick(0); go('story', eventsOf[g.gen][0]?.id) }}>
                   第{g.gen}世代
                   <small>{g.stage}</small>
                 </button>
@@ -63,7 +77,8 @@ export function Viewer() {
             <ol className="events">
               {events.map((e, i) => (
                 <li key={e.id}>
-                  <button className={i === pick ? 'on' : ''} onClick={() => setPick(i)}>
+                  <button className={i === pick ? 'on' : ''}
+                    onClick={() => { setPick(i); go('story', e.id) }}>
                     <time>{e.year}/{e.month}</time>
                     <span className={`kind k-${e.kind}`}>{KIND_JA[e.kind] ?? e.kind}</span>
                     <b>{e.title}</b>
@@ -75,13 +90,13 @@ export function Viewer() {
           </aside>
           <main>
             <GenHead gen={gen} />
-            {ev && <Scene ev={ev} />}
+            {ev && <Scene ev={ev} go={go} />}
           </main>
         </div>
       )}
 
       {tab === 'cast' && <Cast />}
-      {tab === 'topics' && <Topics />}
+      {tab === 'topics' && <Topics route={route} go={go} />}
     </div>
   )
 }
@@ -110,7 +125,7 @@ function GenHead({ gen }: { gen: number }) {
   )
 }
 
-function Scene({ ev }: { ev: StoryEvent }) {
+function Scene({ ev, go }: { ev: StoryEvent; go: Go }) {
   const topic = ev.topicId ? topicOf.get(ev.topicId) : null
   // 芝居と説明を混ぜない。混ぜると場面が長くなって、間延びして読める
   const drama = ev.lines.filter((l) => l.role !== 'teach')
@@ -151,6 +166,13 @@ function Scene({ ev }: { ev: StoryEvent }) {
       {/* key にイベントidを渡して、別のイベントへ移ったら選択状態を捨てる */}
       {/* key は兄弟どうしで重複させない（同じ値だとReactが別物と見なせず要素が積み上がる） */}
       {ev.quiz ? <Quiz key={`q-${ev.id}`} quiz={ev.quiz} /> : <p className="todo">この回はまだ問題ができていない。</p>}
+      {topic && (
+        <p className="jump">
+          この回の論点 <a href={linkTo('topics', topic.id)}
+            onClick={(e) => { e.preventDefault(); go('topics', topic.id) }}>{topic.name}</a>
+          の解説を読む
+        </p>
+      )}
       {topic && <Kakomon key={`k-${ev.id}`} topic={topic} query={queryOf(ev, topic.name)} />}
     </article>
   )
@@ -211,46 +233,80 @@ const queryOf = (ev: StoryEvent, topicName: string): QueryPart[] => [
   [topicName, 1],
 ]
 
+type Topic = { id: string; name: string; kakomonCount: number; kakomon: string[] }
+
+/** 本物の過去問。答えは選んでから出す。最初から見えていると考えずに読んでしまう */
+function RealQ({ q }: { q: Question }) {
+  const [chose, setChose] = useState<number | null>(null)
+  const right = q.answer
+  return (
+    <div className="real">
+      <b>{q.ref}</b>
+      <p>{q.body}</p>
+      <ol>
+        {q.choices.map((c, i) => {
+          const n = i + 1
+          const shown = chose != null
+          return (
+            <li key={i} className={shown && n === right ? 'right' : ''}>
+              <button onClick={() => setChose(n)} disabled={shown}>
+                <span className="mark">
+                  {!shown ? `${n}.` : right == null ? '—' : n === right ? '○' : '×'}
+                </span>
+                {c}
+              </button>
+            </li>
+          )
+        })}
+      </ol>
+      {chose == null ? (
+        <p className="note">選んでみてください。押すと正解が出ます。</p>
+      ) : (
+        <p className="note">
+          {right == null
+            ? 'この問は正解が一つに決まっていません(全員正解など)。'
+            : `${chose === right ? '○ 正解' : `× 不正解 ── 正しいのは ${right} 番`}（出題元の正解番号表より）`}
+          <button className="roll" onClick={() => setChose(null)}>選び直す</button>
+        </p>
+      )}
+    </div>
+  )
+}
+
+/**
+ * 過去問を3問出す。物語では「近い順」、論点では「転がして適当に」。
+ * 論点のほうは同じ問ばかり見ても仕方ないので、押すたび引き直す。
+ */
 function Kakomon(
-  { topic, query }:
-  { topic: { id: string; name: string; kakomonCount: number; kakomon: string[] }; query: QueryPart[] },
+  { topic, query, mode = 'closest' }:
+  { topic: Topic; query?: QueryPart[]; mode?: 'closest' | 'random' },
 ) {
-  const [item, setItem] = useState<Question | null>(null)
+  const [items, setItems] = useState<Question[]>([])
   const [done, setDone] = useState(false)
+  const [roll, setRoll] = useState(0)
   useEffect(() => {
     let alive = true
-    // 候補を全部読んでから、イベントの文脈に一番近い1問だけ選ぶ
-    pickClosest(query, topic.kakomon).then((q) => { if (alive) { setItem(q); setDone(true) } })
+    setDone(false)
+    const p = mode === 'random' ? pickRandom(topic.kakomon, 3) : pickClosest(query ?? [], topic.kakomon, 3)
+    p.then((qs) => { if (alive) { setItems(qs); setDone(true) } })
     return () => { alive = false }
-    // query は毎回新しい配列になるので、イベントが変われば作り直される key に任せる
+    // query は毎回新しい配列になるので、依存に入れず key に任せる
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topic])
+  }, [topic, mode, roll])
+
   return (
     <section className="kakomon">
       <p className="head">
-        論点 <code>{topic.id}</code>（{topic.name}）
+        論点 <code>{topic.id}</code>（{topic.name}）／ 過去15年で {topic.kakomonCount}問
         <br />
-        この論点は過去15年で {topic.kakomonCount}問。いちばん近いのはこれです。
+        {mode === 'random' ? 'この論点から3問。' : 'この回にいちばん近い3問。'}
+        {mode === 'random' && (
+          <button className="roll" onClick={() => setRoll(roll + 1)}>別の3問を引く</button>
+        )}
       </p>
-      {item ? (
-        <div className="real">
-          <b>{item.ref}</b>
-          <p>{item.body}</p>
-          <ol>
-            {item.choices.map((c, i) => (
-              <li key={i} className={item.answer === i + 1 ? 'right' : ''}>
-                <span className="mark">{item.answer == null ? '' : item.answer === i + 1 ? '○' : '×'}</span>
-                {c}
-              </li>
-            ))}
-          </ol>
-          <p className="note">
-            {item.answer == null
-              ? 'この年の正解番号はまだ取り込めていません。'
-              : `正解は ${item.answer} 番（出題元が公表している正解番号表より）。`}
-          </p>
-        </div>
-      ) : done && <p className="todo">本文は kakomon/json/ にあるときだけ出る（開発サーバのみ）。</p>}
+      {items.length ? items.map((item) => (
+        <RealQ key={item.ref} q={item} />
+      )) : done && <p className="todo">本文は kakomon/json/ にあるときだけ出る（開発サーバのみ）。</p>}
     </section>
   )
 }
@@ -264,46 +320,38 @@ function Cast() {
     return m
   }, [])
   const person = cast.find((c) => c.id === open)
-  const fam = familyList.find((f) => f.id === (person?.family ?? open))
 
   return (
-    <div className="split">
-      <aside>
+    <div className="withpane">
+      <div className="families">
         {familyList.map((f) => (
-          <div key={f.id} className="field">
+          <section key={f.id}>
             <h3>
-              <button className={!person && open === f.id ? 'on' : ''} onClick={() => setOpen(f.id)}>
-                <span className="sw" style={{ background: f.cloth.base, borderColor: f.cloth.accent }} />
-                {f.id}家<small>{f.cloth.why}</small>
-              </button>
+              <span className="sw" style={{ background: f.cloth.base, borderColor: f.cloth.accent }} />
+              {f.id}家 <small>{f.cloth.why}</small>
             </h3>
-            <ol className="events">
-              {(members.get(f.id) ?? []).map((c) => (
-                <li key={c.id}>
-                  <button className={open === c.id ? 'on' : ''} onClick={() => setOpen(c.id)}>
-                    <b>{c.name}</b>
-                    <time>{c.birthYear}</time>
+            <p>{f.story.replace(/\*\*/g, '')}</p>
+            <div className="grid">
+              {(members.get(f.id) ?? []).map((c, i) => (
+                <figure key={c.id} className={open === c.id ? 'on' : ''}>
+                  <button onClick={() => setOpen(open === c.id ? null : c.id)}>
+                    <Person id={c.id} family={c.family} gender={c.gender} age={30} seed={i * 1.7} size={104} />
+                    <figcaption>
+                      <b>{c.name}</b>
+                      <small>{c.birthYear}年生 ／ 第{c.appearsIn.join('・')}世代</small>
+                    </figcaption>
                   </button>
-                </li>
+                </figure>
               ))}
-            </ol>
-          </div>
-        ))}
-      </aside>
-      <main>
-        {fam && (
-          <section className="genhead">
-            <h2>
-              <span className="sw" style={{ background: fam.cloth.base, borderColor: fam.cloth.accent }} />
-              {fam.id}家 <small>{fam.cloth.why}</small>
-            </h2>
-            <p className="synopsis">{fam.story.replace(/\*\*/g, '')}</p>
+            </div>
           </section>
-        )}
-        {person ? <Detail c={person} /> : !fam && (
-          <p className="lead">家か人を選ぶと、家の物語と、その人の姿が出る。</p>
-        )}
-      </main>
+        ))}
+      </div>
+      <aside className="pane">
+        {person
+          ? <Detail c={person} />
+          : <p className="lead">人を押すと、8歳から78歳までの姿と、その人のことが出る。</p>}
+      </aside>
     </div>
   )
 }
@@ -345,8 +393,9 @@ function Detail({ c }: { c: (typeof cast)[number] }) {
   )
 }
 
-function Topics() {
-  const [open, setOpen] = useState<string | null>(null)
+function Topics({ route, go }: { route: Route; go: Go }) {
+  const open = route.id
+  const setOpen = (id: string) => go('topics', id)
   const FIELD: Record<string, string> = {
     kenri: '権利関係', gyoho: '宅建業法', hourei: '法令上の制限', zeikin: '税・その他',
   }
@@ -354,10 +403,10 @@ function Topics() {
   const sorted = [...topicList].sort(
     (a, b) => order.indexOf(a.field) - order.indexOf(b.field) || b.kakomonCount - a.kakomonCount,
   )
-  const used = new Map<string, string[]>()
+  const used = new Map<string, { g: string; e: StoryEvent }[]>()
   for (const [g, evs] of Object.entries(eventsOf)) {
     for (const e of evs) {
-      if (e.topicId) used.set(e.topicId, [...(used.get(e.topicId) ?? []), `第${g}世代 ${e.title}`])
+      if (e.topicId) used.set(e.topicId, [...(used.get(e.topicId) ?? []), { g, e }])
     }
   }
   const cur = sorted.find((t) => t.id === open)
@@ -398,8 +447,22 @@ function Topics() {
             <p className="facts">
               {FIELD[cur.field]} ／ 15年で {cur.kakomonCount}問 ／ <code>{cur.id}</code>
             </p>
+            {used.get(cur.id) && (
+              <p className="appear">
+                出てくる回：
+                {used.get(cur.id)!.map(({ g, e }, i) => (
+                  <span key={e.id}>
+                    {i > 0 && ' / '}
+                    <a href={linkTo('story', e.id)}
+                      onClick={(ev) => { ev.preventDefault(); go('story', e.id) }}>
+                      第{g}世代 {e.title}
+                    </a>
+                  </span>
+                ))}
+              </p>
+            )}
             {lesson ? <Lesson data={lesson} /> : <p className="todo">この論点の解説はまだ書けていない。</p>}
-            {used.get(cur.id) && <p className="appear">出てくる回：{used.get(cur.id)!.join(' / ')}</p>}
+            <Kakomon key={`r-${cur.id}`} topic={cur} mode="random" />
           </article>
         )}
       </main>

@@ -148,7 +148,7 @@ figcaption q { display: block; color: var(--faint); font-size: .7rem; margin-top
 .lines.after { margin-top: 1rem; }
 
 .real ol { list-style: none; padding-left: 0; }
-.real ol li { display: grid; grid-template-columns: 1.6em 1fr; gap: .3rem; padding: .15rem 0; }
+.real ol li { display: block; padding: .05rem 0; }
 .real ol li.right { color: var(--ink); }
 .real .mark { text-align: center; }
 .real ol li.right .mark { color: var(--accent); }
@@ -195,3 +195,65 @@ figcaption q { display: block; color: var(--faint); font-size: .7rem; margin-top
 .field h3 button { display: inline; text-align: left; color: var(--faint); }
 .field h3 button.on { color: var(--ink); }
 .genhead h2 .sw { vertical-align: 0; }
+
+/* 一覧は横に並べたまま。押した人だけ右に開く */
+.withpane { display: grid; grid-template-columns: 1fr minmax(280px, 360px); gap: var(--space); align-items: start; }
+.pane { position: sticky; top: var(--space); max-height: 90vh; overflow: auto; }
+.pane .lead { font-size: .85rem; color: var(--faint); }
+.pane .detail { margin-top: 0; }
+.pane .detail .ages { flex-wrap: wrap; }
+.pane .detail h4 { font-size: 1rem; }
+@media (max-width: 980px) { .withpane { grid-template-columns: 1fr; } .pane { position: static; max-height: none; } }
+
+/* 分野は論点より一段上。同じ大きさだと並列に見える */
+.field h3 { font-size: .95rem; color: var(--ink); letter-spacing: .05em; padding: .5rem .4rem .3rem; border-bottom: 1px solid var(--rule); margin-bottom: .4rem; }
+.field h3 small { color: var(--faint); font-size: .7rem; }
+.field + .field { margin-top: 1.6rem; }
+
+a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--rule); }
+a:hover { border-color: var(--accent); color: var(--accent); }
+.jump { font-size: .82rem; color: var(--faint); margin: 1rem 0 0; }
+.appear a { color: var(--faint); }
+
+.kakomon .head { font-size: .82rem; color: var(--faint); line-height: 1.9; margin: 1rem 0 .4rem; }
+.roll { font-size: .78rem; color: var(--accent); border-bottom: 1px solid var(--rule); margin-left: .8rem; }
+.roll:hover { border-color: var(--accent); }
+.real + .real { margin-top: 1.2rem; }
+
+/* 過去問の選択肢。答えは押してから */
+.real ol li button { display: grid; grid-template-columns: 1.8em 1fr; gap: .3rem; width: 100%; text-align: left; padding: .2rem .3rem; border: 1px solid transparent; }
+.real ol li button:hover:enabled { border-color: var(--rule); background: var(--paper); }
+.real ol li button:disabled { cursor: default; }
+.real ol li.right button { color: var(--ink); }
+
+/* 図の部品。関係・時間・段・断面・分かれ道 */
+.icon { display: block; }
+.node .icon { margin-bottom: 2px; }
+
+.tl { list-style: none; margin: 0; padding: 0 0 0 .2rem; }
+.tl li { display: grid; grid-template-columns: 6.5em 1.4em 1fr; gap: .6rem; align-items: baseline; padding: .3rem 0; position: relative; }
+.tl li::before { content: ''; position: absolute; left: 7.3em; top: 1.5em; bottom: -.3rem; border-left: 1px solid var(--rule); }
+.tl li:last-child::before { display: none; }
+.tl .at { text-align: right; font-size: .78rem; color: var(--faint); font-variant-numeric: tabular-nums; }
+.tl .dot { text-align: center; font-size: .8rem; color: var(--faint); }
+.tl .m-ok .dot { color: #4a7a4a; } .tl .m-ng .dot { color: var(--accent); }
+.tl b { font-weight: 400; font-size: .9rem; }
+.tl small { display: block; color: var(--faint); font-size: .78rem; line-height: 1.7; }
+
+.tiers { border-collapse: collapse; font-size: .85rem; max-width: 46em; }
+.tiers th, .tiers td { border-bottom: 1px solid var(--rule); padding: .4rem .8rem .4rem 0; text-align: left; font-weight: 400; vertical-align: baseline; }
+.tiers thead th { font-size: .72rem; color: var(--faint); letter-spacing: .08em; }
+.tiers tbody th { color: var(--faint); white-space: nowrap; padding-right: 1.4rem; }
+.tiers td b { font-weight: 400; }
+.tiers td small { display: block; color: var(--faint); font-size: .78rem; }
+
+.section { width: 100%; max-width: 30rem; height: auto; }
+.section .dim { font-size: 8px; fill: var(--faint); font-family: inherit; }
+
+.branch .ask { font-size: .9rem; margin: 0 0 .6rem; }
+.branch .ways { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; max-width: 40em; }
+.way { border-left: 2px solid var(--rule); padding: .2rem 0 .2rem .8rem; }
+.way.yes { border-color: #4a7a4a; } .way.no { border-color: var(--accent); }
+.way b { display: block; font-weight: 400; font-size: .85rem; }
+.way span { font-size: .8rem; color: var(--faint); line-height: 1.7; }
+@media (max-width: 640px) { .branch .ways { grid-template-columns: 1fr; } }

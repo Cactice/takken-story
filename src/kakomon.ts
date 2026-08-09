@@ -54,20 +54,33 @@ const weighted = (parts: QueryPart[]) => {
   return m
 }
 
+/** 指しの一覧から本文を引く。読めなかったものは落とす */
+const loadAll = async (refs: string[]) =>
+  (await Promise.all(refs.map(fetchQuestion))).filter((q): q is Question => q != null)
+
 /**
- * イベントの文脈に一番近い過去問を1問だけ返す。
+ * イベントの文脈に近い過去問を、近い順に n 問返す。
  * ponytail: bigram の重なりを重み付きで足して長さで割るだけの素朴な採点。
  * 精度が要るようになったら TF-IDF なり埋め込みなりに差し替える。
  */
-export const pickClosest = async (parts: QueryPart[], refs: string[]): Promise<Question | null> => {
-  const all = (await Promise.all(refs.map(fetchQuestion))).filter((q): q is Question => q != null)
-  if (!all.length) return null
+export const pickClosest = async (parts: QueryPart[], refs: string[], n = 3): Promise<Question[]> => {
+  const all = await loadAll(refs)
   const q = weighted(parts)
   const score = (c: Question) => {
     const b = bigrams([c.body, ...c.choices].join(''))
     let hit = 0
-    for (const [g, w] of q) if (b.has(g)) hit += w
+    for (const g of b) hit += q.get(g) ?? 0
     return hit / Math.sqrt(b.size || 1) // 長い過去問が有利になりすぎないよう軽く割る
   }
-  return all.reduce((best, c) => (score(c) > score(best) ? c : best))
+  return all.map((c) => [score(c), c] as const).sort((a, b) => b[0] - a[0]).slice(0, n).map(([, c]) => c)
+}
+
+/** その論点から適当に n 問。転がすたびに違う組み合わせが出る */
+export const pickRandom = async (refs: string[], n = 3): Promise<Question[]> => {
+  const all = await loadAll(refs)
+  for (let i = all.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[all[i], all[j]] = [all[j], all[i]]
+  }
+  return all.slice(0, n)
 }

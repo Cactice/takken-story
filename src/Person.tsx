@@ -153,7 +153,9 @@ export function Person({ family, gender = 'male', age, seed = 0, size = 120, dim
   const headR = 9 * (1 + child * 0.2)
   const shoulderY = GROUND - 86
   const headY = shoulderY - headR * 1.6 // 首のぶん離す
-  const headX = CX + lean
+  // 腰が曲がると頭は肩より前へ出る。首はその間を斜めに渡す
+  const headX = CX + lean * 1.12
+  const neckX = CX + lean * 0.5
 
   // ---- 服 ----------------------------------------------------------------
   const sw = me.sw * (1 - old * 0.12) * (1 - child * 0.1)
@@ -394,8 +396,12 @@ export function Person({ family, gender = 'male', age, seed = 0, size = 120, dim
             <rect x={CX + 1.0} y={hemY - 2} width={4.2} height={GROUND - hemY + 2} />
           </g>
         )}
-        {/* 首 */}
-        <rect x={headX - 2.2} y={headY} width={4.4} height={shoulderY - headY + 2} fill={NECK} />
+        {/* 首。まっすぐ立てると、腰だけ曲がって見えて不自然になる */}
+        <path
+          d={`M ${neckX - 2.3} ${shoulderY + 2} L ${headX - 2.2} ${headY}
+              L ${headX + 2.2} ${headY} L ${neckX + 2.3} ${shoulderY + 2} Z`}
+          fill={NECK}
+        />
 
         {/* 袖。肩から外へ張り出す。丈は本人ぶん */}
         {me.sleeve > 0 && (() => {
@@ -478,8 +484,8 @@ export function Person({ family, gender = 'male', age, seed = 0, size = 120, dim
             <path strokeWidth={0.52} d={`M ${headX + me.eyeGap + 2.2} ${ey + 0.6} q 0.9 0.8 1.1 1.9`} />
             {wrinkle > 0.45 && (
               <>
-                <path strokeWidth={0.4} d={`M ${headX - 2.6} ${ey + 2.8} q -1.3 1.9 -1.1 3.4`} />
-                <path strokeWidth={0.4} d={`M ${headX + 2.6} ${ey + 2.8} q 1.3 1.9 1.1 3.4`} />
+                <path strokeWidth={0.38} d={`M ${headX - 3.4} ${ey + 3.2} q -0.7 1.4 -0.6 2.4`} />
+                <path strokeWidth={0.38} d={`M ${headX + 3.4} ${ey + 3.2} q 0.7 1.4 0.6 2.4`} />
               </>
             )}
           </g>
