@@ -256,12 +256,23 @@ function RealQ({ q }: { q: Question }) {
           const shown = chose != null
           return (
             <li key={i} className={shown && n === right ? 'right' : ''}>
-              <button onClick={() => setChose(n)} disabled={shown}>
+              {/* 中に用語ボタンが入るので button にはできない。入れ子の button は無効なHTML */}
+              <div
+                className="pick"
+                role="button"
+                tabIndex={shown ? -1 : 0}
+                aria-disabled={shown}
+                onClick={() => !shown && setChose(n)}
+                onKeyDown={(e) => {
+                  if (shown) return
+                  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setChose(n) }
+                }}
+              >
                 <span className="mark">
                   {!shown ? `${n}.` : right == null ? '—' : n === right ? '○' : '×'}
                 </span>
                 <span><Gloss>{c}</Gloss></span>
-              </button>
+              </div>
             </li>
           )
         })}

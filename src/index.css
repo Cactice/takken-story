@@ -220,10 +220,10 @@ a:hover { border-color: var(--accent); color: var(--accent); }
 .real + .real { margin-top: 1.2rem; }
 
 /* 過去問の選択肢。答えは押してから */
-.real ol li > button { display: grid; grid-template-columns: 1.8em 1fr; gap: .3rem; width: 100%; text-align: left; padding: .2rem .3rem; border: 1px solid transparent; }
-.real ol li > button:hover:enabled { border-color: var(--rule); background: var(--paper); }
-.real ol li > button:disabled { cursor: default; }
-.real ol li.right > button { color: var(--ink); }
+.real ol li > .pick { cursor: pointer; display: grid; grid-template-columns: 1.8em 1fr; gap: .3rem; width: 100%; text-align: left; padding: .2rem .3rem; border: 1px solid transparent; }
+.real ol li > .pick:not([aria-disabled='true']):hover { border-color: var(--rule); background: var(--paper); }
+.real ol li > .pick[aria-disabled='true'] { cursor: default; }
+.real ol li.right > .pick { color: var(--ink); }
 
 /* 図の部品。関係・時間・段・断面・分かれ道 */
 .icon { display: block; }
@@ -285,7 +285,7 @@ a:hover { border-color: var(--accent); color: var(--accent); }
   /* 押しやすさ。指の的は小さくしない */
   .events button, .gens button, .field h3 button { padding: .55rem .5rem; }
   .events button { grid-template-columns: 4.2em 2.8em 1fr; }
-  .quiz button, .choices button, .real ol li > button { min-height: 2.6rem; }
+  .quiz button, .choices button, .real ol li > .pick { cursor: pointer; min-height: 2.6rem; }
 
   /* 会話。顔と名前を上に、セリフを下に折る */
   .lines li { grid-template-columns: 2.6rem 1fr; gap: .3rem .6rem; }
