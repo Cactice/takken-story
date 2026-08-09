@@ -555,8 +555,8 @@
           { "x": 0.68, "w": 0.3, "h": 0.14, "label": "低地・三角州・埋立地", "type": "land" }
         ],
         "dims": [
-          { "from": 0.02, "to": 0.26, "label": "地盤が安定。宅地に向く", "at": "top" },
-          { "from": 0.68, "to": 0.98, "label": "軟弱・液状化・浸水", "at": "bottom" }
+          { "from": 0.02, "to": 0.26, "label": "安定。宅地に向く", "at": "top" },
+          { "from": 0.68, "to": 0.98, "label": "軟弱・液状化・浸水", "at": "top" }
         ],
         "note": "台地の上でも、谷や池沼を埋めた場所だけは別。水が集まり、地震で滑る。"
       },
@@ -767,14 +767,14 @@
         "caption": "お金の流れ。機構は真ん中にいて、端にはいない",
         "nodes": [
           { "kind": "person", "who": "suzuki-riku", "label": "家を買う人", "sub": "銀行から借りる" },
-          { "kind": "thing", "icon": "bank", "label": "民間の金融機関", "sub": "貸して、債権を機構に売る" },
-          { "kind": "thing", "icon": "shield", "label": "住宅金融支援機構", "sub": "債権を買い取る" },
+          { "kind": "thing", "icon": "bank", "label": "銀行", "sub": "貸す。窓口もここ" },
+          { "kind": "thing", "icon": "shield", "label": "機構", "sub": "債権を買い取る" },
           { "kind": "thing", "icon": "money", "label": "投資家", "sub": "MBSを買う" }
         ],
         "links": [
-          { "from": 0, "to": 1, "label": "借りる・返す" },
-          { "from": 1, "to": 2, "label": "貸付債権を売る" },
-          { "from": 2, "to": 3, "label": "MBSを発行して資金を調達" }
+          { "from": 0, "to": 1, "label": "借りる" },
+          { "from": 1, "to": 2, "label": "債権を売る" },
+          { "from": 2, "to": 3, "label": "MBSを発行" }
         ],
         "note": "窓口も、貸すのも銀行。金利を決めるのも銀行なので、同じ商品でも金融機関ごとに金利が違うことがある。"
       },
