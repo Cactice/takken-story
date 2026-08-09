@@ -379,3 +379,14 @@ a:hover { border-color: var(--accent); color: var(--accent); }
 .gentabs button small { font-size: .68rem; }
 .gentabs button.on { color: var(--ink); border-color: var(--accent); }
 .gentabs button:hover { color: var(--ink); }
+
+/* 出番の一覧。押すとその回へ飛ぶ */
+.appearlist { margin-top: .8rem; }
+.appearlist h5 { font-size: .72rem; font-weight: 400; color: var(--faint); letter-spacing: .1em; margin: 0 0 .3rem; }
+.appearlist ol { list-style: none; margin: 0; padding: 0; }
+.appearlist a { display: grid; grid-template-columns: 4.6em 3em 1fr; gap: .2rem .5rem; align-items: baseline; padding: .3rem .3rem; border: 0; border-bottom: 1px solid #eae5da; }
+.appearlist a:hover { background: var(--paper); color: inherit; }
+.appearlist time { font-size: .72rem; color: var(--faint); font-variant-numeric: tabular-nums; }
+.appearlist b { font-weight: 400; font-size: .85rem; }
+.appearlist small { grid-column: 3; font-size: .68rem; color: var(--faint); }
+@media (max-width: 820px) { .appearlist a { grid-template-columns: 4.4em 1fr; } .appearlist b { grid-column: 1 / -1; } }

@@ -121,7 +121,7 @@ export function Viewer() {
         </div>
       )}
 
-      {tab === 'cast' && <Cast pane={pane} close={() => setListOpen(false)} />}
+      {tab === 'cast' && <Cast pane={pane} close={() => setListOpen(false)} go={go} />}
       {tab === 'topics' && <Topics route={route} go={go} pane={pane} close={() => setListOpen(false)} />}
       {tab === 'gloss' && <Glossary go={go} />}
     </div>
@@ -347,7 +347,7 @@ function Kakomon(
   )
 }
 
-function Cast({ pane, close }: { pane: string; close: () => void }) {
+function Cast({ pane, close, go }: { pane: string; close: () => void; go: Go }) {
   const [open, setOpen] = useState<string | null>(null)
   const members = useMemo(() => {
     const m = new Map<string, typeof cast>()
@@ -385,14 +385,14 @@ function Cast({ pane, close }: { pane: string; close: () => void }) {
       </div>
       <aside className="pane">
         {person
-          ? <Detail c={person} />
+          ? <Detail c={person} go={go} />
           : <p className="lead">人を押すと、8歳から78歳までの姿と、その人のことが出る。</p>}
       </aside>
     </div>
   )
 }
 
-function Detail({ c }: { c: (typeof cast)[number] }) {
+function Detail({ c, go }: { c: (typeof cast)[number]; go: Go }) {
   const gen = c.appearsIn[0] ?? 1
   const year = generations.find((g) => g.gen === gen)?.startYear ?? 1015
   const age = ageAt(c, year)
@@ -420,10 +420,24 @@ function Detail({ c }: { c: (typeof cast)[number] }) {
         {v.smallTalk?.default && (
           <ul className="talk">{v.smallTalk.default.map((t, i) => <li key={i}>{t}</li>)}</ul>
         )}
-        <p className="appear">
-          出番 {appear.length}件
-          {appear.length > 0 && <>：{appear.map(({ g, e }) => `第${g}世代 ${e.title}`).join(' / ')}</>}
-        </p>
+        {appear.length > 0 && (
+          <div className="appearlist">
+            <h5>出番 {appear.length}件</h5>
+            <ol>
+              {appear.map(({ g, e }) => (
+                <li key={e.id}>
+                  <a href={linkTo('story', e.id)}
+                    onClick={(ev) => { ev.preventDefault(); go('story', e.id) }}>
+                    <time>{e.year}/{e.month}</time>
+                    <span className={`kind k-${e.kind}`}>{KIND_JA[e.kind] ?? e.kind}</span>
+                    <b>{e.title}</b>
+                    <small>第{g}世代</small>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
       </div>
     </div>
   )
