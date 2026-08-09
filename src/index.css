@@ -146,3 +146,9 @@ figcaption q { display: block; color: var(--faint); font-size: .7rem; margin-top
 .teach h4 { font-size: .72rem; font-weight: 400; color: var(--faint); letter-spacing: .1em; margin: 0 0 .3rem; }
 .teach p { font-size: .85rem; line-height: 1.9; margin: 0 0 .2rem; color: var(--faint); }
 .lines.after { margin-top: 1rem; }
+
+.real ol { list-style: none; padding-left: 0; }
+.real ol li { display: grid; grid-template-columns: 1.6em 1fr; gap: .3rem; padding: .15rem 0; }
+.real ol li.right { color: var(--ink); }
+.real .mark { text-align: center; }
+.real ol li.right .mark { color: var(--accent); }

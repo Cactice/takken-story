@@ -216,9 +216,20 @@ function Kakomon(
       {item ? (
         <div className="real">
           <b>{item.ref}</b>
-          <p className="note">出典のみ。過去問データに正解は入っていないので、答えは出せません。</p>
           <p>{item.body}</p>
-          <ol>{item.choices.map((c, i) => <li key={i}>{c}</li>)}</ol>
+          <ol>
+            {item.choices.map((c, i) => (
+              <li key={i} className={item.answer === i + 1 ? 'right' : ''}>
+                <span className="mark">{item.answer == null ? '' : item.answer === i + 1 ? '○' : '×'}</span>
+                {c}
+              </li>
+            ))}
+          </ol>
+          <p className="note">
+            {item.answer == null
+              ? 'この年の正解番号はまだ取り込めていません。'
+              : `正解は ${item.answer} 番（出題元が公表している正解番号表より）。`}
+          </p>
         </div>
       ) : done && <p className="todo">本文は kakomon/json/ にあるときだけ出る（開発サーバのみ）。</p>}
     </section>

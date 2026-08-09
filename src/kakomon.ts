@@ -1,6 +1,9 @@
 // 過去問の本文は kakomon/json/(gitignore)にある。開発サーバでだけ読む。
 // 本番ビルドには入らない。リポジトリにも入らない。
-type Exam = { year: string; questions: { no: number; body: string; choices: string[] }[] }
+type Exam = {
+  year: string
+  questions: { no: number; body: string; choices: string[]; answer?: number | null }[]
+}
 
 const files = import.meta.env.DEV
   ? import.meta.glob<{ default: Exam }>('../kakomon/json/*.json')
