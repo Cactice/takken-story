@@ -342,7 +342,7 @@ function Kakomon(
       </p>
       {items.length ? items.map((item) => (
         <RealQ key={item.ref} q={item} />
-      )) : done && <p className="todo">本文は kakomon/json/ にあるときだけ出る（開発サーバのみ）。</p>}
+      )) : done && <p className="todo">この論点の過去問は、手元に本文が無いので出せません。</p>}
     </section>
   )
 }

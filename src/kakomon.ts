@@ -1,13 +1,12 @@
-// 過去問の本文は kakomon/json/(gitignore)にある。開発サーバでだけ読む。
-// 本番ビルドには入らない。リポジトリにも入らない。
+// 過去問の本文は public/kakomon/(gitignore)に置く。
+// リポジトリには入れないので、CIが作る配信物にも入らない。
+// 手元にファイルがあれば読めるし、無ければ静かに諦める。
 type Exam = {
   year: string
   questions: { no: number; body: string; choices: string[]; answer?: number | null }[]
 }
 
-const files = import.meta.env.DEV
-  ? import.meta.glob<{ default: Exam }>('../kakomon/json/*.json')
-  : {}
+const BASE = import.meta.env.BASE_URL
 
 /** 「令和2年10月問18」→ { file: 'R02-10', no: 18 } */
 export const parseRef = (s: string) => {
@@ -21,8 +20,12 @@ export const parseRef = (s: string) => {
 const cache = new Map<string, Promise<Exam | null>>()
 const load = (name: string) => {
   if (!cache.has(name)) {
-    const key = Object.keys(files).find((k) => k.endsWith(`/${name}.json`))
-    cache.set(name, key ? files[key]().then((m) => m.default) : Promise.resolve(null))
+    cache.set(
+      name,
+      fetch(`${BASE}kakomon/${name}.json`)
+        .then((r) => (r.ok ? (r.json() as Promise<Exam>) : null))
+        .catch(() => null),
+    )
   }
   return cache.get(name)!
 }

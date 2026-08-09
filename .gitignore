@@ -23,5 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# 過去問PDF(著作権があるので配布しない。傾向分析にだけ使う)
-kakomon/
+
+# 過去問の本文(著作権があるので配布しない)
+public/kakomon/
