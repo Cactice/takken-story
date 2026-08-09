@@ -511,21 +511,21 @@
     "title": "安すぎる土地",
     "topicId": "hourei-toshikeikaku",
     "cast": [
-      "kishiwada-yachin",
+      "kishiwada-potton",
       "suzuki-pink",
       "shu-4"
     ],
     "lines": [
       {
-        "who": "kishiwada-yachin",
+        "who": "kishiwada-potton",
         "text": "岸和田です。村のアパート2棟を売った金を持ってきました。"
       },
       {
-        "who": "kishiwada-yachin",
+        "who": "kishiwada-potton",
         "text": "市の外れに驚くほど安い土地があるんです。周りは畑ばかりで建物が無い。"
       },
       {
-        "who": "kishiwada-yachin",
+        "who": "kishiwada-potton",
         "text": "安いのはいいことでしょう。買い占めます。"
       },
       {
@@ -544,11 +544,11 @@
       }
     ],
     "thanks": {
-      "who": "kishiwada-yachin",
+      "who": "kishiwada-potton",
       "text": "危ないところでした。……村を出た金です。無駄にはできない。"
     },
     "later": {
-      "who": "kishiwada-yachin",
+      "who": "kishiwada-potton",
       "text": "駅前の雑居ビルにしました。人がいる場所でやれと、祖父の話にありましたので。"
     },
     "quiz": {
@@ -699,18 +699,18 @@
     "title": "出ていけと言えない大家",
     "topicId": "shakka",
     "cast": [
-      "kishiwada-yachin",
+      "kishiwada-potton",
       "suzuki-pink",
       "umizawa-cecil",
       "shu-4"
     ],
     "lines": [
       {
-        "who": "kishiwada-yachin",
+        "who": "kishiwada-potton",
         "text": "区画整理で建て替えたいんです。でもテナントが出ていかない。"
       },
       {
-        "who": "kishiwada-yachin",
+        "who": "kishiwada-potton",
         "text": "来月出てくれと言ったら、笑われました。……村では追い出される側を見てきたのに。"
       },
       {
@@ -733,7 +733,7 @@
       }
     ],
     "thanks": {
-      "who": "kishiwada-yachin",
+      "who": "kishiwada-potton",
       "text": "……立退料ですか。売ったほうが早いですね。"
     },
     "later": {
