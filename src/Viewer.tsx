@@ -56,7 +56,7 @@ export function Viewer() {
         <nav>
           {(['story', 'cast', 'topics'] as Tab[]).map((t) => (
             <button key={t} className={tab === t ? 'on' : ''} onClick={() => go(t)}>
-              {{ story: '物語', cast: '家系と人物', topics: '論点' }[t]}
+              {{ story: '物語', cast: 'キャラクター', topics: '論点' }[t]}
             </button>
           ))}
         </nav>
