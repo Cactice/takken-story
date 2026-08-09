@@ -220,10 +220,10 @@ a:hover { border-color: var(--accent); color: var(--accent); }
 .real + .real { margin-top: 1.2rem; }
 
 /* 過去問の選択肢。答えは押してから */
-.real ol li button { display: grid; grid-template-columns: 1.8em 1fr; gap: .3rem; width: 100%; text-align: left; padding: .2rem .3rem; border: 1px solid transparent; }
-.real ol li button:hover:enabled { border-color: var(--rule); background: var(--paper); }
-.real ol li button:disabled { cursor: default; }
-.real ol li.right button { color: var(--ink); }
+.real ol li > button { display: grid; grid-template-columns: 1.8em 1fr; gap: .3rem; width: 100%; text-align: left; padding: .2rem .3rem; border: 1px solid transparent; }
+.real ol li > button:hover:enabled { border-color: var(--rule); background: var(--paper); }
+.real ol li > button:disabled { cursor: default; }
+.real ol li.right > button { color: var(--ink); }
 
 /* 図の部品。関係・時間・段・断面・分かれ道 */
 .icon { display: block; }
@@ -285,7 +285,7 @@ a:hover { border-color: var(--accent); color: var(--accent); }
   /* 押しやすさ。指の的は小さくしない */
   .events button, .gens button, .field h3 button { padding: .55rem .5rem; }
   .events button { grid-template-columns: 4.2em 2.8em 1fr; }
-  .quiz button, .choices button, .real ol li button { min-height: 2.6rem; }
+  .quiz button, .choices button, .real ol li > button { min-height: 2.6rem; }
 
   /* 会話。顔と名前を上に、セリフを下に折る */
   .lines li { grid-template-columns: 2.6rem 1fr; gap: .3rem .6rem; }
@@ -326,3 +326,19 @@ a:hover { border-color: var(--accent); color: var(--accent); }
   .lines li.figrow { padding-left: 0; }
   .advice { padding: 1.3rem .8rem .8rem; }
 }
+
+/* 用語。押すと意味が出る */
+.gloss { border-bottom: 1px dotted var(--faint); padding: 0; font: inherit; color: inherit; }
+.gloss:hover { border-bottom-style: solid; border-color: var(--accent); color: var(--accent); }
+/* 意味は、その語のすぐ下に小さく浮かせる。離れたところに出すと、どの語の話か分からない */
+.glosswrap { position: relative; display: inline-block; }
+.pop {
+  position: absolute; top: 100%; left: 0; z-index: 20; margin-top: .3rem;
+  min-width: 15em; max-width: min(24em, 78vw);
+  background: #fffdf8; border: 1px solid var(--rule); border-top: 2px solid var(--accent);
+  box-shadow: 0 4px 14px rgba(40, 34, 24, .12);
+  padding: .5rem 1.7rem .5rem .7rem; font-size: .8rem; line-height: 1.75; color: var(--ink);
+  text-align: left; white-space: normal; font-weight: 400;
+}
+.pop b { display: block; font-weight: 400; color: var(--accent); font-size: .78rem; margin-bottom: .15rem; }
+.pop .close { position: absolute; top: .1rem; right: .3rem; color: var(--faint); font-size: .9rem; padding: .1rem .2rem; }

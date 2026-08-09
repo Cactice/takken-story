@@ -4,6 +4,7 @@ import {
   foreshadow, generations, topicList, topicOf, type Line, type StoryEvent,
 } from './story'
 import { Person } from './Person'
+import { Gloss } from './Gloss'
 import { Lesson, Figure } from './Lesson'
 import { lessonOf } from './lessons'
 import { pickClosest, pickRandom, type Question, type QueryPart } from './kakomon'
@@ -248,7 +249,7 @@ function RealQ({ q }: { q: Question }) {
   return (
     <div className="real">
       <b>{q.ref}</b>
-      <p>{q.body}</p>
+      <p><Gloss>{q.body}</Gloss></p>
       <ol>
         {q.choices.map((c, i) => {
           const n = i + 1
@@ -259,7 +260,7 @@ function RealQ({ q }: { q: Question }) {
                 <span className="mark">
                   {!shown ? `${n}.` : right == null ? '—' : n === right ? '○' : '×'}
                 </span>
-                {c}
+                <span><Gloss>{c}</Gloss></span>
               </button>
             </li>
           )
