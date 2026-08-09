@@ -10,8 +10,25 @@ import { pickClosest, type Question, type QueryPart } from './kakomon'
 
 type Tab = 'story' | 'cast' | 'topics'
 
+// URL でも行き来できるようにする。ルータは要らない。パスを見て出し分けるだけ
+const BASE = import.meta.env.BASE_URL
+const PATH: Record<Tab, string> = { story: '', cast: 'jinbutsu', topics: 'ronten' }
+const tabOf = (p: string): Tab => {
+  const rest = p.replace(BASE, '').replace(/^\/|\/$/g, '')
+  return (Object.keys(PATH) as Tab[]).find((t) => PATH[t] === rest) ?? 'story'
+}
+
 export function Viewer() {
-  const [tab, setTab] = useState<Tab>('story')
+  const [tab, setTabState] = useState<Tab>(() => tabOf(window.location.pathname))
+  const setTab = (t: Tab) => {
+    setTabState(t)
+    window.history.pushState(null, '', BASE + PATH[t])
+  }
+  useEffect(() => {
+    const back = () => setTabState(tabOf(window.location.pathname))
+    window.addEventListener('popstate', back)
+    return () => window.removeEventListener('popstate', back)
+  }, [])
   const [gen, setGen] = useState(1)
   const [pick, setPick] = useState(0)
 
@@ -246,35 +263,47 @@ function Cast() {
     for (const [, cs] of m) cs.sort((a, b) => (a.birthYear ?? 0) - (b.birthYear ?? 0))
     return m
   }, [])
+  const person = cast.find((c) => c.id === open)
+  const fam = familyList.find((f) => f.id === (person?.family ?? open))
 
   return (
-    <div className="families">
-      {familyList.map((f) => (
-        <section key={f.id}>
-          <h3>
-            <span className="sw" style={{ background: f.cloth.base, borderColor: f.cloth.accent }} />
-            {f.id}家 <small>{f.cloth.why}</small>
-          </h3>
-          <p>{f.story.replace(/\*\*/g, '')}</p>
-          {f.movement.map((mv, i) => (
-            <p key={i} className="move"><b>{mv.type}</b> — {mv.who}{mv.note ? `：${mv.note}` : ''}</p>
-          ))}
-          <div className="grid">
-            {(members.get(f.id) ?? []).map((c, i) => (
-              <figure key={c.id} className={open === c.id ? 'on' : ''}>
-                <button onClick={() => setOpen(open === c.id ? null : c.id)}>
-                  <Person id={c.id} family={c.family} gender={c.gender} age={30} seed={i * 1.7} size={104} />
-                  <figcaption>
+    <div className="split">
+      <aside>
+        {familyList.map((f) => (
+          <div key={f.id} className="field">
+            <h3>
+              <button className={!person && open === f.id ? 'on' : ''} onClick={() => setOpen(f.id)}>
+                <span className="sw" style={{ background: f.cloth.base, borderColor: f.cloth.accent }} />
+                {f.id}家<small>{f.cloth.why}</small>
+              </button>
+            </h3>
+            <ol className="events">
+              {(members.get(f.id) ?? []).map((c) => (
+                <li key={c.id}>
+                  <button className={open === c.id ? 'on' : ''} onClick={() => setOpen(c.id)}>
                     <b>{c.name}</b>
-                    <small>{c.birthYear}年生 ／ 第{c.appearsIn.join('・')}世代</small>
-                  </figcaption>
-                </button>
-              </figure>
-            ))}
+                    <time>{c.birthYear}</time>
+                  </button>
+                </li>
+              ))}
+            </ol>
           </div>
-          {(members.get(f.id) ?? []).filter((c) => c.id === open).map((c) => <Detail key={c.id} c={c} />)}
-        </section>
-      ))}
+        ))}
+      </aside>
+      <main>
+        {fam && (
+          <section className="genhead">
+            <h2>
+              <span className="sw" style={{ background: fam.cloth.base, borderColor: fam.cloth.accent }} />
+              {fam.id}家 <small>{fam.cloth.why}</small>
+            </h2>
+            <p className="synopsis">{fam.story.replace(/\*\*/g, '')}</p>
+          </section>
+        )}
+        {person ? <Detail c={person} /> : !fam && (
+          <p className="lead">家か人を選ぶと、家の物語と、その人の姿が出る。</p>
+        )}
+      </main>
     </div>
   )
 }
@@ -318,43 +347,62 @@ function Detail({ c }: { c: (typeof cast)[number] }) {
 
 function Topics() {
   const [open, setOpen] = useState<string | null>(null)
-  const sorted = [...topicList].sort((a, b) => b.kakomonCount - a.kakomonCount)
+  const FIELD: Record<string, string> = {
+    kenri: '権利関係', gyoho: '宅建業法', hourei: '法令上の制限', zeikin: '税・その他',
+  }
+  const order = ['kenri', 'gyoho', 'hourei', 'zeikin']
+  const sorted = [...topicList].sort(
+    (a, b) => order.indexOf(a.field) - order.indexOf(b.field) || b.kakomonCount - a.kakomonCount,
+  )
   const used = new Map<string, string[]>()
   for (const [g, evs] of Object.entries(eventsOf)) {
     for (const e of evs) {
       if (e.topicId) used.set(e.topicId, [...(used.get(e.topicId) ?? []), `第${g}世代 ${e.title}`])
     }
   }
-  const FIELD: Record<string, string> = {
-    kenri: '権利関係', gyoho: '宅建業法', hourei: '法令上の制限', zeikin: '税・その他',
-  }
+  const cur = sorted.find((t) => t.id === open)
+  const lesson = cur ? lessonOf.get(cur.id) : null
+
   return (
-    <div className="topics">
-      <p className="lead">
-        論点を押すと、住人を借りた図解が出る。<b>ここを全部読めば、過去問はだいたい解ける。</b>
-      </p>
-      {sorted.map((t) => {
-        const lesson = lessonOf.get(t.id)
-        const on = open === t.id
-        return (
-          <section key={t.id} className={on ? 'row on' : 'row'}>
-            <button onClick={() => setOpen(on ? null : t.id)} disabled={!lesson}>
-              <b>{t.name}</b>
-              <small>{FIELD[t.field] ?? t.field} ／ 15年で {t.kakomonCount}問</small>
-              <code>{t.id}</code>
-              {!lesson && <em>解説はまだ</em>}
-            </button>
-            {on && lesson && (
-              <>
-                <Lesson data={lesson} />
-                {used.get(t.id) && (
-                  <p className="appear">出てくる回：{used.get(t.id)!.join(' / ')}</p>
-                )}
-              </>
-            )}
-          </section>
-        )
-      })}
+    <div className="split">
+      <aside>
+        {order.map((f) => {
+          const list = sorted.filter((t) => t.field === f)
+          if (!list.length) return null
+          return (
+            <div key={f} className="field">
+              <h3>{FIELD[f]}<small>{list.reduce((n, t) => n + t.kakomonCount, 0)}問</small></h3>
+              <ol className="events">
+                {list.map((t) => (
+                  <li key={t.id}>
+                    <button className={open === t.id ? 'on' : ''} onClick={() => setOpen(t.id)}>
+                      <b>{t.name}</b>
+                      <time>{t.kakomonCount}</time>
+                      {!lessonOf.get(t.id) && <em>解説なし</em>}
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )
+        })}
+      </aside>
+      <main>
+        {!cur ? (
+          <p className="lead">
+            論点を選ぶと、住人を借りた図解が出る。<b>ここを全部読めば、過去問はだいたい解ける。</b>
+          </p>
+        ) : (
+          <article className="scene">
+            <h3>{cur.name}</h3>
+            <p className="facts">
+              {FIELD[cur.field]} ／ 15年で {cur.kakomonCount}問 ／ <code>{cur.id}</code>
+            </p>
+            {lesson ? <Lesson data={lesson} /> : <p className="todo">この論点の解説はまだ書けていない。</p>}
+            {used.get(cur.id) && <p className="appear">出てくる回：{used.get(cur.id)!.join(' / ')}</p>}
+          </article>
+        )}
+      </main>
     </div>
   )
 }

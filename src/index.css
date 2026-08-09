@@ -128,8 +128,8 @@ figcaption q { display: block; color: var(--faint); font-size: .7rem; margin-top
 .families .move { font-size: .78rem; color: var(--faint); margin: .2rem 0; }
 .grid figure button { display: block; padding: 0; width: 100%; }
 .grid figure.on { background: #fff; }
-.detail { display: grid; grid-template-columns: auto 1fr; gap: 1.6rem; align-items: start; background: #fff; padding: 1.2rem 1.4rem; margin-top: .8rem; }
-.detail .ages { display: flex; align-items: flex-end; gap: .2rem; }
+.detail { background: #fff; padding: 1.2rem 1.4rem; margin-top: .8rem; }
+.detail .ages { display: flex; align-items: flex-end; gap: .4rem; margin-bottom: 1rem; }
 .detail h4 { font-size: 1.05rem; font-weight: 400; margin: 0 0 .4rem; }
 .detail h4 small { color: var(--faint); font-size: .75rem; margin-left: .8rem; }
 .detail .cp { display: block; color: var(--accent); font-size: .9rem; margin-bottom: .6rem; }
@@ -183,3 +183,15 @@ figcaption q { display: block; color: var(--faint); font-size: .7rem; margin-top
 .lesson .traps li { color: var(--accent); }
 .lesson .appear { font-size: .78rem; color: var(--faint); padding: 0 1rem 1rem; }
 @media (max-width: 780px) { .lesson .cols { grid-template-columns: 1fr; } }
+
+.field { margin-bottom: 1.2rem; }
+.field h3 { font-size: .78rem; font-weight: 400; color: var(--faint); letter-spacing: .1em; margin: 0 0 .3rem; padding: 0 .4rem; }
+.field h3 small { margin-left: .5rem; opacity: .8; }
+.field .events button { grid-template-columns: 1fr 2.4em; }
+.field .events b { font-size: .85rem; }
+.field .events time { text-align: right; }
+.field .events em { grid-column: 1; font-size: .68rem; color: var(--accent); font-style: normal; }
+
+.field h3 button { display: inline; text-align: left; color: var(--faint); }
+.field h3 button.on { color: var(--ink); }
+.genhead h2 .sw { vertical-align: 0; }
