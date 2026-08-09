@@ -2,11 +2,11 @@ import world from '../story/world.json'
 import families from '../story/families.json'
 import characters from '../story/characters.json'
 import topics from '../story/topics.json'
-import gen1 from '../story/gen1.json'
-import gen2 from '../story/gen2.json'
-import gen3 from '../story/gen3.json'
-import gen4 from '../story/gen4.json'
-import gen5 from '../story/gen5.json'
+import gen1 from '../story/events/gen1.json'
+import gen2 from '../story/events/gen2.json'
+import gen3 from '../story/events/gen3.json'
+import gen4 from '../story/events/gen4.json'
+import gen5 from '../story/events/gen5.json'
 
 export type Hair = {
   strands: number; length: number; part: number; spread: number
@@ -26,7 +26,7 @@ export type Character = {
   catchphrase?: string; smallTalk?: Record<string, string[]>
   byAge?: { from: number; personality?: string; catchphrase?: string; job?: string }[]
 }
-export type Line = { who: string; text: string }
+export type Line = { who: string; text: string; role?: 'teach' }
 export type StoryEvent = {
   id: string; year: number; month: number; kind: string; title: string
   topicId: string | null; cast: string[]; lines: Line[]

@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
   KIND_JA, ageAt, atAge, cast, castOf, eventsOf, familyList,
-  foreshadow, generations, topicList, topicOf, type StoryEvent,
+  foreshadow, generations, topicList, topicOf, type Line, type StoryEvent,
 } from './story'
 import { Person } from './Person'
-import { fetchQuestion } from './kakomon'
+import { pickClosest, type Question, type QueryPart } from './kakomon'
 
 type Tab = 'story' | 'cast' | 'topics'
 
@@ -93,72 +93,134 @@ function GenHead({ gen }: { gen: number }) {
 
 function Scene({ ev }: { ev: StoryEvent }) {
   const topic = ev.topicId ? topicOf.get(ev.topicId) : null
-  const stage = ev.cast.filter((id) => castOf.has(id))
-  const lines = [...ev.lines, ...(ev.thanks ? [ev.thanks] : []), ...(ev.later ? [ev.later] : [])]
+  // 芝居と説明を混ぜない。混ぜると場面が長くなって、間延びして読める
+  const drama = ev.lines.filter((l) => l.role !== 'teach')
+  const teach = ev.lines.filter((l) => l.role === 'teach')
+
+  const Row = ({ l, i, prev }: { l: Line; i: number; prev?: Line }) => {
+    const c = castOf.get(l.who)
+    const same = prev?.who === l.who
+    return (
+      <li className={same ? 'same' : ''}>
+        <span className="face">
+          {!same && <Person id={c?.id} family={c?.family} gender={c?.gender} age={ageAt(c, ev.year)} seed={i} size={44} head />}
+        </span>
+        <span className="who">{same ? '' : c?.name ?? l.who}</span>
+        <p>{l.text}</p>
+      </li>
+    )
+  }
+
   return (
     <article className="scene">
       <h3><time>{ev.year}/{ev.month}</time> {ev.title}</h3>
-      <div className="stage">
-        {stage.map((id, i) => {
-          const c = castOf.get(id)!
-          const age = ageAt(c, ev.year)
-          return (
-            <figure key={id}>
-              <Person family={c.family} gender={c.gender} age={age} seed={i * 2.1} size={100} />
-              <figcaption>{c.name}<small>{age != null ? `${age}歳` : ''}</small></figcaption>
-            </figure>
-          )
-        })}
-      </div>
       <ol className="lines">
-        {lines.map((l, i) => (
-          <li key={i}>
-            <span className="who">{castOf.get(l.who)?.name ?? l.who}</span>
-            <p>{l.text}</p>
-          </li>
-        ))}
+        {drama.map((l, i) => <Row key={i} l={l} i={i} prev={drama[i - 1]} />)}
       </ol>
-      {ev.quiz ? <Quiz quiz={ev.quiz} /> : <p className="todo">この回はまだ問題ができていない。</p>}
-      {topic && <Kakomon topic={topic} />}
+      {teach.length > 0 && (
+        <aside className="teach">
+          <h4>あなたが説明する</h4>
+          {teach.map((l, i) => <p key={i}>{l.text}</p>)}
+        </aside>
+      )}
+      {(ev.thanks || ev.later) && (
+        <ol className="lines after">
+          {ev.thanks && <Row l={ev.thanks} i={90} />}
+          {ev.later && <Row l={ev.later} i={91} />}
+        </ol>
+      )}
+      {/* key にイベントidを渡して、別のイベントへ移ったら選択状態を捨てる */}
+      {/* key は兄弟どうしで重複させない（同じ値だとReactが別物と見なせず要素が積み上がる） */}
+      {ev.quiz ? <Quiz key={`q-${ev.id}`} quiz={ev.quiz} /> : <p className="todo">この回はまだ問題ができていない。</p>}
+      {topic && <Kakomon key={`k-${ev.id}`} topic={topic} query={queryOf(ev, topic.name)} />}
     </article>
   )
 }
 
 function Quiz({ quiz }: { quiz: NonNullable<StoryEvent['quiz']> }) {
+  // picked = まだ押していない状態は null。押したら答え合わせと解説を出す。
+  const [picked, setPicked] = useState<number | null>(null)
   const [open, setOpen] = useState(false)
+  const done = picked != null
+  const shown = done || open
+
   return (
     <section className="quiz">
       <p className="q">{quiz.question}</p>
-      <ol className="choices">
-        {quiz.choices?.map((c, i) => (
-          <li key={i} className={open && i === quiz.answer ? 'right' : ''}>{c}</li>
-        ))}
-      </ol>
-      <button onClick={() => setOpen(!open)}>{open ? '閉じる' : '答えと解説'}</button>
-      {open && <p className="ex">{quiz.explanation}</p>}
+      {quiz.choices?.length ? (
+        <>
+        {!done && <p className="hint">選択肢を押すと ○× と解説が出ます。</p>}
+        <ol className="choices">
+          {quiz.choices.map((c, i) => {
+            const right = i === quiz.answer
+            return (
+              <li key={i} className={[done && (right ? 'right' : 'wrong'), picked === i && 'picked']
+                .filter(Boolean).join(' ')}>
+                <button onClick={() => setPicked(i)} disabled={done} aria-pressed={picked === i}>
+                  {/* 押す前は番号、押したあとは ○×。色ではなく記号で伝える */}
+                  <span className="mark">{done ? (right ? '○' : '×') : `${i + 1}.`}</span>
+                  <span>{c}</span>
+                  {done && <span className="sr">{right ? '正解' : '不正解'}</span>}
+                </button>
+              </li>
+            )
+          })}
+        </ol>
+        </>
+      ) : null}
+
+      {done && (
+        <p className="verdict">
+          {picked === quiz.answer ? '○ 正解' : `× 不正解 ── 正しいのは ${(quiz.answer ?? 0) + 1} 番`}
+        </p>
+      )}
+      {!quiz.choices?.length && (
+        <button onClick={() => setOpen(!open)}>{open ? '閉じる' : '答えと解説'}</button>
+      )}
+      {done && <button onClick={() => setPicked(null)}>選び直す</button>}
+      {shown && <p className="ex">{quiz.explanation}</p>}
     </section>
   )
 }
 
-function Kakomon({ topic }: { topic: { id: string; name: string; kakomonCount: number; kakomon: string[] } }) {
-  const [items, setItems] = useState<{ ref: string; body: string; choices: string[] }[]>([])
-  const [open, setOpen] = useState(false)
+/** 近さを測るための検索文。問題文を厚めに、セリフや題・論点名も混ぜる。 */
+const queryOf = (ev: StoryEvent, topicName: string): QueryPart[] => [
+  [ev.quiz?.question ?? '', 2],
+  [ev.quiz?.choices?.join('') ?? '', 1],
+  [ev.title, 1],
+  [ev.lines.map((l) => l.text).join(''), 1],
+  [topicName, 1],
+]
+
+function Kakomon(
+  { topic, query }:
+  { topic: { id: string; name: string; kakomonCount: number; kakomon: string[] }; query: QueryPart[] },
+) {
+  const [item, setItem] = useState<Question | null>(null)
+  const [done, setDone] = useState(false)
   useEffect(() => {
-    if (!open) return
-    Promise.all(topic.kakomon.slice(0, 3).map(fetchQuestion)).then((r) => setItems(r.filter(Boolean) as never))
-  }, [open, topic])
+    let alive = true
+    // 候補を全部読んでから、イベントの文脈に一番近い1問だけ選ぶ
+    pickClosest(query, topic.kakomon).then((q) => { if (alive) { setItem(q); setDone(true) } })
+    return () => { alive = false }
+    // query は毎回新しい配列になるので、イベントが変われば作り直される key に任せる
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topic])
   return (
     <section className="kakomon">
-      <button onClick={() => setOpen(!open)}>
-        論点 <code>{topic.id}</code>（{topic.name}）— 15年で {topic.kakomonCount}問
-      </button>
-      {open && (items.length ? items.map((q) => (
-        <div key={q.ref} className="real">
-          <b>{q.ref}</b>
-          <p>{q.body}</p>
-          <ol>{q.choices.map((c, i) => <li key={i}>{c}</li>)}</ol>
+      <p className="head">
+        論点 <code>{topic.id}</code>（{topic.name}）
+        <br />
+        この論点は過去15年で {topic.kakomonCount}問。いちばん近いのはこれです。
+      </p>
+      {item ? (
+        <div className="real">
+          <b>{item.ref}</b>
+          <p className="note">出典のみ。過去問データに正解は入っていないので、答えは出せません。</p>
+          <p>{item.body}</p>
+          <ol>{item.choices.map((c, i) => <li key={i}>{c}</li>)}</ol>
         </div>
-      )) : <p className="todo">本文は kakomon/json/ にあるときだけ出る（開発サーバのみ）。</p>)}
+      ) : done && <p className="todo">本文は kakomon/json/ にあるときだけ出る（開発サーバのみ）。</p>}
     </section>
   )
 }
@@ -188,7 +250,7 @@ function Cast() {
             {(members.get(f.id) ?? []).map((c, i) => (
               <figure key={c.id} className={open === c.id ? 'on' : ''}>
                 <button onClick={() => setOpen(open === c.id ? null : c.id)}>
-                  <Person family={c.family} gender={c.gender} age={30} seed={i * 1.7} size={104} />
+                  <Person id={c.id} family={c.family} gender={c.gender} age={30} seed={i * 1.7} size={104} />
                   <figcaption>
                     <b>{c.name}</b>
                     <small>{c.birthYear}年生 ／ 第{c.appearsIn.join('・')}世代</small>
@@ -216,7 +278,7 @@ function Detail({ c }: { c: (typeof cast)[number] }) {
       <div className="ages">
         {[8, 20, 45, 78].map((a) => (
           <figure key={a}>
-            <Person family={c.family} gender={c.gender} age={a} seed={a / 7} size={110} />
+            <Person id={c.id} family={c.family} gender={c.gender} age={a} seed={a / 7} size={110} />
             <figcaption><small>{a}歳</small></figcaption>
           </figure>
         ))}

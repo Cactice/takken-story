@@ -52,7 +52,6 @@ aside { position: sticky; top: var(--space); max-height: 90vh; overflow: auto; }
 .scene h3 { font-size: 1.35rem; font-weight: 400; margin: 0 0 1rem; }
 .scene h3 time { font-size: .8rem; color: var(--faint); margin-right: .8rem; font-variant-numeric: tabular-nums; }
 
-.stage { display: flex; flex-wrap: wrap; gap: 1.2rem; align-items: flex-end; }
 .stage figure, .grid figure, .pair { margin: 0; }
 figcaption { text-align: center; font-size: .78rem; line-height: 1.5; }
 figcaption small { display: block; color: var(--faint); font-size: .7rem; }
@@ -60,23 +59,52 @@ figcaption q { display: block; color: var(--faint); font-size: .7rem; margin-top
 .person { display: block; }
 .person.dim { opacity: .35; }
 
-.lines { list-style: none; margin: 1.4rem 0; padding: 0; max-width: 46em; }
-.lines li { display: grid; grid-template-columns: 7em 1fr; gap: 1rem; padding: .35rem 0; }
-.lines .who { color: var(--faint); font-size: .8rem; text-align: right; }
-.lines p { margin: 0; line-height: 1.85; }
+.lines { list-style: none; margin: 1.4rem 0; padding: 0; max-width: 52em; }
+.lines li { display: grid; grid-template-columns: 2.9rem 6.5em 1fr; gap: .5rem 1rem; align-items: end; padding: .3rem 0 0; }
+.lines li.same { padding-top: 0; }
+.lines .face { display: block; height: 44px; }
+.lines li.same .face { height: 0; }
+.lines .who { color: var(--faint); font-size: .8rem; text-align: right; align-self: end; }
+.lines p { margin: 0; line-height: 1.75; }
 
 .quiz { background: #fff; padding: 1rem 1.2rem; max-width: 46em; }
 .quiz .q { margin: 0 0 .6rem; }
-.choices { margin: 0 0 .6rem; padding-left: 1.4rem; font-size: .9rem; line-height: 1.8; }
-.choices .right { color: var(--accent); }
-.quiz button, .kakomon > button { font-size: .8rem; color: var(--faint); border-bottom: 1px solid var(--rule); }
+.choices { list-style: none; margin: 0 0 .6rem; padding: 0; font-size: .9rem; line-height: 1.8; }
+.choices li + li { margin-top: .2rem; }
+/* 選択肢そのものを押せるようにする。○×は記号で出すので色だけに頼らない。 */
+.choices button {
+  display: grid; grid-template-columns: 1.6em 1fr; gap: .4rem;
+  width: 100%; text-align: left; align-items: baseline;
+  padding: .3rem .5rem; border: 1px solid transparent;
+}
+.choices button:not(:disabled) { border-color: var(--rule); }
+.choices button:not(:disabled):hover { background: var(--paper); border-color: var(--faint); }
+.choices button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.choices button:disabled { cursor: default; }
+.choices .mark { font-size: 1.1em; line-height: 1; text-align: center; color: var(--faint); }
+.choices .right .mark { color: var(--accent); }
+.choices .right button { background: var(--paper); }
+.choices .wrong button { color: var(--faint); }
+.choices .picked button { border-color: var(--rule); border-left-width: 3px; }
+.verdict { font-size: .85rem; margin: 0 0 .6rem; }
+.hint { font-size: .75rem; color: var(--faint); margin: 0 0 .4rem; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.quiz > button { font-size: .8rem; color: var(--faint); border-bottom: 1px solid var(--rule); }
+.quiz > button + button { margin-left: 1rem; }
 .ex { font-size: .85rem; line-height: 1.9; margin: .8rem 0 0; }
 .todo { font-size: .82rem; color: var(--accent); }
 
 .kakomon { margin-top: 1rem; max-width: 46em; }
+/* 論点の見出しは1行に収まらない。折り返して全部読めるようにする。 */
+.kakomon .head {
+  margin: 0; text-align: left; white-space: normal; overflow-wrap: anywhere;
+  font-size: .8rem; color: var(--faint); line-height: 1.8;
+  border-bottom: 1px solid var(--rule); padding: 0 0 .3rem;
+}
 .kakomon code { font-family: ui-monospace, monospace; font-size: .78rem; }
 .real { border-left: 2px solid var(--rule); padding-left: 1rem; margin-top: .8rem; font-size: .85rem; line-height: 1.8; }
 .real ol { padding-left: 1.2rem; color: var(--faint); }
+.real .note { color: var(--faint); font-size: .78rem; margin: .2rem 0 .6rem; }
 
 .roster section, .families section { border-top: 1px solid var(--rule); padding-top: 1rem; margin-top: 1.4rem; }
 .roster h3, .families h3 { font-size: .95rem; font-weight: 400; margin: 0 0 .6rem; }
@@ -112,3 +140,9 @@ figcaption q { display: block; color: var(--faint); font-size: .7rem; margin-top
 .detail .talk { font-size: .8rem; color: var(--faint); line-height: 1.8; padding-left: 1.1rem; margin: 0 0 .6rem; }
 .detail .appear { font-size: .78rem; color: var(--faint); }
 @media (max-width: 780px) { .detail { grid-template-columns: 1fr; } }
+
+/* 説明は芝居と分ける。同じ流れに混ぜると場面が間延びして読める */
+.teach { border-left: 2px solid var(--rule); padding: .1rem 0 .1rem 1rem; margin: 1rem 0 0 3.4rem; max-width: 44em; }
+.teach h4 { font-size: .72rem; font-weight: 400; color: var(--faint); letter-spacing: .1em; margin: 0 0 .3rem; }
+.teach p { font-size: .85rem; line-height: 1.9; margin: 0 0 .2rem; color: var(--faint); }
+.lines.after { margin-top: 1rem; }
