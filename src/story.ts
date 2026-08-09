@@ -48,7 +48,6 @@ export type Line = {
 export type StoryEvent = {
   id: string; year: number; month: number; kind: string; title: string
   topicId: string | null; cast: string[]; lines: Line[]
-  thanks: Line | null; later: Line | null
   quiz: { question?: string; choices?: string[]; answer?: number } | null
 }
 export type Generation = (typeof world.generations)[number]

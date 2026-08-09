@@ -175,12 +175,6 @@ function Scene({ ev, go }: { ev: StoryEvent; go: Go }) {
           {after.map((l, i) => <Row key={i} l={l} i={i} prev={after[i - 1]} />)}
         </ol>
       )}
-      {(ev.thanks || ev.later) && (
-        <ol className="lines after">
-          {ev.thanks && <Row l={ev.thanks} i={90} />}
-          {ev.later && <Row l={ev.later} i={91} />}
-        </ol>
-      )}
       {topic && (
         <p className="jump">
           この回の論点 <a href={linkTo('topics', topic.id)}
