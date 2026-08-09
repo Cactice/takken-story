@@ -4,18 +4,18 @@ import {
   foreshadow, generations, topicList, topicOf, type Line, type StoryEvent,
 } from './story'
 import { Person } from './Person'
-import { Gloss } from './Gloss'
+import { Gloss, TERMS } from './Gloss'
 import { Lesson, Figure } from './Lesson'
 import { lessonOf } from './lessons'
 import { pickClosest, pickRandom, type Question, type QueryPart } from './kakomon'
 
-type Tab = 'story' | 'cast' | 'topics'
+type Tab = 'story' | 'cast' | 'topics' | 'gloss'
 type Go = (tab: Tab, id?: string) => void
 
 // URL でも行き来できるようにする。ルータは要らない。パスを見て出し分けるだけ。
 // 2つ目の区切りは、その画面で開くものの id。イベントidは物語の中で一意なのでそのまま使う
 const BASE = import.meta.env.BASE_URL
-const PATH: Record<Tab, string> = { story: 'monogatari', cast: 'jinbutsu', topics: 'ronten' }
+const PATH: Record<Tab, string> = { story: 'monogatari', cast: 'jinbutsu', topics: 'ronten', gloss: 'yougo' }
 type Route = { tab: Tab; id: string | null }
 const routeOf = (p: string): Route => {
   const [head, id] = p.replace(BASE, '').replace(/^\/|\/$/g, '').split('/')
@@ -61,9 +61,9 @@ export function Viewer() {
           {listOpen ? '閉じる' : '一覧'}
         </button>
         <nav>
-          {(['story', 'cast', 'topics'] as Tab[]).map((t) => (
+          {(['story', 'cast', 'topics', 'gloss'] as Tab[]).map((t) => (
             <button key={t} className={tab === t ? 'on' : ''} onClick={() => go(t)}>
-              {{ story: '物語', cast: 'キャラクター', topics: '論点' }[t]}
+              {{ story: '物語', cast: 'キャラクター', topics: '論点', gloss: '用語' }[t]}
             </button>
           ))}
         </nav>
@@ -104,6 +104,7 @@ export function Viewer() {
 
       {tab === 'cast' && <Cast pane={pane} close={() => setListOpen(false)} />}
       {tab === 'topics' && <Topics route={route} go={go} pane={pane} close={() => setListOpen(false)} />}
+      {tab === 'gloss' && <Glossary go={go} />}
     </div>
   )
 }
@@ -482,6 +483,58 @@ function Topics({ route, go, pane, close }: { route: Route; go: Go; pane: string
           </article>
         )}
       </main>
+    </div>
+  )
+}
+
+/** 用語集。押すと意味が出るのと同じ言葉を、一覧で読める */
+function Glossary({ go }: { go: Go }) {
+  const [q, setQ] = useState('')
+  const FIELD: Record<string, string> = {
+    kenri: '権利関係', gyoho: '宅建業法', hourei: '法令上の制限', zeikin: '税・その他', '': 'そのほか',
+  }
+  const fieldOf = (id?: string) => (id ? topicOf.get(id)?.field ?? '' : '')
+  const hit = TERMS.filter(
+    (t) => !q || t.term.includes(q) || t.alternative?.includes(q) || t.plain?.includes(q),
+  )
+  const order = ['kenri', 'gyoho', 'hourei', 'zeikin', '']
+
+  return (
+    <div className="glossary">
+      <p className="lead">
+        {TERMS.length}語。<b>物語と過去問の中では、下線を押すとその場で出る。</b>
+      </p>
+      <input className="find" value={q} onChange={(e) => setQ(e.target.value)}
+        placeholder="語をさがす" aria-label="語をさがす" />
+      {order.map((f) => {
+        const list = hit.filter((t) => fieldOf(t.topicId) === f)
+        if (!list.length) return null
+        return (
+          <section key={f || 'other'}>
+            <h3>{FIELD[f]}<small>{list.length}語</small></h3>
+            <dl>
+              {list.map((t) => (
+                <div key={t.term}>
+                  <dt>
+                    {t.term}
+                    {t.alternative && <small>{t.alternative}</small>}
+                  </dt>
+                  <dd>
+                    {t.plain}
+                    {t.topicId && (
+                      <a href={linkTo('topics', t.topicId)}
+                        onClick={(e) => { e.preventDefault(); go('topics', t.topicId!) }}>
+                        {topicOf.get(t.topicId)?.name ?? '解説'}
+                      </a>
+                    )}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )
+      })}
+      {!hit.length && <p className="todo">見つからない。</p>}
     </div>
   )
 }
