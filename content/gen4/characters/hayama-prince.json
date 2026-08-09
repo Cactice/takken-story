@@ -1,9 +1,9 @@
 {
-  "id": "hayama-koshaku",
-  "name": "葉山コーシャク",
+  "id": "hayama-prince",
+  "name": "葉山プリンス",
   "familyName": "葉山",
-  "givenName": "コーシャク",
-  "sprite": "sprites/hayama-oji.png",
+  "givenName": "プリンス",
+  "sprite": "sprites/hayama-prince.png",
   "generation": 4,
   "appearsIn": [
     4
