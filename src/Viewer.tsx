@@ -405,7 +405,7 @@ function Detail({ c, go }: { c: (typeof cast)[number]; go: Go }) {
   return (
     <div className="detail">
       <div className="ages">
-        {[8, 20, 45, 78].map((a) => (
+        {[10, 20, 40, 80].map((a) => (
           <figure key={a}>
             <Person id={c.id} family={c.family} gender={c.gender} age={a} seed={a / 7} size={110} />
             <figcaption><small>{a}歳</small></figcaption>
