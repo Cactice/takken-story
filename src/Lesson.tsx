@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import { castOf, ageAt, generations } from './story'
 import { Person } from './Person'
 import { Icon, type IconName } from './Icon'
+import { Gloss } from './Gloss'
 
 // 論点の図解。人はそのまま物語の住人を借りる。
 // 図には5つの型がある。関係・時間・段・断面・分かれ道。
@@ -73,8 +74,8 @@ function NodeBox({ n }: { n: Node }) {
       ) : (
         <Icon name={n.icon} size={44} />
       )}
-      <b>{n.label}</b>
-      {n.sub && <small>{n.sub}</small>}
+      <b><Gloss>{n.label}</Gloss></b>
+      {n.sub && <small><Gloss>{n.sub}</Gloss></small>}
     </div>
   )
 }
@@ -139,8 +140,8 @@ function TimelineFig({ panel }: { panel: Timeline }) {
           <span className="at">{s.at}</span>
           <span className="dot">{s.mark ? MARK[s.mark] : ''}</span>
           <span className="body">
-            <b>{s.label}</b>
-            {s.note && <small>{s.note}</small>}
+            <b><Gloss>{s.label}</Gloss></b>
+            {s.note && <small><Gloss>{s.note}</Gloss></small>}
           </span>
         </li>
       ))}
@@ -155,10 +156,10 @@ function TiersFig({ panel }: { panel: Tiers }) {
       <tbody>
         {panel.rows.map((r, i) => (
           <tr key={i}>
-            <th>{r.when}</th>
+            <th><Gloss>{r.when}</Gloss></th>
             <td>
-              <b>{r.then}</b>
-              {r.note && <small>{r.note}</small>}
+              <b><Gloss>{r.then}</Gloss></b>
+              {r.note && <small><Gloss>{r.note}</Gloss></small>}
             </td>
           </tr>
         ))}
@@ -207,12 +208,12 @@ function SectionFig({ panel }: { panel: Section }) {
 function BranchFig({ panel }: { panel: Branch }) {
   return (
     <div className="branch">
-      <p className="ask">{panel.ask}</p>
+      <p className="ask"><Gloss>{panel.ask}</Gloss></p>
       <div className="ways">
         {([['yes', panel.yes], ['no', panel.no]] as const).map(([k, v]) => (
           <div key={k} className={`way ${k}`}>
             <b>{v.label}</b>
-            <span>{v.result}</span>
+            <span><Gloss>{v.result}</Gloss></span>
           </div>
         ))}
       </div>
@@ -223,13 +224,13 @@ function BranchFig({ panel }: { panel: Branch }) {
 export function Figure({ panel }: { panel: Panel }) {
   return (
     <figure className="panel">
-      {panel.caption && <figcaption>{panel.caption}</figcaption>}
+      {panel.caption && <figcaption><Gloss>{panel.caption}</Gloss></figcaption>}
       {panel.kind === 'timeline' ? <TimelineFig panel={panel} />
         : panel.kind === 'tiers' ? <TiersFig panel={panel} />
         : panel.kind === 'section' ? <SectionFig panel={panel} />
         : panel.kind === 'branch' ? <BranchFig panel={panel} />
         : <RelationFig panel={panel} />}
-      {panel.note && <p className="note">{panel.note}</p>}
+      {panel.note && <p className="note"><Gloss>{panel.note}</Gloss></p>}
     </figure>
   )
 }
@@ -237,17 +238,17 @@ export function Figure({ panel }: { panel: Panel }) {
 export function Lesson({ data }: { data: LessonData }) {
   return (
     <div className="lesson">
-      <p className="summary">{data.summary}</p>
+      <p className="summary"><Gloss>{data.summary}</Gloss></p>
       {data.panels.map((p, i) => <Figure key={i} panel={p} />)}
       <div className="cols">
         <section>
           <h4>覚えること</h4>
-          <ul>{data.points.map((t, i) => <li key={i}>{t}</li>)}</ul>
+          <ul>{data.points.map((t, i) => <li key={i}><Gloss>{t}</Gloss></li>)}</ul>
         </section>
         {data.traps && data.traps.length > 0 && (
           <section className="traps">
             <h4>引っかけ方</h4>
-            <ul>{data.traps.map((t, i) => <li key={i}>{t}</li>)}</ul>
+            <ul>{data.traps.map((t, i) => <li key={i}><Gloss>{t}</Gloss></li>)}</ul>
           </section>
         )}
       </div>

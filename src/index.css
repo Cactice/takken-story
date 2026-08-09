@@ -281,8 +281,9 @@ a:hover { border-color: var(--accent); color: var(--accent); }
   /* 一覧か詳細か、どちらかだけ出す */
   .split, .withpane { grid-template-columns: 1fr; gap: 0; }
   .split > aside, .withpane > .families { position: static; max-height: none; }
-  .list-closed > aside, .list-closed > .families { display: none; }
-  .list-open > main, .list-open > .pane { display: none; }
+  /* .pane も aside なので、一覧を隠す指定に巻き込まれないよう .split に限る */
+  .split.list-closed > aside, .withpane.list-closed > .families { display: none; }
+  .split.list-open > main, .withpane.list-open > .pane { display: none; }
   .withpane > .pane { position: static; max-height: none; }
 
   /* 押しやすさ。指の的は小さくしない */

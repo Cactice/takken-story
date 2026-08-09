@@ -68,6 +68,7 @@ export function Viewer() {
           ))}
         </nav>
       </header>
+      {tab !== 'gloss' && (
       <button
         className="listtoggle"
         onClick={() => setListOpen(!listOpen)}
@@ -84,6 +85,7 @@ export function Viewer() {
           </svg>
         )}
       </button>
+      )}
 
       {tab === 'story' && (
         <div className={`split ${pane}`}>
