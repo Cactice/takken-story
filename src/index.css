@@ -342,3 +342,6 @@ a:hover { border-color: var(--accent); color: var(--accent); }
 }
 .pop b { display: block; font-weight: 400; color: var(--accent); font-size: .78rem; margin-bottom: .15rem; }
 .pop .close { position: absolute; top: .1rem; right: .3rem; color: var(--faint); font-size: .9rem; padding: .1rem .2rem; }
+
+.pop .more { display: block; width: fit-content; margin-top: .45rem; font-size: .78rem; color: var(--accent); border-bottom: 1px solid var(--rule); }
+.pop:has(.more) { padding-bottom: .45rem; }

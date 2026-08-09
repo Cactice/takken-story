@@ -67,7 +67,8 @@
   {
     "term": "債務不履行",
     "plain": "約束したことをしないこと",
-    "alternative": "約束を守らない"
+    "alternative": "約束を守らない",
+    "topicId": "minpo-furikou"
   },
   {
     "term": "催告",
@@ -82,22 +83,26 @@
   {
     "term": "催告の抗弁権",
     "plain": "「先に本人へ請求してくれ」と言える権利。連帯保証には無い",
-    "alternative": "先に本人へ、と言える権利"
+    "alternative": "先に本人へ、と言える権利",
+    "topicId": "minpo-hosho"
   },
   {
     "term": "検索の抗弁権",
     "plain": "「本人に財産がある」と言える権利。連帯保証には無い",
-    "alternative": "本人に財産がある、と言える権利"
+    "alternative": "本人に財産がある、と言える権利",
+    "topicId": "minpo-hosho"
   },
   {
     "term": "連帯保証",
     "plain": "本人と同じ立場で借金を背負う保証。言い訳が一切できない",
-    "alternative": "本人と同じ責任"
+    "alternative": "本人と同じ責任",
+    "topicId": "minpo-hosho"
   },
   {
     "term": "求償",
     "plain": "肩代わりした分を、本人に返せと請求すること",
-    "alternative": "肩代わり分の請求"
+    "alternative": "肩代わり分の請求",
+    "topicId": "minpo-hosho"
   },
   {
     "term": "相殺",
@@ -107,12 +112,14 @@
   {
     "term": "時効",
     "plain": "時が経つことで権利を得たり失ったりすること",
-    "alternative": "時が経って変わる"
+    "alternative": "時が経って変わる",
+    "topicId": "minpo-jiko"
   },
   {
     "term": "援用",
     "plain": "「時効です」と自分から言うこと。言わないと効かない",
-    "alternative": "時効だと言う"
+    "alternative": "時効だと言う",
+    "topicId": "minpo-jiko"
   },
   {
     "term": "占有",
@@ -127,22 +134,26 @@
   {
     "term": "抵当権",
     "plain": "返せなくなったとき、その不動産を売って先に回収できる権利",
-    "alternative": "担保に取る権利"
+    "alternative": "担保に取る権利",
+    "topicId": "minpo-teito"
   },
   {
     "term": "物上代位",
     "plain": "抵当に入れた物が家賃や保険金に化けても、そこから回収できること",
-    "alternative": "化けた金にも及ぶ"
+    "alternative": "化けた金にも及ぶ",
+    "topicId": "minpo-teito"
   },
   {
     "term": "法定地上権",
     "plain": "土地と建物が別々の持ち主になったとき、建物のために自動で生まれる土地を使う権利",
-    "alternative": "自動で生まれる土地利用権"
+    "alternative": "自動で生まれる土地利用権",
+    "topicId": "minpo-teito"
   },
   {
     "term": "根抵当",
     "plain": "決まった枠の中で、何度も借りたり返したりできる抵当",
-    "alternative": "枠つきの担保"
+    "alternative": "枠つきの担保",
+    "topicId": "minpo-teito"
   },
   {
     "term": "競売",
@@ -152,77 +163,92 @@
   {
     "term": "契約不適合",
     "plain": "渡された物が契約の内容と違っていること",
-    "alternative": "約束と違う"
+    "alternative": "約束と違う",
+    "topicId": "minpo-tanpo"
   },
   {
     "term": "追完",
     "plain": "直す・足す・取り替えること",
-    "alternative": "直す・足す"
+    "alternative": "直す・足す",
+    "topicId": "minpo-tanpo"
   },
   {
     "term": "危険負担",
     "plain": "引渡し前に物が壊れたとき、代金を払うかどうかの話",
-    "alternative": "壊れたときの代金の話"
+    "alternative": "壊れたときの代金の話",
+    "topicId": "minpo-furikou"
   },
   {
     "term": "遺留分",
     "plain": "遺言があっても、家族に必ず残る最低限の取り分",
-    "alternative": "必ず残る取り分"
+    "alternative": "必ず残る取り分",
+    "topicId": "minpo-souzoku"
   },
   {
     "term": "代襲相続",
     "plain": "先に亡くなった子の代わりに、孫が相続すること",
-    "alternative": "孫が代わりに継ぐ"
+    "alternative": "孫が代わりに継ぐ",
+    "topicId": "minpo-souzoku"
   },
   {
     "term": "配偶者居住権",
     "plain": "残された配偶者が、その家に住み続けられる権利",
-    "alternative": "住み続けられる権利"
+    "alternative": "住み続けられる権利",
+    "topicId": "minpo-souzoku"
   },
   {
     "term": "遺産分割",
     "plain": "相続人どうしで、誰が何を取るか決めること",
-    "alternative": "誰が何を取るか決める"
+    "alternative": "誰が何を取るか決める",
+    "topicId": "minpo-souzoku"
   },
   {
     "term": "区分所有",
     "plain": "マンションのように、一棟の建物を部屋ごとに分けて持つこと",
-    "alternative": "部屋ごとに持つ"
+    "alternative": "部屋ごとに持つ",
+    "topicId": "kubun-shoyu"
   },
   {
     "term": "専有部分",
     "plain": "自分の部屋。自由にできる範囲",
-    "alternative": "自分の部屋"
+    "alternative": "自分の部屋",
+    "topicId": "kubun-shoyu"
   },
   {
     "term": "共用部分",
     "plain": "廊下・階段・エレベーターなど、みんなで使うところ",
-    "alternative": "みんなの場所"
+    "alternative": "みんなの場所",
+    "topicId": "kubun-shoyu"
   },
   {
     "term": "議決権",
     "plain": "集会での持ち分。人数ではなく、部屋の広さで決まる",
-    "alternative": "部屋の広さで決まる持ち分"
+    "alternative": "部屋の広さで決まる持ち分",
+    "topicId": "kubun-shoyu"
   },
   {
     "term": "規約",
     "plain": "そのマンションの決まり",
-    "alternative": "そのマンションの決まり"
+    "alternative": "そのマンションの決まり",
+    "topicId": "kubun-shoyu"
   },
   {
     "term": "登記",
     "plain": "誰のものかを国の帳簿に載せること",
-    "alternative": "国の帳簿に載せる"
+    "alternative": "国の帳簿に載せる",
+    "topicId": "toki-ho"
   },
   {
     "term": "仮登記",
     "plain": "順番だけ先に押さえておく登記。本登記にすると日付がさかのぼる",
-    "alternative": "順番の予約"
+    "alternative": "順番の予約",
+    "topicId": "toki-ho"
   },
   {
     "term": "筆界",
     "plain": "登記簿に載っている土地の境目。話し合いでは動かせない",
-    "alternative": "国が決めた境目"
+    "alternative": "国が決めた境目",
+    "topicId": "toki-ho"
   },
   {
     "term": "分筆",
@@ -237,257 +263,308 @@
   {
     "term": "転貸",
     "plain": "借りた物を、さらに別の人に貸すこと。又貸し",
-    "alternative": "又貸し"
+    "alternative": "又貸し",
+    "topicId": "minpo-chintai"
   },
   {
     "term": "敷金",
     "plain": "預けておく金。出ていくとき、滞納分などを引いて返ってくる",
-    "alternative": "預け金"
+    "alternative": "預け金",
+    "topicId": "minpo-chintai"
   },
   {
     "term": "原状回復",
     "plain": "借りたときの状態に戻すこと。ふつうに使った分の傷みは含まない",
-    "alternative": "元に戻す"
+    "alternative": "元に戻す",
+    "topicId": "minpo-chintai"
   },
   {
     "term": "通常損耗",
     "plain": "ふつうに住んでいて生じる傷み。借りた人の負担にはならない",
-    "alternative": "ふつうの傷み"
+    "alternative": "ふつうの傷み",
+    "topicId": "minpo-chintai"
   },
   {
     "term": "必要費",
     "plain": "住むのに欠かせない修理に出した金。すぐ全額返ってくる",
-    "alternative": "欠かせない修理代"
+    "alternative": "欠かせない修理代",
+    "topicId": "minpo-chintai"
   },
   {
     "term": "有益費",
     "plain": "設備を良くするために出した金。出ていくときの精算になる",
-    "alternative": "良くするために使った金"
+    "alternative": "良くするために使った金",
+    "topicId": "minpo-chintai"
   },
   {
     "term": "造作買取請求",
     "plain": "取り付けたエアコンなどを、出ていくとき買い取れと言える権利",
-    "alternative": "取り付けた物を買い取れ"
+    "alternative": "取り付けた物を買い取れ",
+    "topicId": "shakka"
   },
   {
     "term": "正当事由",
     "plain": "更新を断るのに必要な、よほどの事情",
-    "alternative": "よほどの事情"
+    "alternative": "よほどの事情",
+    "topicId": "shakka"
   },
   {
     "term": "定期建物賃貸借",
     "plain": "更新のない借家契約。書面で契約し、事前に別の書面で説明が要る",
-    "alternative": "更新のない借家"
+    "alternative": "更新のない借家",
+    "topicId": "shakka"
   },
   {
     "term": "借地権",
     "plain": "建物を建てるために土地を借りる権利",
-    "alternative": "建物のために土地を借りる権利"
+    "alternative": "建物のために土地を借りる権利",
+    "topicId": "shakuchi"
   },
   {
     "term": "宅地建物取引業",
     "plain": "宅地や建物を自分で売買・交換するか、その仲介や代理を仕事ですること",
-    "alternative": "不動産の売買・仲介の商売"
+    "alternative": "不動産の売買・仲介の商売",
+    "topicId": "gyoho-menkyo"
   },
   {
     "term": "媒介",
     "plain": "仲介のこと。買いたい人と売りたい人をつなぐ",
-    "alternative": "仲介"
+    "alternative": "仲介",
+    "topicId": "gyoho-baikai"
   },
   {
     "term": "専任媒介",
     "plain": "1社にだけ頼む契約。自分で見つけた相手とは直接契約できる",
-    "alternative": "1社に頼む"
+    "alternative": "1社に頼む",
+    "topicId": "gyoho-baikai"
   },
   {
     "term": "専属専任媒介",
     "plain": "1社に絞り、自分で見つけた相手とも直接契約できない契約",
-    "alternative": "1社に絞りきる"
+    "alternative": "1社に絞りきる",
+    "topicId": "gyoho-baikai"
   },
   {
     "term": "指定流通機構",
     "plain": "物件情報を登録する場所。レインズのこと",
-    "alternative": "レインズ"
+    "alternative": "レインズ",
+    "topicId": "gyoho-baikai"
   },
   {
     "term": "重要事項説明",
     "plain": "契約の前に、宅建士が大事なことを説明すること。35条書面",
-    "alternative": "契約前の説明"
+    "alternative": "契約前の説明",
+    "topicId": "gyoho-juyojiko"
   },
   {
     "term": "37条書面",
     "plain": "契約したあとに渡す、契約内容を書いた書面",
-    "alternative": "契約後に渡す書面"
+    "alternative": "契約後に渡す書面",
+    "topicId": "gyoho-37jo"
   },
   {
     "term": "営業保証金",
     "plain": "客に損をさせたときの備えとして、法務局に積んでおく金",
-    "alternative": "法務局に積む備え"
+    "alternative": "法務局に積む備え",
+    "topicId": "gyoho-eigyo-hosho"
   },
   {
     "term": "供託",
     "plain": "法務局に金を預けておくこと",
-    "alternative": "法務局に預ける"
+    "alternative": "法務局に預ける",
+    "topicId": "gyoho-eigyo-hosho"
   },
   {
     "term": "弁済業務保証金分担金",
     "plain": "保証協会に入るとき納める金。営業保証金より安く済む",
-    "alternative": "協会に納める備え"
+    "alternative": "協会に納める備え",
+    "topicId": "gyoho-hosho-kyokai"
   },
   {
     "term": "還付",
     "plain": "損をした客が、積まれた金から支払いを受けること",
-    "alternative": "積んだ金から払う"
+    "alternative": "積んだ金から払う",
+    "topicId": "gyoho-eigyo-hosho"
   },
   {
     "term": "クーリング・オフ",
     "plain": "事務所以外で契約したとき、あとから無かったことにできる仕組み",
-    "alternative": "あとから解除"
+    "alternative": "あとから解除",
+    "topicId": "gyoho-cooling"
   },
   {
     "term": "手付",
     "plain": "契約のときに先に渡す金。相手が動き出す前なら、これを捨ててやめられる",
-    "alternative": "先に渡す金"
+    "alternative": "先に渡す金",
+    "topicId": "gyoho-tetsuke-seigen"
   },
   {
     "term": "保全措置",
     "plain": "受け取った手付金を、業者が倒れても返せるようにしておくこと",
-    "alternative": "手付金を守る仕組み"
+    "alternative": "手付金を守る仕組み",
+    "topicId": "gyoho-tetsuke-hozen"
   },
   {
     "term": "損害賠償額の予定",
     "plain": "もめたときいくら払うかを、あらかじめ決めておくこと",
-    "alternative": "もめたときの額を先に決める"
+    "alternative": "もめたときの額を先に決める",
+    "topicId": "gyoho-baishou-yotei"
   },
   {
     "term": "割賦販売",
     "plain": "分割払いで売ること",
-    "alternative": "分割払い"
+    "alternative": "分割払い",
+    "topicId": "gyoho-shoyuken-ryuho"
   },
   {
     "term": "所有権留保",
     "plain": "代金を払い終わるまで、名義を渡さないでおくこと",
-    "alternative": "名義を渡さない"
+    "alternative": "名義を渡さない",
+    "topicId": "gyoho-shoyuken-ryuho"
   },
   {
     "term": "監督処分",
     "plain": "業者への罰。指示・業務停止・免許取消の3段階",
-    "alternative": "業者への罰"
+    "alternative": "業者への罰",
+    "topicId": "gyoho-kantoku"
   },
   {
     "term": "公告",
     "plain": "世間に広く知らせること。業務停止と免許取消は公告される",
-    "alternative": "世間に知らせる"
+    "alternative": "世間に知らせる",
+    "topicId": "gyoho-kantoku"
   },
   {
     "term": "免許換え",
     "plain": "事務所の場所が変わって、免許をくれる相手が変わる手続き",
-    "alternative": "免許の出し元が変わる"
+    "alternative": "免許の出し元が変わる",
+    "topicId": "gyoho-menkyo"
   },
   {
     "term": "市街化区域",
     "plain": "すでに街になっている、または優先して街にする区域",
-    "alternative": "街にする区域"
+    "alternative": "街にする区域",
+    "topicId": "hourei-toshikeikaku"
   },
   {
     "term": "市街化調整区域",
     "plain": "街にしないでおく区域。建てるのに厳しい制限がある",
-    "alternative": "街にしない区域"
+    "alternative": "街にしない区域",
+    "topicId": "hourei-toshikeikaku"
   },
   {
     "term": "開発許可",
     "plain": "土地の形を変えて宅地にする工事に要る許可",
-    "alternative": "宅地にする工事の許可"
+    "alternative": "宅地にする工事の許可",
+    "topicId": "hourei-kaihatsu"
   },
   {
     "term": "建蔽率",
     "plain": "敷地に対して、真上から見た建物の面積の割合",
-    "alternative": "真上から見た広さの割合"
+    "alternative": "真上から見た広さの割合",
+    "topicId": "hourei-kenpei"
   },
   {
     "term": "容積率",
     "plain": "敷地に対して、各階を足した床面積の割合",
-    "alternative": "床面積の割合"
+    "alternative": "床面積の割合",
+    "topicId": "hourei-kenpei"
   },
   {
     "term": "用途地域",
     "plain": "そこに何を建てていいかを決めた区分",
-    "alternative": "何を建てていいかの区分"
+    "alternative": "何を建てていいかの区分",
+    "topicId": "hourei-yoto"
   },
   {
     "term": "接道義務",
     "plain": "敷地が道路に2メートル以上接していないと建てられない決まり",
-    "alternative": "道路に接する決まり"
+    "alternative": "道路に接する決まり",
+    "topicId": "hourei-kenchiku-kakunin"
   },
   {
     "term": "建築確認",
     "plain": "建てる前に、決まりに合っているか役所に確かめてもらうこと",
-    "alternative": "建てる前の確認"
+    "alternative": "建てる前の確認",
+    "topicId": "hourei-kenchiku-kakunin"
   },
   {
     "term": "盛土",
     "plain": "土を盛って地面を高くすること",
-    "alternative": "土を盛る"
+    "alternative": "土を盛る",
+    "topicId": "hourei-moridokisei"
   },
   {
     "term": "切土",
     "plain": "土を削って地面を低くすること",
-    "alternative": "土を削る"
+    "alternative": "土を削る",
+    "topicId": "hourei-moridokisei"
   },
   {
     "term": "換地",
     "plain": "区画整理で、元の土地の代わりに割り当てられる土地",
-    "alternative": "代わりの土地"
+    "alternative": "代わりの土地",
+    "topicId": "hourei-kukaku"
   },
   {
     "term": "仮換地",
     "plain": "工事中に仮に使わせてもらう土地。登記はまだ元の場所のまま",
-    "alternative": "工事中の仮の土地"
+    "alternative": "工事中の仮の土地",
+    "topicId": "hourei-kukaku"
   },
   {
     "term": "事後届出",
     "plain": "大きな土地を買ったあと、2週間以内に知事へ届け出ること",
-    "alternative": "買ったあとの届出"
+    "alternative": "買ったあとの届出",
+    "topicId": "hourei-kokudo"
   },
   {
     "term": "農地",
     "plain": "耕作に使われている土地。登記の地目ではなく、実際の使われ方で決まる",
-    "alternative": "耕作に使う土地"
+    "alternative": "耕作に使う土地",
+    "topicId": "hourei-nochi"
   },
   {
     "term": "課税標準",
     "plain": "税率をかける前の金額",
-    "alternative": "税率をかける額"
+    "alternative": "税率をかける額",
+    "topicId": "zei-fudosan"
   },
   {
     "term": "賦課期日",
     "plain": "税をかける基準の日。固定資産税は1月1日",
-    "alternative": "税の基準日"
+    "alternative": "税の基準日",
+    "topicId": "zei-fudosan"
   },
   {
     "term": "譲渡所得",
     "plain": "物を売って出た利益",
-    "alternative": "売って出た利益"
+    "alternative": "売って出た利益",
+    "topicId": "zei-shotoku"
   },
   {
     "term": "免税点",
     "plain": "これより安ければ税がかからない、という線",
-    "alternative": "税がかからない線"
+    "alternative": "税がかからない線",
+    "topicId": "zei-fudosan"
   },
   {
     "term": "標準地",
     "plain": "地価公示のために選ばれた、その地域を代表する土地",
-    "alternative": "代表に選ばれた土地"
+    "alternative": "代表に選ばれた土地",
+    "topicId": "sonota-chika"
   },
   {
     "term": "更地",
     "plain": "建物が建っていない土地。建っていても、無いものとして評価することがある",
-    "alternative": "建物の無い土地"
+    "alternative": "建物の無い土地",
+    "topicId": "sonota-chika"
   },
   {
     "term": "賃貸借",
     "plain": "お金を取って物を貸す契約。貸すほうが賃貸人、借りるほうが賃借人",
-    "alternative": "貸し借りの契約"
+    "alternative": "貸し借りの契約",
+    "topicId": "minpo-chintai"
   },
   {
     "term": "賃貸",
@@ -502,22 +579,26 @@
   {
     "term": "賃貸人",
     "plain": "貸している人。大家",
-    "alternative": "貸すほう"
+    "alternative": "貸すほう",
+    "topicId": "minpo-chintai"
   },
   {
     "term": "賃借人",
     "plain": "借りている人。店子。「ちんしゃくにん」",
-    "alternative": "借りるほう"
+    "alternative": "借りるほう",
+    "topicId": "minpo-chintai"
   },
   {
     "term": "転貸人",
     "plain": "借りた物をさらに人に貸した人。もとは借りている側",
-    "alternative": "又貸しするほう"
+    "alternative": "又貸しするほう",
+    "topicId": "minpo-chintai"
   },
   {
     "term": "転借人",
     "plain": "又貸しを受けて借りている人",
-    "alternative": "又借りするほう"
+    "alternative": "又借りするほう",
+    "topicId": "minpo-chintai"
   },
   {
     "term": "賃料",
@@ -527,12 +608,14 @@
   {
     "term": "被相続人",
     "plain": "財産を残して亡くなった人。相続人と一字違いで逆の意味",
-    "alternative": "亡くなった人"
+    "alternative": "亡くなった人",
+    "topicId": "minpo-souzoku"
   },
   {
     "term": "相続人",
     "plain": "財産を受け継ぐ人。被相続人は亡くなったほう",
-    "alternative": "受け継ぐ人"
+    "alternative": "受け継ぐ人",
+    "topicId": "minpo-souzoku"
   },
   {
     "term": "譲渡",
@@ -577,12 +660,14 @@
   {
     "term": "宅地建物取引士",
     "plain": "試験に受かって登録した人。重要事項の説明ができる。業者とは別",
-    "alternative": "資格を持つ人"
+    "alternative": "資格を持つ人",
+    "topicId": "gyoho-takkenshi"
   },
   {
     "term": "宅地建物取引業者",
     "plain": "免許を受けて不動産の商売をする会社や人。宅建士とは別",
-    "alternative": "免許を持つ会社"
+    "alternative": "免許を持つ会社",
+    "topicId": "gyoho-menkyo"
   },
   {
     "term": "代理人",
@@ -592,6 +677,97 @@
   {
     "term": "媒介契約",
     "plain": "売り買いの相手を探してもらう契約",
-    "alternative": "仲介を頼む契約"
+    "alternative": "仲介を頼む契約",
+    "topicId": "gyoho-baikai"
+  },
+  {
+    "term": "特定住宅瑕疵担保責任",
+    "alternative": "新築を売る業者の備え",
+    "topicId": "gyoho-kashi-tanpo"
+  },
+  {
+    "term": "住宅瑕疵担保履行法",
+    "alternative": "新築を売る業者の備え",
+    "topicId": "gyoho-kashi-tanpo"
+  },
+  {
+    "term": "資力確保措置",
+    "alternative": "供託か保険",
+    "topicId": "gyoho-kashi-tanpo"
+  },
+  {
+    "term": "瑕疵",
+    "alternative": "欠陥",
+    "topicId": "gyoho-kashi-tanpo"
+  },
+  {
+    "term": "住宅販売瑕疵担保保証金",
+    "alternative": "供託しておく備え",
+    "topicId": "gyoho-kashi-tanpo"
+  },
+  {
+    "term": "報酬",
+    "alternative": "仲介で受け取れる上限",
+    "topicId": "gyoho-hoshu"
+  },
+  {
+    "term": "誇大広告",
+    "alternative": "実際より良く見せる広告",
+    "topicId": "gyoho-kokoku"
+  },
+  {
+    "term": "取引態様の明示",
+    "alternative": "売主か仲介かを書く決まり",
+    "topicId": "gyoho-kokoku"
+  },
+  {
+    "term": "8種制限",
+    "alternative": "業者が売主のときだけ効く8つ",
+    "topicId": "gyoho-8shu"
+  },
+  {
+    "term": "保証協会",
+    "alternative": "営業保証金の代わりに入る団体",
+    "topicId": "gyoho-hosho-kyokai"
+  },
+  {
+    "term": "印紙税",
+    "alternative": "契約書にかかる税",
+    "topicId": "zei-inshi"
+  },
+  {
+    "term": "登録免許税",
+    "alternative": "登記にかかる税",
+    "topicId": "zei-touroku"
+  },
+  {
+    "term": "不動産取得税",
+    "alternative": "買った・建てたときの税",
+    "topicId": "zei-fudosan"
+  },
+  {
+    "term": "固定資産税",
+    "alternative": "持っている間かかる税",
+    "topicId": "zei-fudosan"
+  },
+  {
+    "term": "地価公示",
+    "alternative": "国が出す土地の値段",
+    "topicId": "sonota-chika"
+  },
+  {
+    "term": "住宅金融支援機構",
+    "alternative": "住宅ローンを支える独立行政法人",
+    "topicId": "sonota-kiko"
+  },
+  {
+    "term": "日影規制",
+    "alternative": "日陰を作りすぎない決まり",
+    "topicId": "hourei-takasa"
+  },
+  {
+    "term": "防火地域",
+    "alternative": "燃えにくく建てる区域",
+    "topicId": "hourei-boka"
   }
 ]
