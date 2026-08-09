@@ -35,6 +35,9 @@ export function Viewer() {
     return () => window.removeEventListener('popstate', back)
   }, [])
   const { tab } = route
+  // 狭い画面では一覧と詳細を切り替える。広い画面ではこの状態は効かない
+  const [listOpen, setListOpen] = useState(false)
+  const pane = listOpen ? 'list-open' : 'list-closed'
 
   // URL にイベントidがあれば、その世代のその回を開く
   const found = route.tab === 'story' && route.id
@@ -53,6 +56,9 @@ export function Viewer() {
     <div className="app">
       <header>
         <h1>宅建story</h1>
+        <button className="listtoggle" onClick={() => setListOpen(!listOpen)}>
+          {listOpen ? '閉じる' : '一覧'}
+        </button>
         <nav>
           {(['story', 'cast', 'topics'] as Tab[]).map((t) => (
             <button key={t} className={tab === t ? 'on' : ''} onClick={() => go(t)}>
@@ -63,7 +69,7 @@ export function Viewer() {
       </header>
 
       {tab === 'story' && (
-        <div className="split">
+        <div className={`split ${pane}`}>
           <aside>
             <div className="gens">
               {generations.map((g) => (
@@ -78,7 +84,7 @@ export function Viewer() {
               {events.map((e, i) => (
                 <li key={e.id}>
                   <button className={i === pick ? 'on' : ''}
-                    onClick={() => { setPick(i); go('story', e.id) }}>
+                    onClick={() => { setPick(i); go('story', e.id); setListOpen(false) }}>
                     <time>{e.year}/{e.month}</time>
                     <span className={`kind k-${e.kind}`}>{KIND_JA[e.kind] ?? e.kind}</span>
                     <b>{e.title}</b>
@@ -95,8 +101,8 @@ export function Viewer() {
         </div>
       )}
 
-      {tab === 'cast' && <Cast />}
-      {tab === 'topics' && <Topics route={route} go={go} />}
+      {tab === 'cast' && <Cast pane={pane} close={() => setListOpen(false)} />}
+      {tab === 'topics' && <Topics route={route} go={go} pane={pane} close={() => setListOpen(false)} />}
     </div>
   )
 }
@@ -311,7 +317,7 @@ function Kakomon(
   )
 }
 
-function Cast() {
+function Cast({ pane, close }: { pane: string; close: () => void }) {
   const [open, setOpen] = useState<string | null>(null)
   const members = useMemo(() => {
     const m = new Map<string, typeof cast>()
@@ -322,7 +328,7 @@ function Cast() {
   const person = cast.find((c) => c.id === open)
 
   return (
-    <div className="withpane">
+    <div className={`withpane ${pane}`}>
       <div className="families">
         {familyList.map((f) => (
           <section key={f.id}>
@@ -334,7 +340,7 @@ function Cast() {
             <div className="grid">
               {(members.get(f.id) ?? []).map((c, i) => (
                 <figure key={c.id} className={open === c.id ? 'on' : ''}>
-                  <button onClick={() => setOpen(open === c.id ? null : c.id)}>
+                  <button onClick={() => { setOpen(open === c.id ? null : c.id); close() }}>
                     <Person id={c.id} family={c.family} gender={c.gender} age={30} seed={i * 1.7} size={104} />
                     <figcaption>
                       <b>{c.name}</b>
@@ -393,9 +399,9 @@ function Detail({ c }: { c: (typeof cast)[number] }) {
   )
 }
 
-function Topics({ route, go }: { route: Route; go: Go }) {
+function Topics({ route, go, pane, close }: { route: Route; go: Go; pane: string; close: () => void }) {
   const open = route.id
-  const setOpen = (id: string) => go('topics', id)
+  const setOpen = (id: string) => { go('topics', id); close() }
   const FIELD: Record<string, string> = {
     kenri: '権利関係', gyoho: '宅建業法', hourei: '法令上の制限', zeikin: '税・その他',
   }
@@ -413,7 +419,7 @@ function Topics({ route, go }: { route: Route; go: Go }) {
   const lesson = cur ? lessonOf.get(cur.id) : null
 
   return (
-    <div className="split">
+    <div className={`split ${pane}`}>
       <aside>
         {order.map((f) => {
           const list = sorted.filter((t) => t.field === f)

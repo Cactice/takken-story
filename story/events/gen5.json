@@ -636,7 +636,7 @@
     "year": 1139,
     "month": 5,
     "kind": "newcomer",
-    "title": "鈴木ハウス",
+    "title": "鈴沼ハウスを建てる",
     "topicId": "minpo-chintai",
     "cast": [
       "suzuki-mappink",
@@ -700,7 +700,7 @@
     "year": 1140,
     "month": 3,
     "kind": "trouble",
-    "title": "鈴木見沼ハウス",
+    "title": "一棟を、半分ずつ持つ",
     "topicId": "minpo-kyoyu",
     "cast": [
       "minuma-wakame",
@@ -711,7 +711,7 @@
     "lines": [
       {
         "who": "minuma-wakame",
-        "text": "鈴木見沼ハウス。土地はうち、建てる金は鈴木さん。持分は半分ずつよ。……六十年、柵で怒鳴り合った家と、一棟持つことになるとはね。"
+        "text": "鈴沼ハウス。土地はうち、建てる金は鈴木さん。持分は半分ずつよ。……六十年、柵で怒鳴り合った家と、一棟持つことになるとはね。"
       },
       {
         "who": "suzuki-mappink",
@@ -975,7 +975,7 @@
     "year": 1143,
     "month": 9,
     "kind": "trouble",
-    "title": "鈴木ハウスの一室",
+    "title": "鈴沼ハウスの一室",
     "topicId": "shakka",
     "cast": [
       "suzuki-mappink",
@@ -985,7 +985,7 @@
     "lines": [
       {
         "who": "suzuki-mappink",
-        "text": "鈴木ハウス、満室っす。……自分の部屋だけ決まってないっす。人の引っ越しばっかり手伝ってて。"
+        "text": "鈴沼ハウス、満室っす。……自分の部屋だけ決まってないっす。人の引っ越しばっかり手伝ってて。"
       },
       {
         "who": "suzuki-mappink",

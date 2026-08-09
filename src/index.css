@@ -257,3 +257,56 @@ a:hover { border-color: var(--accent); color: var(--accent); }
 .way b { display: block; font-weight: 400; font-size: .85rem; }
 .way span { font-size: .8rem; color: var(--faint); line-height: 1.7; }
 @media (max-width: 640px) { .branch .ways { grid-template-columns: 1fr; } }
+
+/* ───── スマホ ─────────────────────────────────────────────
+   広い画面はいまのまま。狭い画面では一覧と詳細を切り替える。
+   両方を縦に積むと、詳細を見るたびに長い一覧をスクロールすることになる。 */
+.listtoggle { display: none; }
+
+@media (max-width: 820px) {
+  :root { --space: 0.9rem; }
+  .app { padding: .8rem .9rem 3rem; }
+
+  header { flex-wrap: wrap; gap: .6rem 1rem; align-items: center; }
+  header h1 { font-size: .95rem; letter-spacing: .25em; }
+  nav { gap: 1rem; order: 3; width: 100%; }
+  nav button { font-size: .9rem; padding: .3rem 0; }
+  .listtoggle {
+    display: block; margin-left: auto; font-size: .8rem; color: var(--faint);
+    border: 1px solid var(--rule); padding: .25rem .8rem;
+  }
+
+  /* 一覧か詳細か、どちらかだけ出す */
+  .split, .withpane { grid-template-columns: 1fr; gap: 0; }
+  .split > aside, .withpane > .families { position: static; max-height: none; }
+  .list-closed > aside, .list-closed > .families { display: none; }
+  .list-open > main, .list-open > .pane { display: none; }
+  .withpane > .pane { position: static; max-height: none; }
+
+  /* 押しやすさ。指の的は小さくしない */
+  .events button, .gens button, .field h3 button { padding: .55rem .5rem; }
+  .events button { grid-template-columns: 4.2em 2.8em 1fr; }
+  .quiz button, .choices button, .real ol li button { min-height: 2.6rem; }
+
+  /* 会話。顔と名前を上に、セリフを下に折る */
+  .lines li { grid-template-columns: 2.6rem 1fr; gap: .3rem .6rem; }
+  .lines .who { grid-column: 2; text-align: left; }
+  .lines p { grid-column: 1 / -1; line-height: 1.85; }
+  .teach { margin-left: 0; }
+
+  /* はみ出させない */
+  .tiers, .topics { display: block; overflow-x: auto; }
+  .lesson .cols { grid-template-columns: 1fr; gap: 1rem; }
+  .nodes { gap: 1.6rem; }
+  .detail .ages { flex-wrap: wrap; justify-content: center; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: .3rem; }
+  .genhead h2, .scene h3 { font-size: 1.05rem; }
+  .synopsis, .families p { font-size: .85rem; }
+}
+
+@media (max-width: 420px) {
+  .events button { grid-template-columns: 3.8em 1fr; }
+  .events .kind { grid-column: 2; }
+  .events b { grid-column: 1 / -1; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); }
+}

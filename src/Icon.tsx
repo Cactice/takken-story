@@ -7,6 +7,9 @@ export type IconName =
   | 'land' | 'house' | 'building' | 'money' | 'paper' | 'stamp' | 'key'
   | 'clock' | 'road' | 'tree' | 'fence' | 'slope' | 'office' | 'court'
   | 'bank' | 'shop' | 'farm' | 'warn'
+  | 'lock' | 'group'
+  | 'card' | 'sign' | 'book' | 'tent' | 'ban' | 'check' | 'shield'
+  | 'handshake' | 'calendar' | 'mail'
 
 const INK = '#6b6355'
 const FILL = '#e6e0d4'
@@ -30,6 +33,30 @@ const SHAPES: Record<IconName, React.ReactElement> = {
   shop: <><path d="M8 15h24l2 5H6z" /><rect x="9" y="20" width="22" height="14" /><rect x="14" y="25" width="7" height="9" /></>,
   farm: <><path d="M4 26h32M4 31h32" /><path d="M10 26v-6M18 26v-8M26 26v-6M34 26v-8" /></>,
   warn: <><path d="M20 6 34 32H6z" /><path d="M20 16v8M20 28v.5" /></>,
+  // 宅建士証・従業者証明書。顔写真のある札
+  card: <><rect x="5" y="10" width="30" height="20" rx="2" /><circle cx="14" cy="18" r="3.5" /><path d="M9 27c1.5-3 8-3 9.5 0" /><path d="M23 17h8M23 22h8" /></>,
+  // 標識。掲げる板
+  sign: <><rect x="6" y="7" width="28" height="17" rx="1.5" /><path d="M11 13h18M11 18h11" /><path d="M20 24v10M14 34h12" /></>,
+  // 従業者名簿・帳簿。綴じた帳面
+  book: <><path d="M8 7h20a3 3 0 0 1 3 3v23H11a3 3 0 0 1-3-3z" /><path d="M8 27h23" /><path d="M15 13h10M15 19h10" /></>,
+  // テント張りの案内所。土地に定着していない
+  tent: <><path d="M20 8 5 32h30z" /><path d="M20 8v24" /><path d="M20 32l-6-11M20 32l6-11" strokeDasharray="2 2" /></>,
+  // 禁止。やってはいけない
+  ban: <><circle cx="20" cy="20" r="13" /><path d="M11 11l18 18" /></>,
+  // 認められる。合っている
+  check: <><circle cx="20" cy="20" r="13" /><path d="M13 20.5l5 5 9-11" fill="none" /></>,
+  // 保全措置・保証。守る盾
+  shield: <><path d="M20 6l12 4v11c0 7-5 11-12 13-7-2-12-6-12-13V10z" /><path d="M14 20.5l4.5 4.5L27 16" fill="none" /></>,
+  // 契約が成立した。握手
+  handshake: <><path d="M4 18l7-5 9 4 9-4 7 5" /><path d="M11 13v13M29 13v13" /><path d="M13 22h6l4 4 4-4h2" fill="none" /></>,
+  // 期限・基準日。日めくり
+  calendar: <><rect x="6" y="10" width="28" height="24" rx="2" /><path d="M6 18h28" /><path d="M13 6v7M27 6v7" /><path d="M13 24h5M23 24h5M13 29h5" /></>,
+  // 書面を発した。封書
+  mail: <><rect x="5" y="12" width="30" height="19" rx="1.5" /><path d="M5 14l15 11 15-11" fill="none" /></>,
+  // 担保に取る。南京錠
+  lock: <><rect x="9" y="18" width="22" height="16" rx="2" /><path d="M14 18v-4a6 6 0 0 1 12 0v4" fill="none" /><path d="M20 24v4" /></>,
+  // 何人かで持つ・集まって決める
+  group: <><circle cx="13" cy="15" r="5" /><path d="M4 31c0-5 4-8 9-8s9 3 9 8" /><circle cx="27" cy="18" r="4" /><path d="M20 31c0-4 3-6 7-6s9 2 9 6" /></>,
 }
 
 export function Icon({ name, size = 40 }: { name: IconName; size?: number }) {
