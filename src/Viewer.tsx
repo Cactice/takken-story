@@ -134,7 +134,7 @@ function GenHead({ gen }: { gen: number }) {
   return (
     <section className="genhead">
       <h2>
-        <span className="kanji" title={g.kanjiWhy}>{g.kanji}</span>
+        <span className="kanji">{g.kanji}</span>
         第{g.gen}世代 ｜ {g.stage} ｜ {g.startYear}年〜
       </h2>
       <p className="facts">
