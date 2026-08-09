@@ -1,3 +1,4 @@
+import type { Panel as LessonPanel } from './Lesson'
 import world from '../story/world.json'
 import families from '../story/families.json'
 import characters from '../story/characters.json'
@@ -26,15 +27,29 @@ export type Character = {
   catchphrase?: string; smallTalk?: Record<string, string[]>
   byAge?: { from: number; personality?: string; catchphrase?: string; job?: string }[]
 }
-export type Line = { who: string; text: string; role?: 'teach' }
+/**
+ * 会話の一行。`who` は喋る人、`role` は行の種類。
+ * `role: 'quiz'` の行は喋らない。そこに問題を差し込む目印である。
+ * 台本の側で「会話のどこで問うか」を決められる。
+ */
+export type Line = {
+  who?: string
+  text?: string
+  role?: 'teach' | 'quiz' | 'figure'
+  /**
+   * role: 'figure' のとき。既定ではこの回の論点の解説から1枚借りる。
+   * `use` は何枚目か(0始まり)、`topicId` は別の論点から借りたいとき。
+   * どうしてもその回だけの絵が要るときだけ `panel` を直接書く。
+   */
+  use?: number
+  topicId?: string
+  panel?: LessonPanel
+}
 export type StoryEvent = {
   id: string; year: number; month: number; kind: string; title: string
   topicId: string | null; cast: string[]; lines: Line[]
   thanks: Line | null; later: Line | null
-  quiz: {
-    question?: string; choices?: string[]; answer?: number
-    explanation?: string; diagram?: { type: string; labels: string[] }
-  } | null
+  quiz: { question?: string; choices?: string[]; answer?: number } | null
 }
 export type Generation = (typeof world.generations)[number]
 

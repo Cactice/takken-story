@@ -220,10 +220,10 @@ function BranchFig({ panel }: { panel: Branch }) {
   )
 }
 
-function Figure({ panel }: { panel: Panel }) {
+export function Figure({ panel }: { panel: Panel }) {
   return (
     <figure className="panel">
-      <figcaption>{panel.caption}</figcaption>
+      {panel.caption && <figcaption>{panel.caption}</figcaption>}
       {panel.kind === 'timeline' ? <TimelineFig panel={panel} />
         : panel.kind === 'tiers' ? <TiersFig panel={panel} />
         : panel.kind === 'section' ? <SectionFig panel={panel} />

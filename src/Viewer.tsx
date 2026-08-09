@@ -4,7 +4,7 @@ import {
   foreshadow, generations, topicList, topicOf, type Line, type StoryEvent,
 } from './story'
 import { Person } from './Person'
-import { Lesson } from './Lesson'
+import { Lesson, Figure } from './Lesson'
 import { lessonOf } from './lessons'
 import { pickClosest, pickRandom, type Question, type QueryPart } from './kakomon'
 
@@ -133,19 +133,28 @@ function GenHead({ gen }: { gen: number }) {
 
 function Scene({ ev, go }: { ev: StoryEvent; go: Go }) {
   const topic = ev.topicId ? topicOf.get(ev.topicId) : null
-  // 芝居と説明を混ぜない。混ぜると場面が長くなって、間延びして読める
-  const drama = ev.lines.filter((l) => l.role !== 'teach')
-  const teach = ev.lines.filter((l) => l.role === 'teach')
+  // 台本に「ここで問う」の目印があれば、その位置で切る。
+  // 無ければ、説明の手前で切る(目印を置く前の書き方に合わせる)
+  const at = ev.lines.findIndex((l) => l.role === 'quiz')
+  const cut = at >= 0 ? at : ev.lines.findIndex((l) => l.role === 'teach')
+  const say = (ls: Line[]) => ls.filter((l) => l.role !== 'quiz')
+  const drama = say(cut < 0 ? ev.lines : ev.lines.slice(0, cut))
+  const teach = say(cut < 0 ? [] : ev.lines.slice(cut + (at >= 0 ? 1 : 0)))
 
   const Row = ({ l, i, prev }: { l: Line; i: number; prev?: Line }) => {
-    const c = castOf.get(l.who)
+    if (l.role === 'figure') {
+      // 図は論点の解説から借りる。同じ話に二つの絵があると、覚えるものが増える
+      const src = l.panel ?? lessonOf.get(l.topicId ?? ev.topicId ?? '')?.panels[l.use ?? 0]
+      return src ? <li className="figrow"><Figure panel={src} /></li> : null
+    }
+    const c = castOf.get(l.who ?? '')
     const same = prev?.who === l.who
     return (
       <li className={same ? 'same' : ''}>
         <span className="face">
           {!same && <Person id={c?.id} family={c?.family} gender={c?.gender} age={ageAt(c, ev.year)} seed={i} size={44} head />}
         </span>
-        <span className="who">{same ? '' : c?.name ?? l.who}</span>
+        <span className="who">{same ? '' : c?.name ?? l.who ?? ''}</span>
         <p>{l.text}</p>
       </li>
     )
@@ -186,14 +195,13 @@ function Quiz({ quiz }: { quiz: NonNullable<StoryEvent['quiz']> }) {
   const [picked, setPicked] = useState<number | null>(null)
   const [open, setOpen] = useState(false)
   const done = picked != null
-  const shown = done || open
 
   return (
     <section className="quiz">
       <p className="q">{quiz.question}</p>
       {quiz.choices?.length ? (
         <>
-        {!done && <p className="hint">選択肢を押すと ○× と解説が出ます。</p>}
+        {!done && <p className="hint">選択肢を押すと ○× が出ます。</p>}
         <ol className="choices">
           {quiz.choices.map((c, i) => {
             const right = i === quiz.answer
@@ -222,7 +230,6 @@ function Quiz({ quiz }: { quiz: NonNullable<StoryEvent['quiz']> }) {
         <button onClick={() => setOpen(!open)}>{open ? '閉じる' : '答えと解説'}</button>
       )}
       {done && <button onClick={() => setPicked(null)}>選び直す</button>}
-      {shown && <p className="ex">{quiz.explanation}</p>}
     </section>
   )
 }
