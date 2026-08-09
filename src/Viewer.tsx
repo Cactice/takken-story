@@ -145,7 +145,11 @@ function Scene({ ev, go }: { ev: StoryEvent; go: Go }) {
     if (l.role === 'figure') {
       // 図は論点の解説から借りる。同じ話に二つの絵があると、覚えるものが増える
       const src = l.panel ?? lessonOf.get(l.topicId ?? ev.topicId ?? '')?.panels[l.use ?? 0]
-      return src ? <li className="figrow"><Figure panel={src} /></li> : null
+      return src ? (
+        <li className="figrow">
+          <div className="advice"><Figure panel={src} /></div>
+        </li>
+      ) : null
     }
     const c = castOf.get(l.who ?? '')
     const same = prev?.who === l.who
@@ -168,9 +172,12 @@ function Scene({ ev, go }: { ev: StoryEvent; go: Go }) {
       </ol>
       {ev.quiz ? <Quiz key={`q-${ev.id}`} quiz={ev.quiz} /> : <p className="todo">この回はまだ問題ができていない。</p>}
       {teach.length > 0 && (
-        <ol className="lines answer">
-          {teach.map((l, i) => <Row key={i} l={l} i={i} prev={teach[i - 1]} />)}
-        </ol>
+        <div className="advice answerbox">
+          <span className="tag">なぜそうなるか</span>
+          <ol className="lines answer">
+            {teach.map((l, i) => <Row key={i} l={l} i={i} prev={teach[i - 1]} />)}
+          </ol>
+        </div>
       )}
       {(ev.thanks || ev.later) && (
         <ol className="lines after">
