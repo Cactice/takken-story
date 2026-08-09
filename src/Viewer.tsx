@@ -95,8 +95,8 @@ export function Viewer() {
               {generations.map((g) => (
                 <button key={g.gen} className={gen === g.gen ? 'on' : ''}
                   onClick={() => { setGen(g.gen); setPick(0); go('story', eventsOf[g.gen][0]?.id) }}>
-                  <b>{g.gen}</b>
-                  <small>{g.stage === 'ありきた村' ? '村' : '街'}</small>
+                  <b>{g.kanji}</b>
+                  <small>{g.gen}</small>
                 </button>
               ))}
             </div>
@@ -133,7 +133,10 @@ function GenHead({ gen }: { gen: number }) {
   const yen = (n: number) => (n >= 100000000 ? `${n / 100000000}億` : `${n / 10000}万`)
   return (
     <section className="genhead">
-      <h2>第{g.gen}世代 ｜ {g.stage} ｜ {g.startYear}年〜</h2>
+      <h2>
+        <span className="kanji" title={g.kanjiWhy}>{g.kanji}</span>
+        第{g.gen}世代 ｜ {g.stage} ｜ {g.startYear}年〜
+      </h2>
       <p className="facts">
         目標 {yen(g.goal)} ／ 所持金 {yen(g.startMoney)} ／ 指導役 {castOf.get(g.mentor)?.name ?? g.mentor}
         ／ 増える稼ぎ方 <b>{g.unlock}</b> ／ トーン {g.tone}

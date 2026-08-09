@@ -43,6 +43,7 @@ aside { position: sticky; top: var(--space); max-height: 90vh; overflow: auto; }
 .k-farewell { color: #6a6a8a; } .k-trouble { color: #a2543f; } .k-romance { color: #a2547a; }
 
 .genhead h2 { font-size: 1rem; font-weight: 400; margin: 0 0 .3rem; }
+.genhead .kanji { display: inline-block; margin-right: .6rem; font-size: 1.5rem; color: var(--accent); vertical-align: -.15em; }
 .facts { font-size: .82rem; color: var(--faint); margin: 0 0 .6rem; }
 .genhead summary { font-size: .8rem; color: var(--faint); cursor: pointer; }
 .synopsis { white-space: pre-wrap; line-height: 1.9; font-size: .88rem; }
@@ -375,8 +376,8 @@ a:hover { border-color: var(--accent); color: var(--accent); }
 /* 世代は横並び。番号と、村か街かだけ */
 .gentabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: .2rem; margin-bottom: .8rem; }
 .gentabs button { display: grid; justify-items: center; gap: .05rem; padding: .4rem .2rem; color: var(--faint); border-bottom: 2px solid transparent; }
-.gentabs button b { font-weight: 400; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
-.gentabs button small { font-size: .68rem; }
+.gentabs button b { font-weight: 400; font-size: 1.3rem; line-height: 1.2; }
+.gentabs button small { font-size: .66rem; font-variant-numeric: tabular-nums; }
 .gentabs button.on { color: var(--ink); border-color: var(--accent); }
 .gentabs button:hover { color: var(--ink); }
 
