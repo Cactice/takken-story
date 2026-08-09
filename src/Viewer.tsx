@@ -4,6 +4,8 @@ import {
   foreshadow, generations, topicList, topicOf, type Line, type StoryEvent,
 } from './story'
 import { Person } from './Person'
+import { Lesson } from './Lesson'
+import { lessonOf } from './lessons'
 import { pickClosest, type Question, type QueryPart } from './kakomon'
 
 type Tab = 'story' | 'cast' | 'topics'
@@ -315,23 +317,44 @@ function Detail({ c }: { c: (typeof cast)[number] }) {
 }
 
 function Topics() {
+  const [open, setOpen] = useState<string | null>(null)
   const sorted = [...topicList].sort((a, b) => b.kakomonCount - a.kakomonCount)
-  const used = new Set(
-    Object.values(eventsOf).flat().map((e) => e.topicId).filter(Boolean) as string[],
-  )
+  const used = new Map<string, string[]>()
+  for (const [g, evs] of Object.entries(eventsOf)) {
+    for (const e of evs) {
+      if (e.topicId) used.set(e.topicId, [...(used.get(e.topicId) ?? []), `第${g}世代 ${e.title}`])
+    }
+  }
+  const FIELD: Record<string, string> = {
+    kenri: '権利関係', gyoho: '宅建業法', hourei: '法令上の制限', zeikin: '税・その他',
+  }
   return (
-    <table className="topics">
-      <thead><tr><th>論点</th><th>分野</th><th>15年の出題</th><th>イベント</th></tr></thead>
-      <tbody>
-        {sorted.map((t) => (
-          <tr key={t.id} className={used.has(t.id) ? '' : 'unused'}>
-            <td><code>{t.id}</code><br /><small>{t.name}</small></td>
-            <td>{t.field}</td>
-            <td className="num">{t.kakomonCount}</td>
-            <td>{used.has(t.id) ? '有' : '—'}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="topics">
+      <p className="lead">
+        論点を押すと、住人を借りた図解が出る。<b>ここを全部読めば、過去問はだいたい解ける。</b>
+      </p>
+      {sorted.map((t) => {
+        const lesson = lessonOf.get(t.id)
+        const on = open === t.id
+        return (
+          <section key={t.id} className={on ? 'row on' : 'row'}>
+            <button onClick={() => setOpen(on ? null : t.id)} disabled={!lesson}>
+              <b>{t.name}</b>
+              <small>{FIELD[t.field] ?? t.field} ／ 15年で {t.kakomonCount}問</small>
+              <code>{t.id}</code>
+              {!lesson && <em>解説はまだ</em>}
+            </button>
+            {on && lesson && (
+              <>
+                <Lesson data={lesson} />
+                {used.get(t.id) && (
+                  <p className="appear">出てくる回：{used.get(t.id)!.join(' / ')}</p>
+                )}
+              </>
+            )}
+          </section>
+        )
+      })}
+    </div>
   )
 }

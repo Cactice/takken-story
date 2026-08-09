@@ -309,10 +309,12 @@ export function Person({ family, gender = 'male', age, seed = 0, size = 120, dim
 
   // ---- 前髪 --------------------------------------------------------------
   // 白髪。40歳で0、80歳でかなり白い。u が小さい房から先に白くなるので、房ごとに分かれる
-  const gray = clamp((a - 40) / 40)
+  // 白髪は40歳あたりから。45歳でもう数本あるくらいの立ち上がり
+  const gray = clamp((a - 38) / 34)
   const hairBase = shade(cloth.accent, 0.62)
-  const grayOf = (u: number) => shade(hairBase, 1 + clamp((gray - u * 0.55) * 1.6) * 0.85)
-  const hairColor = grayOf(0.5) // 前髪・結び目などのまとまった部分
+  const grayOf = (u: number) => shade(hairBase, 1 + clamp((gray - u * 0.4) * 1.9) * 0.85)
+  // 前髪はいちばん目につくので、房より少し早く白くなる。45歳で気づく程度に
+  const hairColor = grayOf(0.28)
   const hairLight = shade(hairColor, 1.3)
   const b = me.bangsAmt
   const s7 = me.part >= 0 ? 1 : -1
@@ -344,6 +346,7 @@ export function Person({ family, gender = 'male', age, seed = 0, size = 120, dim
   const hy = GROUND + (headY - GROUND) * height
   const headBox = `${(hx - 19).toFixed(1)} ${(hy - 17).toFixed(1)} 38 38`
   const ey = headY + headR * 0.2 // 目の高さ。頭の中心よりわずかに下
+  const wrinkle = clamp((a - 38) / 32) // シワの深さ
 
   // 目。黒目だけを肌の上に置く簡素な顔。開き具合 k ひとつで
   // 細く縦長(k小) → まん丸(k=1) → 横に細い線(k大) と連続的に変わる。
@@ -468,6 +471,19 @@ export function Person({ family, gender = 'male', age, seed = 0, size = 120, dim
         </g>
 
         {/* 前髪 */}
+        {/* シワ。40歳あたりから目尻に1本、深くなると口元にも1本 */}
+        {wrinkle > 0.02 && (
+          <g stroke="#b9a894" strokeLinecap="round" fill="none" opacity={0.45 + wrinkle * 0.45}>
+            <path strokeWidth={0.52} d={`M ${headX - me.eyeGap - 2.2} ${ey + 0.6} q -0.9 0.8 -1.1 1.9`} />
+            <path strokeWidth={0.52} d={`M ${headX + me.eyeGap + 2.2} ${ey + 0.6} q 0.9 0.8 1.1 1.9`} />
+            {wrinkle > 0.45 && (
+              <>
+                <path strokeWidth={0.4} d={`M ${headX - 2.6} ${ey + 2.8} q -1.3 1.9 -1.1 3.4`} />
+                <path strokeWidth={0.4} d={`M ${headX + 2.6} ${ey + 2.8} q 1.3 1.9 1.1 3.4`} />
+              </>
+            )}
+          </g>
+        )}
         <path d={bangsPath} fill={hairColor} />
         {me.bangs === 'seven' && (
           // 分け目。7の側から入れる

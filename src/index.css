@@ -152,3 +152,34 @@ figcaption q { display: block; color: var(--faint); font-size: .7rem; margin-top
 .real ol li.right { color: var(--ink); }
 .real .mark { text-align: center; }
 .real ol li.right .mark { color: var(--accent); }
+
+/* 論点 */
+.topics .lead { font-size: .85rem; color: var(--faint); margin: 1rem 0; }
+.topics .row { border-bottom: 1px solid var(--rule); }
+.topics .row > button { display: grid; grid-template-columns: 1fr auto; gap: .2rem 1rem; width: 100%; text-align: left; padding: .6rem .4rem; align-items: baseline; }
+.topics .row > button b { font-weight: 400; }
+.topics .row > button small { color: var(--faint); font-size: .75rem; text-align: right; }
+.topics .row > button code { grid-column: 1; font-family: ui-monospace, monospace; font-size: .7rem; color: var(--faint); }
+.topics .row > button em { font-style: normal; font-size: .7rem; color: var(--accent); text-align: right; }
+.topics .row.on { background: #fff; }
+.topics .row > button:disabled { opacity: .55; cursor: default; }
+
+.lesson { padding: .4rem 1rem 1.4rem; }
+.lesson .summary { font-size: 1.02rem; line-height: 1.9; margin: .4rem 0 1.4rem; max-width: 44em; }
+.panel { margin: 0 0 1.6rem; }
+.panel figcaption { text-align: left; font-size: .8rem; color: var(--faint); margin-bottom: .4rem; }
+.stagebox { position: relative; }
+.wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.wire-label { font-size: 9px; fill: var(--faint); font-family: inherit; }
+.nodes { display: flex; flex-wrap: wrap; gap: 2.6rem; align-items: flex-end; padding-bottom: 3.2rem; }
+.node { display: grid; justify-items: center; gap: .1rem; min-width: 4.5rem; }
+.node b { font-weight: 400; font-size: .8rem; }
+.node small { color: var(--faint); font-size: .7rem; }
+.node .glyph { font-size: 2rem; line-height: 52px; color: var(--faint); }
+.panel .note { font-size: .82rem; color: var(--ink); margin: .2rem 0 0; }
+.lesson .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; max-width: 60em; }
+.lesson h4 { font-size: .75rem; font-weight: 400; color: var(--faint); letter-spacing: .1em; margin: 0 0 .4rem; }
+.lesson ul { margin: 0; padding-left: 1.1rem; font-size: .85rem; line-height: 1.9; }
+.lesson .traps li { color: var(--accent); }
+.lesson .appear { font-size: .78rem; color: var(--faint); padding: 0 1rem 1rem; }
+@media (max-width: 780px) { .lesson .cols { grid-template-columns: 1fr; } }

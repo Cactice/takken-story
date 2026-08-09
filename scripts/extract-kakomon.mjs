@@ -110,46 +110,34 @@ const extractAnswerNotice = (pdf) => {
 // 面積単位。㎡ が m? / m2 / mn? / m* / mz などに化ける(OCR側)
 const AREA_UNIT = /(?<=\d[\s,.]*)\s?m\s?[?2２*zn²ｍ]{0,2}(?![a-z])|\bm[?²]/gi;
 
-// OCR結果に実際に出た誤読だけを載せている(推測で足さないこと)。左が誤読、右が正しい宅建用語。
+// OCR結果を実際に集計して出てきた誤読だけを載せている(推測で足さないこと)。
 const FIXES = [
-  [/媒英率|建英率|建蔽卒|建蔽奉|健蔽率/g, '建蔽率'],
-  [/容積卒|容棒率|容積奉/g, '容積率'],
-  [/準届火建築物|準厨火建築物|準耐大建築物/g, '準耐火建築物'],
-  [/耐大建築物|耐火建策物/g, '耐火建築物'],
-  [/効保連携型|幼保連捜型/g, '幼保連携型'],
-  [/都首府県知事|都道肘県知事|都道府県和事|都遣府県知事/g, '都道府県知事'],
-  [/宅地填物取引業|宅地閉物取引業|宅地針物取引業|宅地建幼取引業/g, '宅地建物取引業'],
-  [/宅地建物取引十|宅地建物取引干/g, '宅地建物取引士'],
-  [/市衡化調整区域|市街化調墓区域|市街他調整区域/g, '市街化調整区域'],
-  [/市衡化区域|市街他区域|市術化区域/g, '市街化区域'],
-  [/開発許苛|開発詐可|閉発許可/g, '開発許可'],
-  [/重要事項説萌|重要事項説朋/g, '重要事項説明'],
-  [/媒介契紙|媒介契豹|媒介契釣/g, '媒介契約'],
-  [/保証協全|保証胎会/g, '保証協会'],
-  [/抵当椎|抵当穫|抵当篠/g, '抵当権'],
-  [/借地借家浩|借地借冢法/g, '借地借家法'],
-  [/区分所宥/g, '区分所有'],
-  [/固定資産投|固定資塵税/g, '固定資産税'],
-  [/議渡所得|讃渡所得/g, '譲渡所得'],
-  [/譲渡欠|譲渡和益/g, '譲渡益'],
-  [/議渡|讃渡/g, '譲渡'],
-  [/特別捧除|特別接除|特別控徐/g, '特別控除'],
-  [/選住用財産|居住用財疾/g, '居住用財産'],
-  [/代状資産/g, '代替資産'],
-  [/軽減税卒/g, '軽減税率'],
-  [/所有権移転登紀/g, '所有権移転登記'],
-  [/損害賠貫|損害賠慣/g, '損害賠償'],
-  [/債務不履桁/g, '債務不履行'],
-  [/都市計画浩/g, '都市計画法'],
-  [/国土利用計画浩/g, '国土利用計画法'],
-  [/農地浩/g, '農地法'],
-  [/土地区画整理浩/g, '土地区画整理法'],
-  [/宅地造成等規制浩/g, '宅地造成等規制法'],
-  [/営業保証全/g, '営業保証金'],
-  [/手付全/g, '手付金'],
-  [/瑕疵担保責任|理疵担保責任/g, '瑕疵担保責任'],
-  [/この間において|この閉において/g, 'この問において'],
-  [/調っているもの|語っているもの/g, '誤っているもの'],
+  [/宅地(?!建)[^\s]物取引/g, '宅地建物取引'], // 「建」が填/針/閉/寺/電/刈/尋/道 などに化ける
+  [/衝地建物/g, '宅地建物'],
+  [/取引(?:業|楽|薬)(?:者|着|首|填)/g, '取引業者'],
+  [/宅地建物取引[土圭十]/g, '宅地建物取引士'], // 「取引主任者」は平成24年までの正式名称なので直さない
+  [/[者都]首府県知事|者道府県知事/g, '都道府県知事'],
+  [/市衡化/g, '市街化'],
+  [/準厨火建築物/g, '準耐火建築物'],
+  [/[名召]介契約/g, '媒介契約'],
+  [/保証撤会/g, '保証協会'],
+  [/借地[億倍]家法/g, '借地借家法'],
+  [/周定資産税/g, '固定資産税'],
+  [/[議謀讃]渡/g, '譲渡'],
+  [/譲渡欠/g, '譲渡益'],
+  [/特別[捧接]除/g, '特別控除'],
+  [/選住/g, '居住'],
+  [/居住用財疾/g, '居住用財産'],
+  [/(?<=[一-龠と])きれ(?=[てたるな])/g, 'され'], // 受身の「され」が「きれ」に化ける
+  [/土地区面整理法/g, '土地区画整理法'],
+  [/[堂党]業保証金/g, '営業保証金'],
+  [/便務不履行/g, '債務不履行'],
+  [/[賃費]貸[倍僅]契約|費貸借契約/g, '賃貸借契約'],
+  [/消減時効/g, '消滅時効'],
+  [/この[間開閉]において/g, 'この問において'],
+  [/[でを挫]の記述のうち/g, '次の記述のうち'],
+  [/正しい(?:もゃ|ゃの|もる|るの|ちの)/g, '正しいもの'],
+  [/[調詩計訳語]っている|誤っでいる/g, '誤っている'],
 ];
 
 // 罫線の誤認識で浮いた記号ゴミ。前後が空白で挟まれたものだけ消す
@@ -173,13 +161,14 @@ const cleanLine = (raw, ocr) => {
 const applyFixes = (s, ocr) => {
   let out = (ocr ? s.replace(AREA_UNIT, '㎡') : s).replace(/\u0001/g, '');
   if (ocr) for (const [re, to] of FIXES) out = out.replace(re, to);
-  return out.replace(/\s+/g, ' ').trim();
+  return out.replace(/\s+/g, ' ').replace(/^[\s_'"`|\]\[]+|[\s_'"`|\]\[]+$/g, '');
 };
 
 // ------------------------------------------------------------- パーサ
 
-// 【問 1】 / [問18】 / 【間 2】 / 【剛 19】 — 括弧と「問」の字は化けるが番号+閉じ括弧は残る
-const HEAD = /[【\[「(]?\s*[問間閉剛関門昌固]\s*([0-9０-９]{1,2})\s*[】\]』)]/g;
+// 【問 1】 / [問18】 / 【間.2】 / 【山 37】 / 【間 181(閉じ括弧が1に化ける) / 較 12(括弧が消える)
+// 括弧の中身も閉じ括弧も化けるので、行頭であることと番号の単調増加を頼りに拾う
+const HEAD = /(?:[【\[「]\s*[^\s\d]{1,2}|[問間閉剛関門昌固山較])[\s.,、・]{0,2}([0-9０-９]{1,2})\s*(?:[】\]』〕)1lI|]|(?=\s))/g;
 // 選択肢マーカー: 行頭の 1〜4(全角・丸数字も)
 // 番号の前後にゴミ記号がくっつくことがある(_3 / -3 / 1] など)ので少し緩めに取る
 const MARK = /^[\s_'"`’｀|\]\[\-–—ー]{0,3}([1-4１-４①-④])[\s.、,\]|)]+(?=\S)/;
@@ -275,30 +264,35 @@ export const parse = (rawText, ocr = true) => {
 
 // ---------------------------------------------------------------- OCR
 
-const ocrPdf = (year, force) => {
+const ocrPdf = async (year, force) => {
   const dir = path.join(OCR_DIR, year);
   if (force) fs.rmSync(dir, { recursive: true, force: true });
   fs.mkdirSync(dir, { recursive: true });
   // ページ数ぶん揃っていなければ描画し直す(中断したキャッシュを引きずらないため)
   const pdf = path.join(PDF_DIR, `${year}.pdf`);
-  if (fs.readdirSync(dir).filter((f) => f.endsWith('.png')).length !== pageCount(pdf)) {
-    for (const f of fs.readdirSync(dir)) fs.rmSync(path.join(dir, f));
-    execFileSync('pdftoppm', ['-r', String(DPI), '-gray', '-png', pdf, path.join(dir, 'p')]);
-  }
-  const pages = fs.readdirSync(dir).filter((f) => f.endsWith('.png')).sort();
-  const todo = pages.filter((f) => !fs.existsSync(path.join(dir, f.replace(/\.png$/, '.txt'))));
-  // ページ単位でCPU数ぶん並列に流す(1ページ約6秒、1年28ページ)
-  const queue = [...todo];
-  const worker = async () => {
-    for (let f = queue.shift(); f; f = queue.shift()) {
-      const base = path.join(dir, f.replace(/\.png$/, ''));
-      // OMP_THREAD_LIMIT=1: tesseract内のOpenMP並列を切る。プロセス単位で並べた方が速い
-      await new Promise((ok, ng) => execFile('tesseract', [path.join(dir, f), base, '-l', 'jpn', '--psm', String(PSM)],
-        { env: { ...process.env, OMP_THREAD_LIMIT: '1' } }, (e) => (e ? ng(e) : ok())));
+  const n = pageCount(pdf);
+  const list = (ext) => fs.readdirSync(dir).filter((f) => f.endsWith(ext)).sort();
+
+  // OCR済みテキストが揃っていれば画像は要らない(PNGは消してしまってよい)
+  if (list('.txt').length !== n) {
+    // 途中で止まったキャッシュを引きずらないよう、ページ数ぶん揃っていなければ描画し直す
+    if (list('.png').length !== n) {
+      for (const f of fs.readdirSync(dir)) fs.rmSync(path.join(dir, f));
+      execFileSync('pdftoppm', ['-r', String(DPI), '-gray', '-png', pdf, path.join(dir, 'p')]);
     }
-  };
-  return Promise.all(Array.from({ length: Math.min(os.cpus().length, queue.length || 1) }, worker))
-    .then(() => pages.map((f) => fs.readFileSync(path.join(dir, f.replace(/\.png$/, '.txt')), 'utf8')).join('\n'));
+    // ページ単位でCPU数ぶん並列に流す(1ページ約6秒、1年28ページ)
+    const queue = list('.png').filter((f) => !fs.existsSync(path.join(dir, f.replace(/\.png$/, '.txt'))));
+    const worker = async () => {
+      for (let f = queue.shift(); f; f = queue.shift()) {
+        const base = path.join(dir, f.replace(/\.png$/, ''));
+        // OMP_THREAD_LIMIT=1: tesseract内のOpenMP並列を切る。プロセス単位で並べた方が速い
+        await new Promise((ok, ng) => execFile('tesseract', [path.join(dir, f), base, '-l', 'jpn', '--psm', String(PSM)],
+          { env: { ...process.env, OMP_THREAD_LIMIT: '1' } }, (e) => (e ? ng(e) : ok())));
+      }
+    };
+    await Promise.all(Array.from({ length: Math.min(os.cpus().length, queue.length || 1) }, worker));
+  }
+  return list('.txt').map((f) => fs.readFileSync(path.join(dir, f), 'utf8')).join('\n');
 };
 
 // ---------------------------------------------------------------- 本体
