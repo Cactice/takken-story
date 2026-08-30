@@ -7,7 +7,7 @@ import { Person } from './Person'
 import { Gloss, TERMS } from './Gloss'
 import { Lesson, Figure } from './Lesson'
 import { lessonOf } from './lessons'
-import { pickClosest, pickRandom, type Question, type QueryPart } from './kakomon'
+import { fetchQuestion, pickClosest, pickRandom, type Question, type QueryPart } from './kakomon'
 
 type Tab = 'story' | 'cast' | 'topics' | 'gloss'
 type Go = (tab: Tab, id?: string) => void
@@ -206,7 +206,9 @@ function Scene({ ev, go }: { ev: StoryEvent; go: Go }) {
           の解説を読む
         </p>
       )}
-      {topic && <Kakomon key={`k-${ev.id}`} topic={topic} query={queryOf(ev, topic.name)} />}
+      {topic && (
+        <Kakomon key={`k-${ev.id}`} topic={topic} query={queryOf(ev, topic.name)} source={ev.quiz?.source} />
+      )}
     </article>
   )
 }
@@ -317,8 +319,8 @@ function RealQ({ q }: { q: Question }) {
  * 論点のほうは同じ問ばかり見ても仕方ないので、押すたび引き直す。
  */
 function Kakomon(
-  { topic, query, mode = 'closest' }:
-  { topic: Topic; query?: QueryPart[]; mode?: 'closest' | 'random' },
+  { topic, query, mode = 'closest', source }:
+  { topic: Topic; query?: QueryPart[]; mode?: 'closest' | 'random'; source?: string },
 ) {
   const [items, setItems] = useState<Question[]>([])
   const [done, setDone] = useState(false)
@@ -326,19 +328,30 @@ function Kakomon(
   useEffect(() => {
     let alive = true
     setDone(false)
-    const p = mode === 'random' ? pickRandom(topic.kakomon, 3) : pickClosest(query ?? [], topic.kakomon, 3)
+    // もとにした過去問を必ず先頭に置く。残りは近い順で埋める
+    const p = mode === 'random'
+      ? pickRandom(topic.kakomon, 3)
+      : Promise.all([
+          source ? fetchQuestion(source) : null,
+          pickClosest(query ?? [], topic.kakomon, 4),
+        ]).then(([first, rest]) => {
+          const others = rest.filter((q) => q.ref !== first?.ref)
+          return first ? [first, ...others].slice(0, 3) : others.slice(0, 3)
+        })
     p.then((qs) => { if (alive) { setItems(qs); setDone(true) } })
     return () => { alive = false }
     // query は毎回新しい配列になるので、依存に入れず key に任せる
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topic, mode, roll])
+  }, [topic, mode, roll, source])
 
   return (
     <section className="kakomon">
       <p className="head">
         論点 <code>{topic.id}</code>（{topic.name}）／ 過去15年で {topic.kakomonCount}問
         <br />
-        {mode === 'random' ? 'この論点から3問。' : 'この回にいちばん近い3問。'}
+        {mode === 'random'
+          ? 'この論点から3問。'
+          : source ? 'いちばん上が、この回の問題のもとにした過去問。' : 'この回にいちばん近い3問。'}
         {mode === 'random' && (
           <button className="roll" onClick={() => setRoll(roll + 1)}>別の3問を引く</button>
         )}

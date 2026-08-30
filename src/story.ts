@@ -48,7 +48,13 @@ export type Line = {
 export type StoryEvent = {
   id: string; year: number; month: number; kind: string; title: string
   topicId: string | null; cast: string[]; lines: Line[]
-  quiz: { question?: string; choices?: string[]; answer?: number } | null
+  quiz: {
+    question?: string
+    choices?: string[]
+    answer?: number
+    /** この問題のもとにした過去問。「令和2年12月問10」の形 */
+    source?: string
+  } | null
 }
 export type Generation = (typeof world.generations)[number]
 
